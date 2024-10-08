@@ -46,7 +46,6 @@ This mobile application is designed to optimize the daily routes of commercial r
 ## 🛠️ Technical Specifications
 
 - **Platform**: Mobile application (iOS/Android)
-- **Scope**: Department-level and nearby areas
 - **Data Storage**: Remote database for route information
 - **Offline Capabilities**: Works offline with data sync when online
 
