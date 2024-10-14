@@ -13,7 +13,7 @@ This mobile application is designed to optimize the daily routes of commercial r
 |[Fabre Florian](https://github.com/Odonata971)            | florian.fabre@iut-rodez.fr          |
 |[de Saint Palais François](https://github.com/Francois389)| francois.desaintpalais@iut-rodez.fr |
 
-## Role repartition
+## 📋 Role repartition
 
 | Sprints   | Costes        | Faussurier    | Fabre         | de Saint Palais |
 |-----------|---------------|---------------|---------------|-----------------|
@@ -22,7 +22,7 @@ This mobile application is designed to optimize the daily routes of commercial r
 | Sprint 3  | Developper    | Product Owner | SCRUM Master  | Developper      |
 | Sprint 4  | Product Owner | Developper    | Developper    | SCRUM Master    |
 
-## Links
+## 🔗 Links
 
 - GitHub :
   - Repository : [PathPilot-android-client](https://github.com/SAE-S5-01-Developpement-avance/PathPilot-android-client)
@@ -45,7 +45,7 @@ This mobile application is designed to optimize the daily routes of commercial r
 
 [To be completed with step-by-step usage instructions]
 
-## 📄 License
+## ⚖️ License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
