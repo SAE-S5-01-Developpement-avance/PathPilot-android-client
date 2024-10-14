@@ -31,46 +31,6 @@ This mobile application is designed to optimize the daily routes of commercial r
 
 - API Github repo : [PathPilot-API](https://github.com/orgs/SAE-S5-01-Developpement-avance/PathPilot-API)
 
-
-## ✨ Key Features
-
-### 👤 User Management
-
-- Input and manage personal address
-- Add and manage client information
-- Add and manage prospect information
-
-### 🗺️ Route Planning
-
-- Select clients and prospects for daily visits
-- Generate optimized routes to minimize travel distance
-- View and save generated routes
-- Manage saved routes (view list, delete)
-
-### 🚶‍♂️ Route Execution
-
-- Select and follow a saved route for daily tours
-- View details of the next client/prospect to visit
-- Mark clients as visited
-- Skip planned visits if needed
-- Pause and resume route recording
-- Stop route recording at any time
-- Receive notifications:
-  - When within 200 meters of the final destination
-  - When within 1000 meters of an unplanned prospect
-
-### 📊 Route Review
-
-- View completed and in-progress routes
-- Visualize routes on a map
-- See visited clients and prospects on the route map
-- Review skipped planned visits
-
-### 💾 Data Management
-
-- Save route data to a remote database
-- Offline functionality with sync when connection is restored
-
 ## 🛠️ Technical Specifications
 
 - **Platform**: Mobile application (iOS/Android)
