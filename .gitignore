@@ -29,9 +29,16 @@ proguard/
 .navigation/
 # Android Studio captures folder
 captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
 # IntelliJ
 *.iml
 .idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
 # .idea/workspace.xml
 # .idea/tasks.xml
 # .idea/gradle.xml
@@ -75,3 +82,6 @@ lint/tmp/
 # App Specific cases 
 app/release/output.json
 .idea/codeStyles/
+ 
+# Android Profiling
+*.hprof
