@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Gap enter the components -->
+    <dimen name="micro_gap">12dp</dimen>
+    <dimen name="small_gap">54dp</dimen>
+    <dimen name="normal_gap">80dp</dimen>
+    <dimen name="big_gap">128dp</dimen>
+
+    <!-- Text sizes-->
+    <dimen name="small_text">14sp</dimen>
+    <dimen name="normal_text">24sp</dimen>
+    <dimen name="big_text">28sp</dimen>
+
+    <!-- Logo size -->
+    <dimen name="normal_logo">100dp</dimen>
+
+    <!-- margin of the button "create account" -->
+    <dimen name="big_margin_reduc">70dp</dimen>
+
+    <!-- EditText params -->
+    <dimen name="edit_text_radius">32dp</dimen>
+    <dimen name="edit_text_size">18dp</dimen>
+</resources>

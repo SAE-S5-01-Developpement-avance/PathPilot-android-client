@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">PathPilot-android-client</string>
+    <string name="app_name">PathPilot</string>
+
+    <!--
+    String for the "sign up" page
+    -->
+    <string name="first_name"><b>First name</b></string>
+    <string name="placeholder_first_name">John</string>
+    <string name="last_name"><b>Last name</b></string>
+    <string name="placeholder_last_name">Doe</string>
+
+    <string name="position_lat"><b>Your position latitude</b></string>
+    <string name="placeholder_position_lat">41.40338</string>
+    <string name="position_long"><b>Your position longitude</b></string>
+    <string name="placeholder_position_long">2.17403</string>
+    <string name="email"><b>Email</b></string>
+    <string name="placeholder_email">exemple@mail.com</string>
+    <string name="password"><b>Password</b></string>
+    <string name="sign_up">Create account</string>
+    <string name="already_account"><b>Already have an account ? </b></string>
+    <string name="link_sign_in">Sign in</string>
+
+    <!--
+    Foot page without button
+    -->
+    <string name="informations">2024 IUT de Rodez. All rights reserved.</string>
 </resources>
