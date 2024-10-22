@@ -12,7 +12,8 @@
         <ImageView
             android:layout_width="@dimen/normal_logo"
             android:layout_height="@dimen/normal_logo"
-            android:src="@drawable/logo_pathpilot"
+            android:padding="@dimen/micro_gap"
+            android:src="@drawable/leave_icon"
             android:layout_column="4"/>
     </TableRow>
 
@@ -26,6 +27,7 @@
     <TableRow
         android:layout_marginBottom="@dimen/micro_gap">
         <EditText
+            android:id="@+id/first_name"
             android:hint="@string/placeholder_first_name"
             android:textSize="@dimen/normal_text"
             android:layout_column="1"
@@ -39,6 +41,7 @@
     </TableRow>
     <TableRow>
         <EditText
+            android:id="@+id/last_name"
             android:hint="@string/placeholder_last_name"
             android:textSize="@dimen/normal_text"
             android:layout_marginBottom="@dimen/small_gap"
@@ -59,10 +62,12 @@
     <TableRow
         android:layout_marginBottom="@dimen/micro_gap">
         <EditText
+            android:id="@+id/latitude"
             android:hint="@string/placeholder_position_lat"
             android:textSize="@dimen/normal_text"
             android:layout_column="1"/>
         <EditText
+            android:id="@+id/longitude"
             android:hint="@string/placeholder_position_long"
             android:textSize="@dimen/normal_text"
             android:layout_column="2"/>
@@ -75,6 +80,7 @@
     </TableRow>
     <TableRow>
         <EditText
+            android:id="@+id/email"
             android:hint="@string/placeholder_email"
             android:textSize="@dimen/normal_text"
             android:layout_column="1"
@@ -88,6 +94,7 @@
     </TableRow>
     <TableRow>
         <EditText
+            android:id="@+id/password"
             android:layout_marginBottom="@dimen/big_gap"
             android:textSize="@dimen/normal_text"
             android:layout_column="1"
