@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="micro_gap">12dp</dimen>
+    <dimen name="small_gap">54dp</dimen>
+    <dimen name="normal_gap">80dp</dimen>
+    <dimen name="big_gap">116dp</dimen>
+</resources>

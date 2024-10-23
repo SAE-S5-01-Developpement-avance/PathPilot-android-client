@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="form_margin">10dp</dimen>
+
+    <dimen name="micro_margin">5dp</dimen>
+    <dimen name="no_dp">0dp</dimen>
+
+    <dimen name="shadow">5dp</dimen>
+
     <!-- Gap enter the components -->
-    <dimen name="micro_gap">12dp</dimen>
-    <dimen name="small_gap">54dp</dimen>
-    <dimen name="normal_gap">80dp</dimen>
-    <dimen name="big_gap">128dp</dimen>
+    <dimen name="micro_gap">3dp</dimen>
+    <dimen name="small_gap">10dp</dimen>
+    <dimen name="normal_gap">20dp</dimen>
+    <dimen name="big_gap">58dp</dimen>
 
     <!-- Text sizes-->
     <dimen name="small_text">14sp</dimen>
@@ -12,7 +20,7 @@
     <dimen name="big_text">28sp</dimen>
 
     <!-- Logo size -->
-    <dimen name="normal_logo">100dp</dimen>
+    <dimen name="normal_logo">60dp</dimen>
 
     <!-- margin of the button "create account" -->
     <dimen name="big_margin_reduc">70dp</dimen>
@@ -20,4 +28,9 @@
     <!-- EditText params -->
     <dimen name="edit_text_radius">32dp</dimen>
     <dimen name="edit_text_size">18dp</dimen>
+
+    <!-- View dimension -->
+    <dimen name="small_view">0.2</dimen>
+    <dimen name="normal_view">0.5</dimen>
+    <dimen name="big_view">1</dimen>
 </resources>

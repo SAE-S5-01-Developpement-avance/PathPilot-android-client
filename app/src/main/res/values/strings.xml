@@ -18,7 +18,7 @@
     <string name="password"><b>Password</b></string>
     <string name="sign_up">Create account</string>
     <string name="already_account"><b>Already have an account ? </b></string>
-    <string name="link_sign_in">Sign in</string>
+    <string name="link_sign_in"><u>Sign in now</u></string>
 
     <!--
     Foot page without button
