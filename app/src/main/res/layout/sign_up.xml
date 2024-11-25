@@ -1,180 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:stretchColumns="1,2">
-    <TableRow
-        android:background="@color/blue_0">
-        <ImageView
-            android:layout_width="@dimen/normal_logo"
-            android:layout_height="@dimen/normal_logo"
-            android:src="@drawable/logo_pathpilot"
-            android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="@dimen/normal_logo"
-            android:layout_height="@dimen/normal_logo"
-            android:padding="@dimen/micro_gap"
-            android:src="@drawable/leave_icon"
-            android:layout_column="4"
-            android:layout_weight="1"/>
-    </TableRow>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/no_dp"
-        android:layout_weight="@dimen/normal_view"/>
-    <TableRow>
-        <TextView
-            android:text="@string/first_name"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"/>
-    </TableRow>
-    <TableRow
-        android:layout_marginBottom="@dimen/micro_gap">
-        <EditText
-            android:id="@+id/first_name"
-            android:hint="@string/placeholder_first_name"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"
-            android:layout_span="2"/>
-    </TableRow>
-    <TableRow>
-        <TextView
-            android:text="@string/last_name"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"/>
-    </TableRow>
-    <TableRow>
-        <EditText
-            android:id="@+id/last_name"
-            android:hint="@string/placeholder_last_name"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"
-            android:layout_span="2"/>
-    </TableRow>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/no_dp"
-        android:layout_weight="@dimen/small_view"/>
-    <TableRow>
-        <TextView
-            android:text="@string/position_lat"
-            android:textSize="@dimen/normal_text"
-            android:layout_width="@dimen/no_dp"
-            android:maxLines="3"
-            android:layout_column="1"/>
-        <TextView
-            android:text="@string/position_long"
-            android:textSize="@dimen/normal_text"
-            android:layout_width="@dimen/no_dp"
-            android:maxLines="3"
-            android:layout_column="2"/>
-
-    </TableRow>
-
-    <TableRow>
-        <EditText
-            android:id="@+id/latitude"
-            android:hint="@string/placeholder_position_lat"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"/>
-        <EditText
-            android:id="@+id/longitude"
-            android:hint="@string/placeholder_position_long"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="2"/>
-    </TableRow>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/no_dp"
-        android:layout_weight="@dimen/small_view"/>
-    <TableRow>
-        <TextView
-            android:text="@string/email"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"/>
-    </TableRow>
-    <TableRow>
-        <EditText
-            android:id="@+id/email"
-            android:hint="@string/placeholder_email"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"
-            android:layout_span="2"/>
-    </TableRow>
-    <TableRow>
-        <TextView
-            android:text="@string/password"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"/>
-    </TableRow>
-    <TableRow>
-        <EditText
-            android:id="@+id/password"
-            android:textSize="@dimen/normal_text"
-            android:layout_column="1"
-            android:layout_span="2"/>
-    </TableRow>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/no_dp"
-        android:layout_weight="@dimen/big_view"/>
-    <TableRow>
-        <Button
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/normal_gap"
-            android:text="@string/sign_up"
-            android:textSize="@dimen/big_text"
-            android:backgroundTint="@color/blue_0"
-            android:layout_column="1"
-            android:layout_span="2"/>
-
-    </TableRow>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/no_dp"
-        android:layout_weight="@dimen/big_view"/>
-    <LinearLayout
-        android:gravity="center">
-        <TextView
-            android:text="@string/already_account"
-            android:textSize="@dimen/normal_text"
-            android:layout_gravity="right"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:maxLines="2"/>
-        <TextView
-            android:text="@string/link_sign_in"
-            android:textSize="@dimen/normal_text"
-            android:textColor="@color/blue_0"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
-    </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/no_dp"
-        android:layout_weight="@dimen/big_view" />
-    <LinearLayout
-        android:orientation="vertical"
-        android:background="@color/blue_0"
-        android:gravity="center">
-        <TextView
-            android:text="@string/app_name"
-            android:textSize="@dimen/big_text"
-            android:textColor="@color/white"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="@dimen/micro_gap"/>
-        <TextView
-            android:text="@string/informations"
-            android:textColor="@color/white"
-            android:textSize="@dimen/small_text"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:paddingBottom="@dimen/micro_gap"/>
-    </LinearLayout>
-</TableLayout>-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -339,7 +163,7 @@
                     app:layout_constraintTop_toBottomOf="@id/label_position_long" />
 
                 <TextView
-                    android:id="@+id/label_email"
+                    android:id="@+id/label_mail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_gap"
@@ -349,13 +173,13 @@
                     app:layout_constraintTop_toBottomOf="@id/latitude" />
 
                 <EditText
-                    android:id="@+id/email"
+                    android:id="@+id/mail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/placeholder_email"
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     android:textSize="@dimen/normal_text"
-                    app:layout_constraintTop_toBottomOf="@id/label_email" />
+                    app:layout_constraintTop_toBottomOf="@id/label_mail" />
 
                 <TextView
                     android:id="@+id/label_password"
@@ -365,7 +189,7 @@
                     android:text="@string/password"
                     android:textSize="@dimen/normal_text"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/email" />
+                    app:layout_constraintTop_toBottomOf="@id/mail" />
 
                 <EditText
                     android:id="@+id/password"
@@ -375,7 +199,7 @@
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     app:layout_constraintTop_toBottomOf="@id/label_password" />
                 <Button
-                    android:id="@+id/signup_button"
+                    android:id="@+id/sign_up_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/big_gap"
@@ -395,7 +219,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/signup_button">
+                    app:layout_constraintTop_toBottomOf="@id/sign_up_button">
 
                     <TextView
                         android:layout_width="wrap_content"
