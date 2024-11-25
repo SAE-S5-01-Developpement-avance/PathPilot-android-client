@@ -6,4 +6,7 @@
 
     <!-- Header fixe -->
     <include layout="@layout/header" />
+
+    <!-- Footer fixe -->
+    <include layout="@layout/footer" />
 </androidx.constraintlayout.widget.ConstraintLayout>
