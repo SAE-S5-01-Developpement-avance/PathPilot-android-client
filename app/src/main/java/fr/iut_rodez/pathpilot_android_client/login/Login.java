@@ -8,11 +8,14 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
 public class Login extends AppCompatActivity {
 
     private static final String TAG = Login.class.getSimpleName();
+
+    private Popup popup;
 
     private Button loginButton;
     private EditText emailInput;
@@ -30,6 +33,9 @@ public class Login extends AppCompatActivity {
 
         // Set onClickListener
         loginButton.setOnClickListener(v -> login());
+
+        // Initialize popup
+        popup = new Popup(this);
     }
 
     public void login() {
@@ -45,14 +51,22 @@ public class Login extends AppCompatActivity {
         }
 
         // Check if email is valid
-        if (ValidateForm.isEmailValid(email)) {
+        if (!ValidateForm.isEmailValid(email)) {
             // Notify user
             //TODO : Add notification
             return;
         }
 
         // Send request to server
-        Log.d(TAG, "login: " + email + " " + password);
-        //TODO add request to server
+        boolean loginSuccess = LoginService.login(email, password);
+
+        if (loginSuccess) {
+            //TODO : Start launch Home activity
+            popup.showToastLong("Login success"); //TODO remove the Toast
+        } else {
+            // Notify user
+            //TODO Make a better msg
+            popup.showToastLong("Login failed");
+        }
     }
 }
