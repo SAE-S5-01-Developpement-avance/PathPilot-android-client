@@ -75,12 +75,11 @@
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     app:layout_constraintTop_toBottomOf="@id/label_password" />
 
-
                 <Button
                     android:id="@+id/login_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/big_gap"
+                    android:layout_marginTop="@dimen/normal_gap"
                     android:backgroundTint="@color/blue_0"
                     android:minHeight="@dimen/normal_gap"
                     android:text="@string/sign_in"
