@@ -11,7 +11,7 @@ import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
 public class Login extends AppCompatActivity {
-    
+
     private static final String TAG = Login.class.getSimpleName();
 
     private Popup popup;
