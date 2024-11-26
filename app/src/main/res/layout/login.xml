@@ -77,7 +77,7 @@
 
 
                 <Button
-                    android:id="@+id/login"
+                    android:id="@+id/login_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/big_gap"
@@ -97,7 +97,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/login">
+                    app:layout_constraintTop_toBottomOf="@id/login_btn">
 
                     <TextView
                         android:layout_width="wrap_content"
