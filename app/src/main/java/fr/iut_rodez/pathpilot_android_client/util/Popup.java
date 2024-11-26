@@ -25,5 +25,11 @@ public class Popup {
         showToast(message, Toast.LENGTH_SHORT);
     }
 
-
+    public void showAlertDialog(String title, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 }

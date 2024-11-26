@@ -47,4 +47,10 @@
     <string name="sign_in">Sign in</string>
     <string name="dont_have_account">Don\'t have an account ?</string>
     <string name="link_sign_up"><u>Sign up now</u></string>
+
+    <!--
+    String for Login activity
+    -->
+    <string name="error_email_password_field_empty">Email and password must not be empty</string>
+    <string name="error_email_invalid">Email is invalid</string>
 </resources>
