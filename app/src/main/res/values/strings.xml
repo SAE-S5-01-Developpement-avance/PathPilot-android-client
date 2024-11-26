@@ -40,4 +40,11 @@
     Foot page without button
     -->
     <string name="informations">2024 IUT de Rodez. All rights reserved.</string>
+
+    <!--
+    String for the "login" page
+    -->
+    <string name="sign_in">Sign in</string>
+    <string name="dont_have_account">Don\'t have an account ?</string>
+    <string name="link_sign_up"><u>Sign up now</u></string>
 </resources>
