@@ -1,12 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- Header fixe -->
-    <include layout="@layout/component_header_back_icon" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_0"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="@dimen/normal_logo"
+            android:layout_height="@dimen/normal_logo"
+            android:src="@drawable/logo_pathpilot"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/leave"
+            android:layout_width="@dimen/normal_logo"
+            android:layout_height="@dimen/normal_logo"
+            android:padding="@dimen/micro_gap"
+            android:src="@drawable/leave_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Fix footer -->
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_0"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/micro_gap"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/big_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/micro_gap"
+            android:text="@string/informations"
+            android:textColor="@color/white"
+            android:textSize="@dimen/small_text" />
+    </LinearLayout>
 
     <!-- Form -->
     <ScrollView
@@ -30,47 +79,53 @@
                 app:layout_constraintWidth_min="wrap"
                 android:layout_marginHorizontal="@dimen/form_margin">
 
-                <!-- Mandatory fields -->
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/big_text"
-                    android:text="@string/mandatory_fields"
-                    android:textSize="35sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints"/>
-
-                <TextView
-                    android:id="@+id/label_company_name"
+                    android:id="@+id/label_first_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/normal_gap"
-                    android:text="@string/company_name"
+                    android:text="@string/first_name"
                     android:textSize="@dimen/normal_text"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/company_name"
+                    android:id="@+id/first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/placeholder_first_name"
                     android:textSize="@dimen/normal_text"
                     android:layout_marginHorizontal="@dimen/micro_margin"
-                    app:layout_constraintTop_toBottomOf="@id/label_company_name" />
+                    app:layout_constraintTop_toBottomOf="@id/label_first_name" />
+                <TextView
+                    android:id="@+id/label_last_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/micro_gap"
+                    android:text="@string/last_name"
+                    android:textSize="@dimen/normal_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/first_name" />
 
-                <!-- lat / lon -->
+                <EditText
+                    android:id="@+id/last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/placeholder_last_name"
+                    android:textSize="@dimen/normal_text"
+                    android:layout_marginHorizontal="@dimen/micro_margin"
+                    app:layout_constraintTop_toBottomOf="@id/label_last_name" />
+
                 <TextView
                     android:id="@+id/label_position_lat"
                     android:layout_height="wrap_content"
                     android:layout_width="@dimen/no_dp"
-                    android:layout_marginTop="@dimen/micro_gap"
+                    android:layout_marginTop="@dimen/normal_gap"
                     android:text="@string/position_lat"
                     android:textSize="@dimen/normal_text"
                     app:layout_constraintEnd_toStartOf="@id/label_position_long"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/company_name" />
+                    app:layout_constraintTop_toBottomOf="@id/last_name" />
 
                 <TextView
                     android:id="@+id/label_position_long"
@@ -108,164 +163,79 @@
                     app:layout_constraintTop_toBottomOf="@id/label_position_long" />
 
                 <TextView
-                    android:id="@+id/optionnal_fields"
+                    android:id="@+id/label_mail"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/big_text"
-                    android:text="@string/optional_fields"
-                    android:textSize="35sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/latitude"/>
-
-                <TextView
-                    android:id="@+id/label_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/micro_gap"
-                    android:text="@string/description"
-                    android:textSize="@dimen/normal_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/optionnal_fields" />
-
-                <EditText
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/description_placeholder"
-                    android:layout_marginHorizontal="@dimen/micro_margin"
-                    android:textSize="@dimen/small_text"
-                    android:inputType="textMultiLine"
-                    android:gravity="top|start"
-                    android:overScrollMode="always"
-                    android:scrollbarStyle="insideInset"
-                    android:scrollbars="vertical"
-                    android:scrollHorizontally="false"
-                    android:lines="5"
-                    app:layout_constraintTop_toBottomOf="@id/label_description"  />
-
-                <TextView
-                    android:id="@+id/label_client_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/micro_gap"
-                    android:text="@string/client_type"
-                    android:textSize="@dimen/normal_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/description" />
-
-                <RadioGroup
-                    android:id="@+id/groupradio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="7dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/label_client_type"
-                    app:layout_constraintTop_toBottomOf="@id/description">
-                    <RadioButton
-                        android:id="@+id/radio_client"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/normal_text"
-                        android:text="@string/radio_client"/>
-
-                    <RadioButton
-                        android:id="@+id/radio_prospect"
-                        android:layout_width="fill_parent"
-                        android:layout_marginLeft="@dimen/small_gap"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/normal_text"
-                        android:text="@string/radio_prospect"/>
-                </RadioGroup>
-
-                <TextView
-                android:id="@+id/contact_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/micro_gap"
-                android:text="@string/contact_informations"
-                android:textSize="27sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/label_client_type"/>
-
-
-                <!-- First name / Last name -->
-                <TextView
-                    android:id="@+id/label_first_name"
-                    android:layout_height="wrap_content"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_marginTop="@dimen/micro_gap"
-                    android:text="@string/first_name"
-                    android:textSize="@dimen/normal_text"
-                    app:layout_constraintEnd_toStartOf="@id/label_last_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/contact_label" />
-
-                <TextView
-                    android:id="@+id/label_last_name"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    android:text="@string/last_name"
-                    android:textSize="@dimen/normal_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/label_first_name"
-                    app:layout_constraintTop_toTopOf="@id/label_first_name" />
-
-                <EditText
-                    android:id="@+id/first_name"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:hint="@string/placeholder_first_name"
-                    android:textSize="@dimen/normal_text"
-                    android:layout_marginStart="@dimen/micro_margin"
-                    app:layout_constraintEnd_toStartOf="@id/last_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/label_first_name" />
-
-                <EditText
-                    android:id="@+id/last_name"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:hint="@string/placeholder_last_name"
-                    android:textSize="@dimen/normal_text"
-                    android:layout_marginEnd="@dimen/micro_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/first_name"
-                    app:layout_constraintTop_toBottomOf="@id/label_last_name" />
-
-                <TextView
-                    android:id="@+id/label_phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/micro_gap"
-                    android:text="@string/label_phone_number"
-                    android:textSize="@dimen/normal_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/first_name" />
-
-                <EditText
-                    android:id="@+id/phone_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/normal_text"
-                    android:hint="@string/placeholder_phone_number"
-                    android:layout_marginHorizontal="@dimen/micro_margin"
-                    app:layout_constraintTop_toBottomOf="@id/label_phone_number" />
-
-                <Button
-                    android:id="@+id/create_client_button"
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_gap"
+                    android:text="@string/email"
+                    android:textSize="@dimen/normal_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/latitude" />
+
+                <EditText
+                    android:id="@+id/mail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/placeholder_email"
+                    android:layout_marginHorizontal="@dimen/micro_margin"
+                    android:textSize="@dimen/normal_text"
+                    app:layout_constraintTop_toBottomOf="@id/label_mail" />
+
+                <TextView
+                    android:id="@+id/label_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/micro_gap"
+                    android:text="@string/password"
+                    android:textSize="@dimen/normal_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mail" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/normal_text"
+                    android:layout_marginHorizontal="@dimen/micro_margin"
+                    app:layout_constraintTop_toBottomOf="@id/label_password" />
+                <Button
+                    android:id="@+id/sign_up_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/big_gap"
                     android:backgroundTint="@color/blue_0"
                     android:minHeight="@dimen/normal_gap"
-                    android:text="@string/create_client"
+                    android:text="@string/sign_up"
                     android:textSize="@dimen/big_text"
                     android:elevation="5dp"
-                    app:layout_constraintTop_toBottomOf="@id/phone_input"/>
+                    app:layout_constraintTop_toBottomOf="@id/password"/>
+
+                <LinearLayout
+                    android:id="@+id/login_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_gap"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sign_up_button">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:maxLines="2"
+                        android:text="@string/already_account"
+                        android:textSize="@dimen/normal_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/link_sign_in"
+                        android:textColor="@color/blue_0"
+                        android:textSize="@dimen/normal_text" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
