@@ -58,31 +58,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void onClick(View v) {
         String errorMessage = "";
-        String firstNameText = firstName.getText().toString();
-        String lastNameText = lastName.getText().toString();
-        String latitudeText = latitude.getText().toString();
-        String longitudeText = longitude.getText().toString();
-        String mailText = mail.getText().toString();
-        String passwordText = password.getText().toString();
-        float latitudeValue = 0;
-        float longitudeValue = 0;
         // reset the style of the text field
         resetFieldStyle();
 
         //TODO use the good error messages from string file
-        try {
-            latitudeValue = Float.parseFloat(latitudeText);
-        } catch (Exception e) {
-            labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+        errorMessage += checkFirstName() + checkLastName() + checkLatitude()
+        + checkLongitude() + checkMail() + checkPassword();
+        if (!errorMessage.isEmpty()){
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         }
-        try {
-            longitudeValue = Float.parseFloat(longitudeText);
-        } catch (Exception e) {
-            labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
+    }
 
+    /**
+     * Check the first name field.
+     * @return errorMessage
+     */
+    public String checkFirstName(){
+        String firstNameText = firstName.getText().toString();
+        String errorMessage = "";
         if (firstNameText.isBlank()) {
             labelFirstName.setTextColor(getColor(R.color.red));
             errorMessage+="";
@@ -91,6 +84,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             labelFirstName.setTextColor(getColor(R.color.red));
             errorMessage+="";
         }
+        return errorMessage;
+    }
+
+    /**
+     * Check the last name field.
+     * @return errorMessage
+     */
+    public String checkLastName(){
+        String lastNameText = lastName.getText().toString();
+        String errorMessage = "";
         if (lastNameText.isBlank()) {
             labelLastName.setTextColor(getColor(R.color.red));
             errorMessage+="";
@@ -99,22 +102,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             labelLastName.setTextColor(getColor(R.color.red));
             errorMessage+="";
         }
-        if (latitudeText.isBlank()) {
+        return errorMessage;
+    }
+
+    /**
+     * Check the latitude field.
+     * @return errorMessage
+     */
+    public String checkLatitude(){
+        String latitudeText = latitude.getText().toString();
+        float latitudeValue = 0;
+        String errorMessage = "";
+        try {
+            latitudeValue = Float.parseFloat(latitudeText);
+            if (latitudeText.isBlank()) {
+                labelLatitude.setTextColor(getColor(R.color.red));
+                errorMessage+="";
+            }
+            if (latitudeValue>=90f || latitudeValue<=-90f) {
+                labelLatitude.setTextColor(getColor(R.color.red));
+                errorMessage+="";
+            }
+        } catch (Exception e) {
             labelLatitude.setTextColor(getColor(R.color.red));
             errorMessage+="";
         }
-        if (latitudeValue>=90f || latitudeValue<=-90f) {
-            labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
-        if (longitudeText.isBlank()) {
+        return errorMessage;
+    }
+
+    /**
+     * Check the longitude field.
+     * @return errorMessage
+     */
+    public String checkLongitude(){
+        String longitudeText = longitude.getText().toString();
+        float longitudeValue = 0;
+        String errorMessage = "";
+        try {
+            longitudeValue = Float.parseFloat(longitudeText);
+            if (longitudeText.isBlank()) {
+                labelLongitude.setTextColor(getColor(R.color.red));
+                errorMessage+="";
+            }
+            if (longitudeValue>=180 || longitudeValue<=-180) {
+                labelLongitude.setTextColor(getColor(R.color.red));
+                errorMessage+="";
+            }
+        } catch (Exception e) {
             labelLongitude.setTextColor(getColor(R.color.red));
             errorMessage+="";
         }
-        if (longitudeValue>=180 || longitudeValue<=-180) {
-            labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
+        return errorMessage;
+    }
+
+    /**
+     * Check the mail field.
+     * @return errorMessage
+     */
+    public String checkMail(){
+        String mailText = mail.getText().toString();
+        String errorMessage = "";
         if (mailText.isBlank()) {
             labelMail.setTextColor(getColor(R.color.red));
             errorMessage+="";
@@ -123,6 +170,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             labelMail.setTextColor(getColor(R.color.red));
             errorMessage+="";
         }
+        return errorMessage;
+    }
+
+    /**
+     * Check the password field.
+     * @return errorMessage
+     */
+    public String checkPassword(){
+        String errorMessage = "";
+        String passwordText = password.getText().toString();
         if (passwordText.isBlank()) {
             labelPassword.setTextColor(getColor(R.color.red));
             errorMessage+="";
@@ -131,9 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             labelPassword.setTextColor(getColor(R.color.red));
             errorMessage+="";
         }
-        if (!errorMessage.isEmpty()){
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-        }
+        return errorMessage;
     }
 
     /**
