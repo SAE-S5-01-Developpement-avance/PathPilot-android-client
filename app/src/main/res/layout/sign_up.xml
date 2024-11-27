@@ -98,7 +98,7 @@
                     android:textSize="@dimen/normal_text"
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     android:maxLines="1"
-                    android:maxLength="30"
+                    android:maxLength="20"
                     app:layout_constraintTop_toBottomOf="@id/label_first_name" />
                 <TextView
                     android:id="@+id/label_last_name"
@@ -118,6 +118,7 @@
                     android:textSize="@dimen/normal_text"
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     android:maxLines="1"
+                    android:maxLength="30"
                     app:layout_constraintTop_toBottomOf="@id/label_last_name" />
 
                 <TextView

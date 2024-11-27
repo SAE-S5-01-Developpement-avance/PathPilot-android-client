@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
-    private static final  int FIRST_NAME_MAX_SIZE = 20;
-    private static final int LAST_NAME_MAX_SIZE = 30;
     private static final int PASSWORD_MIN_SIZE = 8;
     private static final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
@@ -78,11 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String errorMessage = "";
         if (firstNameText.isBlank()) {
             labelFirstName.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
-        if (firstNameText.length() > FIRST_NAME_MAX_SIZE) {
-            labelFirstName.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+            errorMessage+=getString(R.string.first_name_blank);
         }
         return errorMessage;
     }
@@ -96,11 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String errorMessage = "";
         if (lastNameText.isBlank()) {
             labelLastName.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
-        if (lastNameText.length() > LAST_NAME_MAX_SIZE) {
-            labelLastName.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+            errorMessage+=getString(R.string.last_name_blank);
         }
         return errorMessage;
     }
@@ -117,15 +107,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             latitudeValue = Float.parseFloat(latitudeText);
             if (latitudeText.isBlank()) {
                 labelLatitude.setTextColor(getColor(R.color.red));
-                errorMessage+="";
-            }
-            if (latitudeValue>=90f || latitudeValue<=-90f) {
+                errorMessage+=getString(R.string.latitude_blank);
+            } else if (latitudeValue>=90f || latitudeValue<=-90f) {
                 labelLatitude.setTextColor(getColor(R.color.red));
-                errorMessage+="";
+                errorMessage+=getString(R.string.latitude_not_included);
             }
         } catch (Exception e) {
             labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+            errorMessage+=getString(R.string.latitude_not_float);
         }
         return errorMessage;
     }
@@ -142,15 +131,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             longitudeValue = Float.parseFloat(longitudeText);
             if (longitudeText.isBlank()) {
                 labelLongitude.setTextColor(getColor(R.color.red));
-                errorMessage+="";
-            }
-            if (longitudeValue>=180 || longitudeValue<=-180) {
+                errorMessage+=getString(R.string.longitude_blank);
+            } else if (longitudeValue>=180 || longitudeValue<=-180) {
                 labelLongitude.setTextColor(getColor(R.color.red));
-                errorMessage+="";
+                errorMessage+=getString(R.string.longitude_not_included);
             }
         } catch (Exception e) {
             labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+            errorMessage+=getString(R.string.longitude_not_float);
         }
         return errorMessage;
     }
@@ -164,11 +152,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String errorMessage = "";
         if (mailText.isBlank()) {
             labelMail.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
-        if (!mailText.matches(REGEX_MAIL)) {
+            errorMessage+=getString(R.string.mail_blank);
+        } else if (!mailText.matches(REGEX_MAIL)) {
             labelMail.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+            errorMessage+=getString(R.string.mail_regex_invalided);
         }
         return errorMessage;
     }
@@ -182,11 +169,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String passwordText = password.getText().toString();
         if (passwordText.isBlank()) {
             labelPassword.setTextColor(getColor(R.color.red));
-            errorMessage+="";
-        }
-        if (passwordText.length() <= PASSWORD_MIN_SIZE) {
+            errorMessage+=getString(R.string.password_blank);
+        } else if (passwordText.length() <= PASSWORD_MIN_SIZE) {
             labelPassword.setTextColor(getColor(R.color.red));
-            errorMessage+="";
+            errorMessage+=getString(R.string.password_min_size_error);
         }
         return errorMessage;
     }
