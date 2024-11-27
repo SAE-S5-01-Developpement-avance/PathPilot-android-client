@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -92,10 +93,12 @@
                 <EditText
                     android:id="@+id/first_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:hint="@string/placeholder_first_name"
                     android:textSize="@dimen/normal_text"
                     android:layout_marginHorizontal="@dimen/micro_margin"
+                    android:maxLines="1"
+                    android:maxLength="30"
                     app:layout_constraintTop_toBottomOf="@id/label_first_name" />
                 <TextView
                     android:id="@+id/label_last_name"
@@ -114,6 +117,7 @@
                     android:hint="@string/placeholder_last_name"
                     android:textSize="@dimen/normal_text"
                     android:layout_marginHorizontal="@dimen/micro_margin"
+                    android:maxLines="1"
                     app:layout_constraintTop_toBottomOf="@id/label_last_name" />
 
                 <TextView
@@ -146,6 +150,8 @@
                     android:hint="@string/placeholder_position_lat"
                     android:textSize="@dimen/normal_text"
                     android:layout_marginStart="@dimen/micro_margin"
+                    android:maxLines="1"
+                    android:inputType="numberDecimal"
                     app:layout_constraintEnd_toStartOf="@id/longitude"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/label_position_lat" />
@@ -159,6 +165,8 @@
                     android:textSize="@dimen/normal_text"
                     android:layout_marginEnd="@dimen/micro_margin"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:maxLines="1"
+                    android:inputType="numberDecimal"
                     app:layout_constraintStart_toEndOf="@id/latitude"
                     app:layout_constraintTop_toBottomOf="@id/label_position_long" />
 
@@ -179,6 +187,7 @@
                     android:hint="@string/placeholder_email"
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     android:textSize="@dimen/normal_text"
+                    android:maxLines="1"
                     app:layout_constraintTop_toBottomOf="@id/label_mail" />
 
                 <TextView
@@ -196,6 +205,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/normal_text"
+                    android:maxLines="1"
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     app:layout_constraintTop_toBottomOf="@id/label_password" />
                 <Button
@@ -234,6 +244,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/link_sign_in"
                         android:textColor="@color/blue_0"
+                        android:onClick="onClickSignIn"
                         android:textSize="@dimen/normal_text" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

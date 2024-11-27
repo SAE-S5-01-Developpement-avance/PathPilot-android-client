@@ -4,12 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,11 +23,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
-    private final int FIRST_NAME_MAX_SIZE = 30;
+    private final int FIRST_NAME_MAX_SIZE = 20;
     private final int LAST_NAME_MAX_SIZE = 30;
-    private final int PASSWORD_NAME_MIN_SIZE = 8;
+    private final int PASSWORD_MIN_SIZE = 8;
     private final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-    private final String REGEX_LONGITUDE_LATITUDE = "^[0-9]{1,3}+.[0-9]{5}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +57,102 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param v
      */
     public void onClick(View v) {
-        String first_name = firstName.getText().toString();
-        if (first_name.length()>FIRST_NAME_MAX_SIZE){
-            //TODO lancer la méthode de gestion d'erreur de saisie
+        String errorMessage = "";
+        String firstNameText = firstName.getText().toString();
+        String lastNameText = lastName.getText().toString();
+        String latitudeText = latitude.getText().toString();
+        String longitudeText = longitude.getText().toString();
+        String mailText = mail.getText().toString();
+        String passwordText = password.getText().toString();
+        float latitudeValue = 0;
+        float longitudeValue = 0;
+        // reset the style of the text field
+        resetFieldStyle();
+
+        //TODO use the good error messages from string file
+        try {
+            latitudeValue = Float.parseFloat(latitudeText);
+        } catch (Exception e) {
+            labelLatitude.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        try {
+            longitudeValue = Float.parseFloat(longitudeText);
+        } catch (Exception e) {
+            labelLongitude.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+
+        if (firstNameText.isBlank()) {
+            labelFirstName.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (firstNameText.length() > FIRST_NAME_MAX_SIZE) {
+            labelFirstName.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (lastNameText.isBlank()) {
+            labelLastName.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (lastNameText.length() > LAST_NAME_MAX_SIZE) {
+            labelLastName.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (latitudeText.isBlank()) {
+            labelLatitude.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (latitudeValue>=90f || latitudeValue<=-90f) {
+            labelLatitude.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (longitudeText.isBlank()) {
+            labelLongitude.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (longitudeValue>=180 || longitudeValue<=-180) {
+            labelLongitude.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (mailText.isBlank()) {
+            labelMail.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (!mailText.matches(REGEX_MAIL)) {
+            labelMail.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (passwordText.isBlank()) {
+            labelPassword.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (passwordText.length() <= PASSWORD_MIN_SIZE) {
+            labelPassword.setTextColor(getColor(R.color.red));
+            errorMessage+="";
+        }
+        if (!errorMessage.isEmpty()){
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * Indicates the input error to the user
-     * @param label
-     * @param message
+     * Reset the style of sign up interface.
      */
-    public void setErrorField(TextView label, String message){
-        
+    public void resetFieldStyle(){
+        labelFirstName.setTextColor(getColor(R.color.black));
+        labelLastName.setTextColor(getColor(R.color.black));
+        labelLatitude.setTextColor(getColor(R.color.black));
+        labelLongitude.setTextColor(getColor(R.color.black));
+        labelMail.setTextColor(getColor(R.color.black));
+        labelPassword.setTextColor(getColor(R.color.black));
+    }
+
+    /**
+     * Sends to the sign in interface when the sign in Textview is clicked.
+     * @param v
+     */
+    public void onClickSignIn(View v) {
+        //TODO go on the sign in interface
     }
 }
