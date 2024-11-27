@@ -42,6 +42,12 @@
     <string name="informations">2024 IUT de Rodez. All rights reserved.</string>
 
     <!--
+    headers
+    -->
+    <string name="newClientHeader">New client</string>
+    <string name="icon">icon</string>
+
+    <!--
     String for the "login" page
     -->
     <string name="sign_in">Sign in</string>
