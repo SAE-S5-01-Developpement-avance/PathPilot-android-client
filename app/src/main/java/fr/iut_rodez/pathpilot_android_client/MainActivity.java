@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
-    private final int FIRST_NAME_MAX_SIZE = 20;
-    private final int LAST_NAME_MAX_SIZE = 30;
-    private final int PASSWORD_MIN_SIZE = 8;
-    private final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private final static  int FIRST_NAME_MAX_SIZE = 20;
+    private final static int LAST_NAME_MAX_SIZE = 30;
+    private final static int PASSWORD_MIN_SIZE = 8;
+    private final static String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
