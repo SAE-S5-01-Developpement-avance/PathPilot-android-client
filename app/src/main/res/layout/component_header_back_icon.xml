@@ -12,7 +12,7 @@
         android:layout_width="@dimen/normal_logo"
         android:layout_height="@dimen/normal_logo"
         android:contentDescription="@string/icon"
-        android:src="@drawable/icon_logo_pathpilot"
+        android:src="@drawable/logo_pathpilot"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
