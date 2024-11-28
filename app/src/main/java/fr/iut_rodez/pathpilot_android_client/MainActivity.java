@@ -1,6 +1,8 @@
 package fr.iut_rodez.pathpilot_android_client;
 
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -59,11 +61,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // reset the style of the text field
         resetFieldStyle();
 
-        //TODO use the good error messages from string file
         errorMessage += checkFirstName() + checkLastName() + checkLatitude()
         + checkLongitude() + checkMail() + checkPassword();
         if (!errorMessage.isEmpty()){
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        } else {
+            sendInformationToSignInUser();
         }
     }
 
@@ -187,6 +190,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         labelLongitude.setTextColor(getColor(R.color.black));
         labelMail.setTextColor(getColor(R.color.black));
         labelPassword.setTextColor(getColor(R.color.black));
+    }
+
+    /**
+     * Send information to the API for sign in the user with the entered informations.
+     */
+    public void sendInformationToSignInUser() {
+        //TODO connect the API and send informations
+        Log.i("FIRSTNAME",firstName.getText().toString());
+        Log.i("LASTNAME",lastName.getText().toString());
+        Log.i("LATITUDE",latitude.getText().toString());
+        Log.i("LONGITUDE",longitude.getText().toString());
+        Log.i("MAIL",mail.getText().toString());
+        Log.i("PASSWORD",password.getText().toString());
+
+        //TODO if API return an error, send an error message to the user returned by the API
     }
 
     /**

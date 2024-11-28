@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="DefaultEditTextStyle" parent="Widget.AppCompat.EditText">
-        <item name="android:background">@drawable/edit_text_background</item>
+        <item name="android:background">@drawable/view_edit_text_background</item>
         <item name="android:padding">@dimen/edit_text_size</item>
         <item name="android:elevation">@dimen/shadow</item>
     </style>
