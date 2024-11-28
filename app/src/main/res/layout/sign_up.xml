@@ -17,18 +17,20 @@
             android:id="@+id/logo"
             android:layout_width="@dimen/normal_logo"
             android:layout_height="@dimen/normal_logo"
-            android:src="@drawable/logo_pathpilot"
+            android:src="@drawable/icon_logo_pathpilot"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/leave"
             android:layout_width="@dimen/normal_logo"
             android:layout_height="@dimen/normal_logo"
-            android:padding="@dimen/micro_gap"
-            android:src="@drawable/leave_icon"
+            android:background="@null"
+            android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/icon_leave"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Fix footer -->
