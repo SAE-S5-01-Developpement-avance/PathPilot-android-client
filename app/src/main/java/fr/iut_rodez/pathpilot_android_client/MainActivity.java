@@ -57,13 +57,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param v
      */
     public void onClick(View v) {
-        String errorMessage = "";
+        StringBuilder errorMessage = new StringBuilder();
         // reset the style of the text field
         resetFieldStyle();
 
-        errorMessage += checkFirstName() + checkLastName() + checkLatitude()
-        + checkLongitude() + checkMail() + checkPassword();
-        if (!errorMessage.isEmpty()){
+        errorMessage.append(checkFirstName());
+        errorMessage.append(checkLastName());
+        errorMessage.append(checkLatitude());
+        errorMessage.append(checkLongitude());
+        errorMessage.append(checkMail());
+        errorMessage.append(checkPassword());
+
+        if (errorMessage.length()!=0){
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         } else {
             sendInformationToSignInUser();
