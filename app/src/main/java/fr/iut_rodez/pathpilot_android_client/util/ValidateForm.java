@@ -14,7 +14,7 @@ public class ValidateForm {
      * @return true if the email is valid, false otherwise
      */
     public static boolean isEmailValid(String email) {
-        return email.matches(REGEX_MAIL);
+        return email != null && email.matches(REGEX_MAIL);
     }
 
     private ValidateForm() {
