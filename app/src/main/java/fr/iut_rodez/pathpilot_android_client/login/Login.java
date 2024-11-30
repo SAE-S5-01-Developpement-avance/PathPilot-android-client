@@ -1,8 +1,10 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +21,7 @@ public class Login extends AppCompatActivity {
     private Button loginButton;
     private EditText emailInput;
     private EditText passwordInput;
+    private TextView linkSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +32,28 @@ public class Login extends AppCompatActivity {
         loginButton = findViewById(R.id.login_btn);
         emailInput = findViewById(R.id.mail);
         passwordInput = findViewById(R.id.password);
+        linkSignUp = findViewById(R.id.link_sign_up);
 
         // Set onClickListener
         loginButton.setOnClickListener(v -> login());
+        linkSignUp.setOnClickListener(v -> gotoSignUp());
 
         // Initialize popup
         popup = new Popup(this);
     }
 
+    /**
+     * Switch to SignUp activity
+     */
+    private void gotoSignUp() {
+        Log.d(TAG, "Switch to SignUp activity");
+        Intent intent = new Intent(this, MainActivity.class);
+
+        // The user can't go back to the login activity by pressing the back button
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+    }
     public void login() {
         // Get email and password
         String email = emailInput.getText().toString();

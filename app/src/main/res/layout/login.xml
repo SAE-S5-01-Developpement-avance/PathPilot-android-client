@@ -107,6 +107,7 @@
                         android:textSize="@dimen/normal_text" />
 
                     <TextView
+                        android:id="@+id/link_sign_up"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/link_sign_up"
