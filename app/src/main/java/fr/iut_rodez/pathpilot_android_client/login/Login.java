@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.MainActivity;
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.Network;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
@@ -72,6 +73,9 @@ public class Login extends AppCompatActivity {
         } else if (!ValidateForm.isEmailValid(email)) { // Check if email is valid
 
             popup.showAlertDialog("Error", getResources().getString(R.string.error_email_invalid));
+        } else if (!Network.isNetworkConnected(this)) { // Check if the device is connected to the internet
+
+            popup.showAlertDialog("Error", getResources().getString(R.string.error_no_internet));
         } else {
 
             // Send request to server
