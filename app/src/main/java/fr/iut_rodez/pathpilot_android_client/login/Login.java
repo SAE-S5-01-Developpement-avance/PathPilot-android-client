@@ -2,12 +2,14 @@ package fr.iut_rodez.pathpilot_android_client.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import fr.iut_rodez.pathpilot_android_client.MainActivity;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
@@ -54,6 +56,10 @@ public class Login extends AppCompatActivity {
 
         startActivity(intent);
     }
+
+    /**
+     * Login the user
+     */
     public void login() {
         // Get email and password
         String email = emailInput.getText().toString();
@@ -61,24 +67,15 @@ public class Login extends AppCompatActivity {
 
         // Check if email and password are not empty
         if (email.isEmpty() || password.isEmpty()) {
+
             popup.showAlertDialog("Error", getResources().getString(R.string.error_email_password_field_empty));
-
         } else if (!ValidateForm.isEmailValid(email)) { // Check if email is valid
-            popup.showAlertDialog("Error", getResources().getString(R.string.error_email_invalid));
 
+            popup.showAlertDialog("Error", getResources().getString(R.string.error_email_invalid));
         } else {
 
             // Send request to server
-            boolean loginSuccess = LoginService.login(email, password);
-
-            if (loginSuccess) {
-                //TODO : Start launch Home activity
-                popup.showToastLong("Login success"); //TODO remove the Toast
-            } else {
-                // Notify user
-                //TODO Make a better msg
-                popup.showToastLong("Login failed");
-            }
+            LoginService.login(new LoginService.LoginInput(email, password), this);
         }
     }
 }
