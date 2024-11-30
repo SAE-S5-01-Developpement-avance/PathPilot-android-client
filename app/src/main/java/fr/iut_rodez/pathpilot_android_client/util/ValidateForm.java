@@ -16,4 +16,8 @@ public class ValidateForm {
     public static boolean isEmailValid(String email) {
         return email.matches(REGEX_MAIL);
     }
+
+    private ValidateForm() {
+        // Prevent instantiation
+    }
 }

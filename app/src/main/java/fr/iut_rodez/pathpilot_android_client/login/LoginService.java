@@ -132,4 +132,8 @@ public class LoginService {
             return new Date(System.currentTimeMillis() + expiresIn);
         }
     }
+
+    private LoginService() {
+        // Private constructor to prevent instantiation
+    }
 }

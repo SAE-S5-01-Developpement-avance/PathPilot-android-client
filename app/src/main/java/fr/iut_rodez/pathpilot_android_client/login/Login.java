@@ -69,13 +69,13 @@ public class Login extends AppCompatActivity {
         // Check if email and password are not empty
         if (email.isEmpty() || password.isEmpty()) {
 
-            popup.showAlertDialog("Error", getResources().getString(R.string.error_email_password_field_empty));
+            popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_email_password_field_empty));
         } else if (!ValidateForm.isEmailValid(email)) { // Check if email is valid
 
-            popup.showAlertDialog("Error", getResources().getString(R.string.error_email_invalid));
+            popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_email_invalid));
         } else if (!Network.isNetworkConnected(this)) { // Check if the device is connected to the internet
 
-            popup.showAlertDialog("Error", getResources().getString(R.string.error_no_internet));
+            popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_no_internet));
         } else {
 
             // Send request to server

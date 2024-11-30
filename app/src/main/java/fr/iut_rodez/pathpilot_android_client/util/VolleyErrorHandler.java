@@ -16,6 +16,8 @@ import com.android.volley.VolleyError;
 
 import java.nio.charset.StandardCharsets;
 
+import fr.iut_rodez.pathpilot_android_client.R;
+
 public class VolleyErrorHandler {
     private static final String TAG = "VolleyErrorHandler";
 
@@ -52,7 +54,7 @@ public class VolleyErrorHandler {
 
         // Show toast notification
         Popup popup = new Popup(context);
-        popup.showAlertDialog("Error", errorMessage);
+        popup.showAlertDialog(context.getString(R.string.error), errorMessage);
 
         return errorMessage;
     }
@@ -113,5 +115,9 @@ public class VolleyErrorHandler {
         if (error.getCause() != null) {
             Log.e(TAG, "Error Cause: " + error.getCause().getMessage());
         }
+    }
+
+    private VolleyErrorHandler() {
+        // Prevent instantiation
     }
 }
