@@ -1,12 +1,21 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
+import static fr.iut_rodez.pathpilot_android_client.util.Network.getRequestQueue;
+import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -17,6 +26,7 @@ import java.util.Date;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.util.Network;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class LoginService {
 
@@ -38,7 +48,7 @@ public class LoginService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        requestQueue = Network.getRequestQueue(context);
+        requestQueue = getRequestQueue(context);
         JSONObject loginInputJson = loginInput.toJson();
 
         Log.d(TAG, "login: " + loginInputJson);
@@ -58,7 +68,8 @@ public class LoginService {
                 error -> {
                     Log.e(TAG, "Error while logging in", error);
                     progressDialog.dismiss();
-                    // Handle error
+
+                    handleError(context, error);
                 }) {
         };
 
