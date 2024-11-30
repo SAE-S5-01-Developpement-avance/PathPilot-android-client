@@ -1,13 +1,12 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -17,7 +16,6 @@ import org.json.JSONObject;
 import java.util.Date;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class LoginService {
 
@@ -34,8 +32,10 @@ public class LoginService {
      * @throws IllegalArgumentException if email or password is empty
      */
     public static void login(LoginInput loginInput, Context context) {
-        // Vérifiez que l'email et le mot de passe ne sont pas vides
         Log.d(TAG, "API URL: " + LOGIN_URL);
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
 
         requestQueue = Volley.newRequestQueue(context);
         JSONObject loginInputJson = loginInput.toJson();
@@ -43,23 +43,21 @@ public class LoginService {
         Log.d(TAG, "login: " + loginInputJson);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, loginInputJson,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "onResponse: " + response);
-                        try {
-                            String token = response.getString("token");
-                            saveAuthToken(token, context);
-                        } catch (JSONException e) {
-                            Log.e(TAG, "Error while parsing JSON response", e);
-                        }
+                response -> {
+                    Log.d(TAG, "onResponse: " + response);
+                    try {
+                        String token = response.getString("token");
+                        saveAuthToken(token, context);
+                        //TODO Goto main Page
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error while parsing JSON response", e);
                     }
+                    progressDialog.dismiss();
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Error while logging in", error);
-                    }
+                error -> {
+                    Log.e(TAG, "Error while logging in", error);
+                    progressDialog.dismiss();
+                    // Handle error
                 }) {
         };
 
