@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.util.Date;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.util.Network;
 
 public class LoginService {
 
@@ -37,7 +38,7 @@ public class LoginService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        requestQueue = Volley.newRequestQueue(context);
+        requestQueue = Network.getRequestQueue(context);
         JSONObject loginInputJson = loginInput.toJson();
 
         Log.d(TAG, "login: " + loginInputJson);
