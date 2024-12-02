@@ -15,6 +15,10 @@ import fr.iut_rodez.pathpilot_android_client.util.Network;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
+/**
+ * Handle the login Activity
+ * @author François de Saint Palais
+ */
 public class Login extends AppCompatActivity {
 
     private static final String TAG = Login.class.getSimpleName();

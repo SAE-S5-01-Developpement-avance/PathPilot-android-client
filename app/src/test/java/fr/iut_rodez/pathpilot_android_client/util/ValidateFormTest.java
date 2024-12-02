@@ -6,6 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+/**
+ * Test class for the ValidateForm class.
+ * @author François de Saint Palais
+ */
 public class ValidateFormTest {
 
     @Test

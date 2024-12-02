@@ -1,14 +1,10 @@
 package fr.iut_rodez.pathpilot_android_client.util;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
@@ -18,6 +14,9 @@ import java.nio.charset.StandardCharsets;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 
+/**
+ * Utility class to handle Volley errors and provide user-friendly error messages
+ */
 public class VolleyErrorHandler {
     private static final String TAG = "VolleyErrorHandler";
 
@@ -25,7 +24,7 @@ public class VolleyErrorHandler {
      * Handles Volley errors and provides user-friendly error messages
      *
      * @param context Application context
-     * @param error Volley error to handle
+     * @param error   Volley error to handle
      * @return User-friendly error message
      */
     public static String handleError(Context context, VolleyError error) {

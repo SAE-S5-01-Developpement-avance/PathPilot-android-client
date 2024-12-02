@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.util;
 
 /**
  * Utility class to validate form fields.
+ * @author François de Saint Palais
  */
 public class ValidateForm {
 

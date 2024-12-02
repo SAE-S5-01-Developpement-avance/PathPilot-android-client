@@ -8,16 +8,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,9 +18,11 @@ import org.json.JSONObject;
 import java.util.Date;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
-import fr.iut_rodez.pathpilot_android_client.util.Network;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
+/**
+ * Service to handle login requests.
+ * @author François de Saint Palais
+ */
 public class LoginService {
 
     private static final String LOGIN_URL = BuildConfig.API_BASE_URL + "auth/login";
@@ -76,8 +71,13 @@ public class LoginService {
         requestQueue.add(request);
     }
 
+    /**
+     * Save the authentication token in the SharedPreferences.
+     *
+     * @param token   the authentication token
+     * @param context the context of the application
+     */
     private static void saveAuthToken(String token, Context context) {
-        // Utilisez SharedPreferences avec chiffrement ou un gestionnaire de tokens sécurisé
         SharedPreferences sharedPreferences = context.getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("auth_token", token);
@@ -86,6 +86,9 @@ public class LoginService {
         Log.d(TAG, "saveAuthToken: Token: " + token);
     }
 
+    /**
+     * Schema for the login input.
+     */
     public static class LoginInput {
         private final String email;
         private final String password;
