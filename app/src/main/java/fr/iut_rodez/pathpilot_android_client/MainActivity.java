@@ -1,6 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -61,17 +60,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // reset the style of the text field
         resetFieldStyle();
 
-        errorMessage.append(checkFirstName());
-        errorMessage.append(checkLastName());
-        errorMessage.append(checkLatitude());
-        errorMessage.append(checkLongitude());
-        errorMessage.append(checkMail());
-        errorMessage.append(checkPassword());
+        String firstNameText = firstName.getText().toString();
+        String lastNameText = lastName.getText().toString();
+        String latitudeText = latitude.getText().toString();
+        String longitudeText = longitude.getText().toString();
+        String mailText = mail.getText().toString();
+        String passwordText = password.getText().toString();
+
+        errorMessage.append(checkFirstName(firstNameText));
+        errorMessage.append(checkLastName(lastNameText));
+        errorMessage.append(checkLatitude(latitudeText));
+        errorMessage.append(checkLongitude(longitudeText));
+        errorMessage.append(checkMail(mailText));
+        errorMessage.append(checkPassword(passwordText));
 
         if (errorMessage.length()!=0){
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         } else {
-            sendInformationToSignInUser();
+            sendInformationToSignInUser(firstNameText,lastNameText,latitudeText,longitudeText,mailText,passwordText);
         }
     }
 
@@ -79,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Check the first name field.
      * @return errorMessage
      */
-    public String checkFirstName(){
-        String firstNameText = firstName.getText().toString();
+    public String checkFirstName(String firstNameText){
+
         String errorMessage = "";
         if (firstNameText.isBlank()) {
             labelFirstName.setTextColor(getColor(R.color.red));
@@ -93,8 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Check the last name field.
      * @return errorMessage
      */
-    public String checkLastName(){
-        String lastNameText = lastName.getText().toString();
+    public String checkLastName(String lastNameText){
         String errorMessage = "";
         if (lastNameText.isBlank()) {
             labelLastName.setTextColor(getColor(R.color.red));
@@ -107,16 +112,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Check the latitude field.
      * @return errorMessage
      */
-    public String checkLatitude(){
-        String latitudeText = latitude.getText().toString();
-        float latitudeValue = 0;
+    public String checkLatitude(String latitudeText){
+        double latitudeValue = 0;
         String errorMessage = "";
         try {
-            latitudeValue = Float.parseFloat(latitudeText);
+            latitudeValue = Double.parseDouble(latitudeText);
             if (latitudeText.isBlank()) {
                 labelLatitude.setTextColor(getColor(R.color.red));
                 errorMessage+=getString(R.string.latitude_blank);
-            } else if (latitudeValue>=90f || latitudeValue<=-90f) {
+            } else if (latitudeValue>=90 || latitudeValue<=-90) {
                 labelLatitude.setTextColor(getColor(R.color.red));
                 errorMessage+=getString(R.string.latitude_not_included);
             }
@@ -131,12 +135,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Check the longitude field.
      * @return errorMessage
      */
-    public String checkLongitude(){
-        String longitudeText = longitude.getText().toString();
-        float longitudeValue = 0;
+    public String checkLongitude(String longitudeText){
+        double longitudeValue = 0;
         String errorMessage = "";
         try {
-            longitudeValue = Float.parseFloat(longitudeText);
+            longitudeValue = Double.parseDouble(longitudeText);
             if (longitudeText.isBlank()) {
                 labelLongitude.setTextColor(getColor(R.color.red));
                 errorMessage+=getString(R.string.longitude_blank);
@@ -155,8 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Check the mail field.
      * @return errorMessage
      */
-    public String checkMail(){
-        String mailText = mail.getText().toString();
+    public String checkMail(String mailText){
         String errorMessage = "";
         if (mailText.isBlank()) {
             labelMail.setTextColor(getColor(R.color.red));
@@ -172,9 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Check the password field.
      * @return errorMessage
      */
-    public String checkPassword(){
+    public String checkPassword(String passwordText){
         String errorMessage = "";
-        String passwordText = password.getText().toString();
         if (passwordText.isBlank()) {
             labelPassword.setTextColor(getColor(R.color.red));
             errorMessage+=getString(R.string.password_blank);
@@ -200,14 +201,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Send information to the API for sign in the user with the entered informations.
      */
-    public void sendInformationToSignInUser() {
+    public void sendInformationToSignInUser(String firstNameText, String lastNameText,
+                                            String latitudeText, String longitudeText,
+                                            String mailText, String passwordText) {
         //TODO connect the API and send informations
-        Log.i("FIRSTNAME",firstName.getText().toString());
-        Log.i("LASTNAME",lastName.getText().toString());
-        Log.i("LATITUDE",latitude.getText().toString());
-        Log.i("LONGITUDE",longitude.getText().toString());
-        Log.i("MAIL",mail.getText().toString());
-        Log.i("PASSWORD",password.getText().toString());
+        Log.i("FIRSTNAME",firstNameText);
+        Log.i("LASTNAME",lastNameText);
+        Log.i("LATITUDE",Double.parseDouble(latitudeText)+"");
+        Log.i("LONGITUDE",Double.parseDouble(longitudeText)+"");
+        Log.i("MAIL",mailText);
+        Log.i("PASSWORD",passwordText);
 
         //TODO if API return an error, send an error message to the user returned by the API
     }
