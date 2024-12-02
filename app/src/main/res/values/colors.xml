@@ -10,4 +10,6 @@
     <color name="blue_2">#78D1E9</color>
     <color name="white">#FEFEFE</color>
     <color name="orange">#FF9747</color>
+    <color name="grey">#E2DFDF</color>
+    <color name="red">#FF0000</color>
 </resources>
