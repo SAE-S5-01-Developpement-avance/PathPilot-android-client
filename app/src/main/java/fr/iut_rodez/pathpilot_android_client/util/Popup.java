@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.widget.Toast;
 
+/**
+ * Instanceable class to display popups.
+ * @author François de Saint Palais
+ */
 public class Popup {
 
     private final Context context;

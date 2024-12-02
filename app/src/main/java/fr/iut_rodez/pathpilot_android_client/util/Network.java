@@ -11,6 +11,9 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class to handle network requests.
+ */
 public class Network {
 
     private static Network instance;

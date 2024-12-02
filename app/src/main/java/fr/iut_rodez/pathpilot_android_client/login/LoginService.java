@@ -111,6 +111,9 @@ public class LoginService {
         }
     }
 
+    /**
+     * Schema for the login response.
+     */
     public static class LoginResponse {
         private final String token;
         /**
@@ -131,6 +134,11 @@ public class LoginService {
             return expiresIn;
         }
 
+        /**
+         * Get the expiration date of the token.
+         *
+         * @return the expiration date of the token
+         */
         public Date getExpirationDate() {
             return new Date(System.currentTimeMillis() + expiresIn);
         }
