@@ -5,6 +5,7 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -15,9 +16,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
-
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 
 /**
  * Service to handle login requests.
@@ -25,10 +25,12 @@ import fr.iut_rodez.pathpilot_android_client.BuildConfig;
  */
 public class LoginService {
 
+    public static final String CLE_TOKEN = "token";
     private static final String LOGIN_URL = BuildConfig.API_BASE_URL + "auth/login";
+    private static final String TAG = LoginService.class.getSimpleName();
+
     private static RequestQueue requestQueue;
 
-    private static final String TAG = LoginService.class.getSimpleName();
 
     /**
      * Login the user with the given email and password.
@@ -53,8 +55,16 @@ public class LoginService {
                     Log.d(TAG, "onResponse: " + response);
                     try {
                         String token = response.getString("token");
-                        saveAuthToken(token, context);
-                        //TODO Goto main Page
+                        int expiresIn = response.getInt("expiresIn");
+                        saveAuthToken(token, context); // TODO See if we really need it
+
+                        TokenJWT tokenJWT = new TokenJWT(token, expiresIn);
+
+                        Intent intent = new Intent(context, Home.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(CLE_TOKEN, tokenJWT);
+
+                        context.startActivity(intent);
                     } catch (JSONException e) {
                         Log.e(TAG, "Error while parsing JSON response", e);
                     }

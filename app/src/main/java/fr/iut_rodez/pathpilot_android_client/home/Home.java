@@ -14,11 +14,15 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
+import fr.iut_rodez.pathpilot_android_client.login.LoginService;
+import fr.iut_rodez.pathpilot_android_client.login.TokenJWT;
 
 public class Home extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
+
+    private TokenJWT tokenJWT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +52,10 @@ public class Home extends AppCompatActivity {
                     }
                 }
         ).attach();
+
+        // Get the token from the intent
+        Intent intent = getIntent();
+
+        tokenJWT = intent.getParcelableExtra(LoginService.CLE_TOKEN);
     }
 }
