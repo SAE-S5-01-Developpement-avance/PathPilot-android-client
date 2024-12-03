@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.login.Login;
 
-public class MainActivity extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = SignUp.class.getSimpleName();
     private EditText firstName;
     private EditText lastName;
     private EditText latitude;

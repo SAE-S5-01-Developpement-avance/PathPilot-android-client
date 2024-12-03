@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import fr.iut_rodez.pathpilot_android_client.MainActivity;
+import fr.iut_rodez.pathpilot_android_client.SignUp;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.Network;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity {
      */
     private void gotoSignUp() {
         Log.d(TAG, "Switch to SignUp activity");
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SignUp.class);
 
         // The user can't go back to the login activity by pressing the back button
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
