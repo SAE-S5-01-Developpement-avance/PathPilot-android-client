@@ -46,8 +46,6 @@
     -->
     <string name="newClientHeader">New client</string>
     <string name="icon">icon</string>
-    <string name="placeholder_phone_number">+33 7 85 84 96 12</string>
-    <string name="radio_prospect">Prospect</string>
 
     <!--
     String for the "login" page

@@ -8,10 +8,6 @@
     <!-- Header fixe -->
     <include layout="@layout/component_header_back_icon" />
 
-    <!-- TODO faire le vrai footer -->
-    <!-- Fix footer -->
-    <include layout="@layout/component_footer" />
-
     <!-- Form -->
     <ScrollView
         android:layout_width="match_parent"
