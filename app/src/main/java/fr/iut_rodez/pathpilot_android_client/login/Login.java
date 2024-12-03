@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
+import static fr.iut_rodez.pathpilot_android_client.signup.SignUpService.CLE_MAIL;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.signup.SignUp;
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
 import fr.iut_rodez.pathpilot_android_client.util.Network;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
@@ -47,6 +50,12 @@ public class Login extends AppCompatActivity {
 
         // Initialize popup
         popup = new Popup(this);
+
+        // If the Activity was started by the SignUp Activity, get the email from the intent
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(CLE_MAIL)) {
+            emailInput.setText(intent.getStringExtra(CLE_MAIL));
+        }
     }
 
     /**
