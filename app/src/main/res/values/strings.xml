@@ -9,9 +9,9 @@
     <string name="last_name"><b>Last name</b></string>
     <string name="placeholder_last_name">Doe</string>
 
-    <string name="position_lat"><b>Your position latitude</b></string>
+    <string name="position_lat"><b>Latitude</b></string>
     <string name="placeholder_position_lat">41.40338</string>
-    <string name="position_long"><b>Your position longitude</b></string>
+    <string name="position_long"><b>Longitude</b></string>
     <string name="placeholder_position_long">2.17403</string>
     <string name="email"><b>Email</b></string>
     <string name="placeholder_email">exemple@mail.com</string>
