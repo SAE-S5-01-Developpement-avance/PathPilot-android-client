@@ -36,14 +36,17 @@ public class VolleyErrorHandler {
         }
 
         // Detailed error handling
-        errorMessage = switch (error) {
-            case NetworkError networkError -> "Network error. Unable to connect to the server.";
-            case ServerError serverError -> handleServerError(error);
-            case AuthFailureError authFailureError -> "Authentication failed. Please give valid credentials.";
-            case ParseError parseError -> "Unable to process server response.";
-            case TimeoutError timeoutError -> "Connection timed out. Please try again.";
-            default -> "Unknown error occurred";
-        };
+        if (error instanceof NetworkError) {
+            errorMessage = "Network error. Unable to connect to the server.";
+        } else if (error instanceof ServerError) {
+            errorMessage = handleServerError(error);
+        } else if (error instanceof AuthFailureError) {
+            errorMessage = "Authentication failed. Please give valid credentials.";
+        } else if (error instanceof ParseError) {
+            errorMessage = "Unable to process server response.";
+        } else if (error instanceof TimeoutError) {
+            errorMessage = "Connection timed out. Please try again.";
+        }
 
         // Log detailed error information
         logVolleyError(error);
@@ -63,15 +66,22 @@ public class VolleyErrorHandler {
      */
     private static String handleServerError(VolleyError error) {
         if (error.networkResponse != null) {
-            return switch (error.networkResponse.statusCode) {
-                case 400 -> "Bad Request. Please check your input.";
-                case 401 -> "Unauthorized. Please log in again.";
-                case 403 -> "Forbidden. You don't have permission to access this resource.";
-                case 404 -> "Requested resource not found.";
-                case 500 -> "Internal server error. Please try again later.";
-                case 503 -> "Service unavailable. Server is temporarily overloaded.";
-                default -> "Server error. Status code: " + error.networkResponse.statusCode;
-            };
+            switch (error.networkResponse.statusCode) {
+                case 400:
+                    return "Bad Request. Please check your input.";
+                case 401:
+                    return "Unauthorized. Please log in again.";
+                case 403:
+                    return "Forbidden. You don't have permission to access this resource.";
+                case 404:
+                    return "Requested resource not found.";
+                case 500:
+                    return "Internal server error. Please try again later.";
+                case 503:
+                    return "Service unavailable. Server is temporarily overloaded.";
+                default:
+                    return "Server error. Status code: " + error.networkResponse.statusCode;
+            }
         }
         return "Unknown server error occurred.";
     }
