@@ -16,16 +16,16 @@ public class Popup {
         this.context = context;
     }
 
-    private void showToast(String message, int length) {
+    private void showToast(CharSequence message, int length) {
         new Toast(context);
         Toast.makeText(context, message, length).show();
     }
 
-    public void showToastLong(String message) {
+    public void showToastLong(CharSequence message) {
         showToast(message, Toast.LENGTH_LONG);
     }
 
-    public void showToastShort(String message) {
+    public void showToastShort(CharSequence message) {
         showToast(message, Toast.LENGTH_SHORT);
     }
 
