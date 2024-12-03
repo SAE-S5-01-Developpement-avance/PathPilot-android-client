@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import fr.iut_rodez.pathpilot_android_client.SignUp;
+import fr.iut_rodez.pathpilot_android_client.signup.SignUp;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.Network;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;

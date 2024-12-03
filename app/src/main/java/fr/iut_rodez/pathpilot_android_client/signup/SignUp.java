@@ -1,20 +1,24 @@
-package fr.iut_rodez.pathpilot_android_client;
+package fr.iut_rodez.pathpilot_android_client.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class SignUp extends AppCompatActivity {
 
     private static final String TAG = SignUp.class.getSimpleName();
+    private static final int PASSWORD_MIN_SIZE = 8;
+    private static final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
     private EditText firstName;
     private EditText lastName;
     private EditText latitude;
@@ -27,14 +31,15 @@ public class SignUp extends AppCompatActivity {
     private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
-    private static final int PASSWORD_MIN_SIZE = 8;
-    private static final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+    private Popup popup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.sign_up);
+
         firstName = findViewById(R.id.first_name);
         lastName = findViewById(R.id.last_name);
         latitude = findViewById(R.id.latitude);
@@ -52,6 +57,7 @@ public class SignUp extends AppCompatActivity {
         findViewById(R.id.sign_up_button).setOnClickListener(v -> createAccount());
         findViewById(R.id.link_sign_in).setOnClickListener(v -> gotoSignIn());
 
+        popup = new Popup(this);
     }
 
     /**
@@ -78,7 +84,7 @@ public class SignUp extends AppCompatActivity {
         errorMessage.append(checkPassword(passwordText));
 
         if (errorMessage.length() != 0) {
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            popup.showToastLong(errorMessage.toString());
         } else {
             sendInformationToSignInUser(firstNameText, lastNameText, latitudeText, longitudeText, mailText, passwordText);
         }
@@ -213,6 +219,7 @@ public class SignUp extends AppCompatActivity {
     public void sendInformationToSignInUser(String firstNameText, String lastNameText,
                                             String latitudeText, String longitudeText,
                                             String mailText, String passwordText) {
+
         //TODO connect the API and send informations
         Log.i("FIRSTNAME", firstNameText);
         Log.i("LASTNAME", lastNameText);
