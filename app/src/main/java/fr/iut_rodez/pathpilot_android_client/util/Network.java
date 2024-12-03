@@ -3,6 +3,7 @@ package fr.iut_rodez.pathpilot_android_client.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 
 import com.android.volley.RequestQueue;
@@ -26,9 +27,7 @@ public class Network {
      * @return true if the device is connected to the internet, false otherwise
      */
     public static boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return true; //STUB
     }
 
     public static Network getInstance() {
