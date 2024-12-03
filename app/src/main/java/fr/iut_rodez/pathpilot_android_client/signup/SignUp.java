@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
+import fr.iut_rodez.pathpilot_android_client.signup.SignUpService.SignUpInput;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class SignUp extends AppCompatActivity {
@@ -86,7 +87,9 @@ public class SignUp extends AppCompatActivity {
         if (errorMessage.length() != 0) {
             popup.showToastLong(errorMessage.toString());
         } else {
-            sendInformationToSignInUser(firstNameText, lastNameText, latitudeText, longitudeText, mailText, passwordText);
+            double latitudeValue = Double.parseDouble(latitudeText);
+            double longitudeValue = Double.parseDouble(longitudeText);
+            sendInformationToSignInUser(firstNameText, lastNameText, latitudeValue, longitudeValue, mailText, passwordText);
         }
     }
 
@@ -217,18 +220,19 @@ public class SignUp extends AppCompatActivity {
      * Send information to the API for sign in the user with the entered informations.
      */
     public void sendInformationToSignInUser(String firstNameText, String lastNameText,
-                                            String latitudeText, String longitudeText,
+                                            double latitudeText, double longitudeText,
                                             String mailText, String passwordText) {
 
-        //TODO connect the API and send informations
-        Log.i("FIRSTNAME", firstNameText);
-        Log.i("LASTNAME", lastNameText);
-        Log.i("LATITUDE", Double.parseDouble(latitudeText) + "");
-        Log.i("LONGITUDE", Double.parseDouble(longitudeText) + "");
-        Log.i("MAIL", mailText);
-        Log.i("PASSWORD", passwordText);
+        SignUpInput signUpInput = new SignUpInput(
+                firstNameText,
+                lastNameText,
+                latitudeText,
+                longitudeText,
+                mailText,
+                passwordText
+        );
 
-        //TODO if API return an error, send an error message to the user returned by the API
+        SignUpService.signUp(signUpInput, this);
     }
 
     /**
