@@ -111,39 +111,6 @@ public class LoginService {
         }
     }
 
-    /**
-     * Schema for the login response.
-     */
-    public static class LoginResponse {
-        private final String token;
-        /**
-         *
-         */
-        private final long expiresIn;
-
-        public LoginResponse(String token, int expiresIn) {
-            this.token = token;
-            this.expiresIn = expiresIn;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public long getExpiresIn() {
-            return expiresIn;
-        }
-
-        /**
-         * Get the expiration date of the token.
-         *
-         * @return the expiration date of the token
-         */
-        public Date getExpirationDate() {
-            return new Date(System.currentTimeMillis() + expiresIn);
-        }
-    }
-
     private LoginService() {
         // Private constructor to prevent instantiation
     }
