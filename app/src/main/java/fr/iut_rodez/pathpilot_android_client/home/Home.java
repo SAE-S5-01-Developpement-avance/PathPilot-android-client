@@ -1,5 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,5 +58,18 @@ public class Home extends AppCompatActivity {
         Intent intent = getIntent();
 
         tokenJWT = intent.getParcelableExtra(LoginService.CLE_TOKEN);
+    }
+
+    /**
+     * Get the token JWT.
+     *
+     * @return the token JWT
+     * @throws IllegalStateException if the token JWT is expired
+     */
+    public String getTokenJWT() throws IllegalStateException {
+        if (tokenJWT.getExpirationDate().before(new java.util.Date())) {
+            throw new IllegalStateException("TokenJWT is expired");
+        }
+        return tokenJWT.getToken();
     }
 }
