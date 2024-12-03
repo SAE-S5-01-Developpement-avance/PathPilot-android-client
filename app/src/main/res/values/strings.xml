@@ -55,4 +55,9 @@
     <string name="error_email_invalid">Email is invalid</string>
     <string name="error_no_internet">No internet connection</string>
     <string name="error">Error</string>
+
+    <!--
+    Clients
+    -->
+    <string name="client_contact">Contact</string>
 </resources>
