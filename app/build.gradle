@@ -23,9 +23,33 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
+
+    // Nouvelle syntaxe pour les flavors
+    buildFeatures {
+        buildConfig true
+    }
+
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            group = "environment"
+            buildConfigField "String", "API_BASE_URL", "\"http://127.0.0.1/\""
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+        prod {
+            group = "environment"
+            buildConfigField "String", "API_BASE_URL", "\"https://api.example.com/\"" // TODO: Change this
+        }
+    }
+}
+
+def localBuildFile = file('local.build.gradle')
+if (localBuildFile.exists()) {
+    apply from: localBuildFile
 }
 
 dependencies {
@@ -34,6 +58,7 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.volley
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
