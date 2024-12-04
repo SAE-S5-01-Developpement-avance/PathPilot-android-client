@@ -16,14 +16,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
-import fr.iut_rodez.pathpilot_android_client.login.TokenJWT;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 
 public class Home extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
 
-    private TokenJWT tokenJWT;
+    private JWTToken JWTToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class Home extends AppCompatActivity {
         // Get the token from the intent
         Intent intent = getIntent();
 
-        tokenJWT = intent.getParcelableExtra(LoginService.CLE_TOKEN);
+        JWTToken = intent.getParcelableExtra(LoginService.CLE_TOKEN);
     }
 
     /**
@@ -66,10 +66,10 @@ public class Home extends AppCompatActivity {
      * @return the token JWT
      * @throws IllegalStateException if the token JWT is expired
      */
-    public String getTokenJWT() throws IllegalStateException {
-        if (tokenJWT.getExpirationDate().before(new java.util.Date())) {
+    public String getJWTToken() throws IllegalStateException {
+        if (JWTToken.getExpirationDate().before(new java.util.Date())) {
             throw new IllegalStateException("TokenJWT is expired");
         }
-        return tokenJWT.getToken();
+        return JWTToken.getToken();
     }
 }

@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
-import static fr.iut_rodez.pathpilot_android_client.util.Network.getRequestQueue;
+import static fr.iut_rodez.pathpilot_android_client.util.NetworkUtils.getRequestQueue;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
 
 import android.app.ProgressDialog;
@@ -31,14 +31,12 @@ public class ClientService {
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/clients";
     private static final String TAG = ClientService.class.getSimpleName();
 
-    private static RequestQueue requestQueue;
-
     public static void getClients(Context context, ListView listClientsView) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         Home homeActivity = (Home) context;
-        requestQueue = getRequestQueue(context);
-        String tokenJWT = homeActivity.getTokenJWT();
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken();
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -74,7 +72,7 @@ public class ClientService {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + tokenJWT);
+                headers.put("Authorization", "Bearer " + jwtToken);
                 return headers;
             }
         };

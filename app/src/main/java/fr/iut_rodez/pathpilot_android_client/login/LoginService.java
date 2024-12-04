@@ -58,11 +58,11 @@ public class LoginService {
                         int expiresIn = response.getInt("expiresIn");
                         saveAuthToken(token, context); // TODO See if we really need it
 
-                        TokenJWT tokenJWT = new TokenJWT(token, expiresIn);
+                        JWTToken JWTToken = new JWTToken(token, expiresIn);
 
                         Intent intent = new Intent(context, Home.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(CLE_TOKEN, tokenJWT);
+                        intent.putExtra(CLE_TOKEN, JWTToken);
 
                         context.startActivity(intent);
                     } catch (JSONException e) {

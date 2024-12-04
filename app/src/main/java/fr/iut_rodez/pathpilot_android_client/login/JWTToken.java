@@ -7,14 +7,14 @@ import androidx.annotation.NonNull;
 
 import java.util.Date;
 
-public class TokenJWT implements Parcelable {
+public class JWTToken implements Parcelable {
     private final String token;
     /**
      *
      */
     private final long expiresIn;
 
-    public TokenJWT(String token, long expiresIn) {
+    public JWTToken(String token, long expiresIn) {
         this.token = token;
         this.expiresIn = expiresIn;
     }
@@ -36,20 +36,20 @@ public class TokenJWT implements Parcelable {
         return new Date(System.currentTimeMillis() + expiresIn);
     }
 
-    protected TokenJWT(Parcel in) {
+    protected JWTToken(Parcel in) {
         token = in.readString();
         expiresIn = in.readLong();
     }
 
-    public static final Creator<TokenJWT> CREATOR = new Creator<TokenJWT>() {
+    public static final Creator<JWTToken> CREATOR = new Creator<JWTToken>() {
         @Override
-        public TokenJWT createFromParcel(Parcel in) {
-            return new TokenJWT(in);
+        public JWTToken createFromParcel(Parcel in) {
+            return new JWTToken(in);
         }
 
         @Override
-        public TokenJWT[] newArray(int size) {
-            return new TokenJWT[size];
+        public JWTToken[] newArray(int size) {
+            return new JWTToken[size];
         }
     };
 
