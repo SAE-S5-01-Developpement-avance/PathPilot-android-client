@@ -26,6 +26,10 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.model.Client;
 import fr.iut_rodez.pathpilot_android_client.model.Client.ClientArrayAdapter;
 
+/**
+ * Service to handle all client related requests
+ * @author François de Saint Palais
+ */
 public class ClientService {
 
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/clients";

@@ -18,6 +18,10 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 
+/**
+ * Handle the different fragments of the application and the JWT token.
+ * The JWT token is passed from the login activity to the home activity.
+ */
 public class Home extends AppCompatActivity {
 
     private ViewPager2 viewPager;

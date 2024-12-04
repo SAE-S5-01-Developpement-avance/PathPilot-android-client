@@ -7,11 +7,12 @@ import androidx.annotation.NonNull;
 
 import java.util.Date;
 
+/**
+ * Class representing a JWT token.
+ */
 public class JWTToken implements Parcelable {
+
     private final String token;
-    /**
-     *
-     */
     private final long expiresIn;
 
     public JWTToken(String token, long expiresIn) {
@@ -19,10 +20,16 @@ public class JWTToken implements Parcelable {
         this.expiresIn = expiresIn;
     }
 
+    /**
+     * @return the token
+     */
     public String getToken() {
         return token;
     }
 
+    /**
+     * @return the expiration time of the token in milliseconds
+     */
     public long getExpiresIn() {
         return expiresIn;
     }
@@ -33,7 +40,7 @@ public class JWTToken implements Parcelable {
      * @return the expiration date of the token
      */
     public Date getExpirationDate() {
-        return new Date(System.currentTimeMillis() + expiresIn);
+        return new Date(System.currentTimeMillis() + getExpiresIn());
     }
 
     protected JWTToken(Parcel in) {

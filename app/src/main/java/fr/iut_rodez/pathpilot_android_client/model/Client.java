@@ -19,6 +19,9 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 
+/**
+ * Class representing a client.
+ */
 public class Client implements Parcelable {
 
     private int id;
