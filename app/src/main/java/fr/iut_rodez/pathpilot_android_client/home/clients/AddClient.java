@@ -282,5 +282,6 @@ public class AddClient extends AppCompatActivity {
      */
     public void gotoClient() {
         Log.d(TAG, "Switch to Login activity");
+        finish();
     }
 }

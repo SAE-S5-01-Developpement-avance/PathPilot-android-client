@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,7 +62,9 @@ public class FragmentClients extends Fragment {
     }
 
     private void gotoCreateClient() {
-        //TODO
         Log.d(TAG, "gotoCreateClient: Goto create client");
+        Intent intent = new Intent(getActivity(), AddClient.class);
+        intent.putExtra("token", ((Home) getActivity()).getJWTTokenObject());
+        startActivity(intent);
     }
 }

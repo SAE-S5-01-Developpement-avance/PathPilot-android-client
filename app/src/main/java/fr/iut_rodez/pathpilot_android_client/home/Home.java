@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home;
 
 import android.content.Intent;
+import android.media.session.MediaSession;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,5 +76,9 @@ public class Home extends AppCompatActivity {
             throw new IllegalStateException("TokenJWT is expired");
         }
         return JWTToken.getToken();
+    }
+
+    public JWTToken getJWTTokenObject() {
+        return JWTToken;
     }
 }

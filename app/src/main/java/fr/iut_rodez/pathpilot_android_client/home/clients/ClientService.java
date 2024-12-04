@@ -5,6 +5,7 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -112,7 +113,8 @@ public class ClientService {
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
-                    homeActivity.onBackPressed();
+                    Intent intent = new Intent(context, Home.class);
+                    context.startActivity(intent);
                 },
                 error -> {
                     progressDialog.dismiss();
