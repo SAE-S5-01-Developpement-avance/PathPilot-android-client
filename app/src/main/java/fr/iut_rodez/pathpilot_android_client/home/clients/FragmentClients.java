@@ -11,11 +11,8 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
-import java.util.List;
-
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
 
 public class FragmentClients extends Fragment {
 
@@ -24,7 +21,7 @@ public class FragmentClients extends Fragment {
      *
      * @see fr.iut_rodez.pathpilot_android_client.home.Home
      */
-    public static final int ICON = R.drawable.icone_peoples;
+    public static final int ICON = R.drawable.icon_clients;
     private static final String TAG = FragmentClients.class.getSimpleName();
 
     private ImageButton addClientButton;
