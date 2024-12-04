@@ -35,6 +35,14 @@ public class ClientService {
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/clients";
     private static final String TAG = ClientService.class.getSimpleName();
 
+    /**
+     * Request to the API the clients.
+     * If the request is successful, it adds the client to the adapter and links it to the view
+     * If not it displays the error encounter.
+     *
+     * @param context Context of the application
+     * @param listClientsView The view where the clients will be displayed
+     */
     public static void getClients(Context context, ListView listClientsView) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
