@@ -22,6 +22,9 @@ import fr.iut_rodez.pathpilot_android_client.signup.SignUpService.SignUpInput;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
+/**
+ * Handle the sign up Activity
+ */
 public class SignUp extends AppCompatActivity {
 
     private static final String TAG = SignUp.class.getSimpleName();
