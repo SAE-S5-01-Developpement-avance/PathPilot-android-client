@@ -1,16 +1,34 @@
-package fr.iut_rodez.pathpilot_android_client;
+package fr.iut_rodez.pathpilot_android_client.signup;
 
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isEmailValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isFirstNameValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLastNameValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLatitudeValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLongitudeValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isPasswordValid;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.login.Login;
+import fr.iut_rodez.pathpilot_android_client.signup.SignUpService.SignUpInput;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
+
+/**
+ * Handle the sign up Activity
+ */
+public class SignUp extends AppCompatActivity {
+
+    private static final String TAG = SignUp.class.getSimpleName();
+
 
     private EditText firstName;
     private EditText lastName;
@@ -24,14 +42,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
-    private static final int PASSWORD_MIN_SIZE = 8;
-    private static final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+    private Popup popup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.sign_up);
+
         firstName = findViewById(R.id.first_name);
         lastName = findViewById(R.id.last_name);
         latitude = findViewById(R.id.latitude);
@@ -46,16 +65,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         labelMail = findViewById(R.id.label_mail);
         labelPassword = findViewById(R.id.label_password);
 
-        findViewById(R.id.sign_up_button).setOnClickListener(this);
+        findViewById(R.id.sign_up_button).setOnClickListener(v -> createAccount());
+        findViewById(R.id.link_sign_in).setOnClickListener(v -> gotoSignIn());
 
+        popup = new Popup(this);
     }
 
     /**
      * Checks that the parameters entered are valid.
      * Creates an account or notifies the user of input errors.
-     * @param v
      */
-    public void onClick(View v) {
+    public void createAccount() {
         StringBuilder errorMessage = new StringBuilder();
         // reset the style of the text field
         resetFieldStyle();
@@ -74,122 +94,132 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         errorMessage.append(checkMail(mailText));
         errorMessage.append(checkPassword(passwordText));
 
-        if (errorMessage.length()!=0){
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        if (errorMessage.length() != 0) {
+            popup.showToastLong(errorMessage.toString());
         } else {
-            sendInformationToSignInUser(firstNameText,lastNameText,latitudeText,longitudeText,mailText,passwordText);
+            double latitudeValue = Double.parseDouble(latitudeText);
+            double longitudeValue = Double.parseDouble(longitudeText);
+            sendInformationToSignInUser(firstNameText, lastNameText, latitudeValue, longitudeValue, mailText, passwordText);
         }
     }
 
     /**
      * Check the first name field.
+     *
      * @return errorMessage
      */
-    public String checkFirstName(String firstNameText){
-
+    public String checkFirstName(String firstNameText) {
         String errorMessage = "";
-        if (firstNameText.isBlank()) {
+
+        if (!isFirstNameValid(firstNameText)) {
             labelFirstName.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.first_name_blank);
+            errorMessage = getString(R.string.first_name_blank);
         }
         return errorMessage;
     }
 
     /**
      * Check the last name field.
+     *
      * @return errorMessage
      */
-    public String checkLastName(String lastNameText){
+    public String checkLastName(String lastNameText) {
         String errorMessage = "";
-        if (lastNameText.isBlank()) {
+
+        if (!isLastNameValid(lastNameText)) {
             labelLastName.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.last_name_blank);
+            errorMessage = getString(R.string.last_name_blank);
         }
         return errorMessage;
     }
 
     /**
      * Check the latitude field.
+     *
      * @return errorMessage
      */
-    public String checkLatitude(String latitudeText){
-        double latitudeValue = 0;
+    public String checkLatitude(String latitudeText) {
+        double latitudeValue = Double.NaN;
         String errorMessage = "";
+
         try {
             latitudeValue = Double.parseDouble(latitudeText);
-            if (latitudeText.isBlank()) {
-                labelLatitude.setTextColor(getColor(R.color.red));
-                errorMessage+=getString(R.string.latitude_blank);
-            } else if (latitudeValue>=90 || latitudeValue<=-90) {
-                labelLatitude.setTextColor(getColor(R.color.red));
-                errorMessage+=getString(R.string.latitude_not_included);
-            }
         } catch (Exception e) {
             labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.latitude_not_float);
+            errorMessage = getString(R.string.latitude_not_float);
         }
+
+        if (!isLatitudeValid(latitudeValue)) {
+            labelLatitude.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.latitude_not_included);
+        }
+
         return errorMessage;
     }
 
     /**
      * Check the longitude field.
+     *
      * @return errorMessage
      */
-    public String checkLongitude(String longitudeText){
-        double longitudeValue = 0;
+    public String checkLongitude(String longitudeText) {
+        double longitudeValue = Double.NaN;
         String errorMessage = "";
+
         try {
             longitudeValue = Double.parseDouble(longitudeText);
-            if (longitudeText.isBlank()) {
-                labelLongitude.setTextColor(getColor(R.color.red));
-                errorMessage+=getString(R.string.longitude_blank);
-            } else if (longitudeValue>=180 || longitudeValue<=-180) {
-                labelLongitude.setTextColor(getColor(R.color.red));
-                errorMessage+=getString(R.string.longitude_not_included);
-            }
         } catch (Exception e) {
             labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.longitude_not_float);
+            errorMessage = getString(R.string.longitude_not_float);
         }
+
+        if (!isLongitudeValid(longitudeValue)) {
+            labelLongitude.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.longitude_not_included);
+        }
+
         return errorMessage;
     }
 
     /**
      * Check the mail field.
+     *
      * @return errorMessage
      */
-    public String checkMail(String mailText){
+    public String checkMail(String mailText) {
         String errorMessage = "";
-        if (mailText.isBlank()) {
+
+        if (!isEmailValid(mailText)) {
             labelMail.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.mail_blank);
-        } else if (!mailText.matches(REGEX_MAIL)) {
-            labelMail.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.mail_regex_invalided);
+            errorMessage = getString(R.string.error_email_invalid);
         }
+
         return errorMessage;
     }
 
     /**
      * Check the password field.
+     *
      * @return errorMessage
      */
-    public String checkPassword(String passwordText){
+    public String checkPassword(String passwordText) {
         String errorMessage = "";
+
         if (passwordText.isBlank()) {
             labelPassword.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.password_blank);
-        } else if (passwordText.length() <= PASSWORD_MIN_SIZE) {
+            errorMessage = getString(R.string.password_blank);
+        } else if (!isPasswordValid(passwordText)) {
             labelPassword.setTextColor(getColor(R.color.red));
-            errorMessage+=getString(R.string.password_min_size_error);
+            errorMessage = getString(R.string.password_min_size_error);
         }
+
         return errorMessage;
     }
 
     /**
      * Reset the style of sign up interface.
      */
-    public void resetFieldStyle(){
+    public void resetFieldStyle() {
         labelFirstName.setTextColor(getColor(R.color.black));
         labelLastName.setTextColor(getColor(R.color.black));
         labelLatitude.setTextColor(getColor(R.color.black));
@@ -202,24 +232,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Send information to the API for sign in the user with the entered informations.
      */
     public void sendInformationToSignInUser(String firstNameText, String lastNameText,
-                                            String latitudeText, String longitudeText,
+                                            double latitudeText, double longitudeText,
                                             String mailText, String passwordText) {
-        //TODO connect the API and send informations
-        Log.i("FIRSTNAME",firstNameText);
-        Log.i("LASTNAME",lastNameText);
-        Log.i("LATITUDE",Double.parseDouble(latitudeText)+"");
-        Log.i("LONGITUDE",Double.parseDouble(longitudeText)+"");
-        Log.i("MAIL",mailText);
-        Log.i("PASSWORD",passwordText);
 
-        //TODO if API return an error, send an error message to the user returned by the API
+        SignUpInput signUpInput = new SignUpInput(
+                firstNameText,
+                lastNameText,
+                latitudeText,
+                longitudeText,
+                mailText,
+                passwordText
+        );
+
+        SignUpService.signUp(signUpInput, this);
     }
 
     /**
      * Sends to the sign in interface when the sign in Textview is clicked.
-     * @param v
      */
-    public void onClickSignIn(View v) {
-        //TODO go on the sign in interface
+    public void gotoSignIn() {
+        Log.d(TAG, "Switch to Login activity");
+        Intent intent = new Intent(this, Login.class);
+
+        // The user can't go back to the login activity by pressing the back button
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
     }
 }

@@ -3,7 +3,9 @@ package fr.iut_rodez.pathpilot_android_client.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Build;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -14,9 +16,9 @@ import java.util.Map;
 /**
  * Utility class to handle network requests.
  */
-public class Network {
+public class NetworkUtils {
 
-    private static Network instance;
+    private static NetworkUtils instance;
     private final Map<Context, RequestQueue> requestQueues;
 
     /**
@@ -27,18 +29,31 @@ public class Network {
      */
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if (cm == null) return false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            NetworkCapabilities cap = cm.getNetworkCapabilities(cm.getActiveNetwork());
+            if (cap == null) return false;
+            return cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        } else {
+            android.net.Network[] networks = cm.getAllNetworks();
+            for (android.net.Network n : networks) {
+                NetworkInfo nInfo = cm.getNetworkInfo(n);
+                if (nInfo != null && nInfo.isConnected()) return true;
+            }
+        }
+
+        return false;
     }
 
-    public static Network getInstance() {
+    public static NetworkUtils getInstance() {
         if (instance == null) {
-            instance = new Network();
+            instance = new NetworkUtils();
         }
         return instance;
     }
 
-    private Network() {
+    private NetworkUtils() {
         requestQueues = new HashMap<>();
     }
 
