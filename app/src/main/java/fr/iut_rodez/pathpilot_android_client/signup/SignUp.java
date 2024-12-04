@@ -1,5 +1,12 @@
 package fr.iut_rodez.pathpilot_android_client.signup;
 
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isEmailValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isFirstNameValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLastNameValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLatitudeValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLongitudeValid;
+import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isPasswordValid;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +20,12 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
 import fr.iut_rodez.pathpilot_android_client.signup.SignUpService.SignUpInput;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
 public class SignUp extends AppCompatActivity {
 
     private static final String TAG = SignUp.class.getSimpleName();
-    private static final int PASSWORD_MIN_SIZE = 8;
-    private static final String REGEX_MAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
 
     private EditText firstName;
     private EditText lastName;
@@ -99,11 +106,11 @@ public class SignUp extends AppCompatActivity {
      * @return errorMessage
      */
     public String checkFirstName(String firstNameText) {
-
         String errorMessage = "";
-        if (firstNameText.isBlank()) {
+        
+        if (isFirstNameValid(firstNameText)) {
             labelFirstName.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.first_name_blank);
+            errorMessage = getString(R.string.first_name_blank);
         }
         return errorMessage;
     }
@@ -115,9 +122,10 @@ public class SignUp extends AppCompatActivity {
      */
     public String checkLastName(String lastNameText) {
         String errorMessage = "";
-        if (lastNameText.isBlank()) {
+
+        if (isLastNameValid(lastNameText)) {
             labelLastName.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.last_name_blank);
+            errorMessage = getString(R.string.last_name_blank);
         }
         return errorMessage;
     }
@@ -128,21 +136,21 @@ public class SignUp extends AppCompatActivity {
      * @return errorMessage
      */
     public String checkLatitude(String latitudeText) {
-        double latitudeValue = 0;
+        double latitudeValue = Double.NaN;
         String errorMessage = "";
+
         try {
             latitudeValue = Double.parseDouble(latitudeText);
-            if (latitudeText.isBlank()) {
-                labelLatitude.setTextColor(getColor(R.color.red));
-                errorMessage += getString(R.string.latitude_blank);
-            } else if (latitudeValue >= 90 || latitudeValue <= -90) {
-                labelLatitude.setTextColor(getColor(R.color.red));
-                errorMessage += getString(R.string.latitude_not_included);
-            }
         } catch (Exception e) {
             labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.latitude_not_float);
+            errorMessage = getString(R.string.latitude_not_float);
         }
+
+        if (isLatitudeValid(latitudeValue)) {
+            labelLatitude.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.latitude_not_included);
+        }
+
         return errorMessage;
     }
 
@@ -152,21 +160,21 @@ public class SignUp extends AppCompatActivity {
      * @return errorMessage
      */
     public String checkLongitude(String longitudeText) {
-        double longitudeValue = 0;
+        double longitudeValue = Double.NaN;
         String errorMessage = "";
+
         try {
             longitudeValue = Double.parseDouble(longitudeText);
-            if (longitudeText.isBlank()) {
-                labelLongitude.setTextColor(getColor(R.color.red));
-                errorMessage += getString(R.string.longitude_blank);
-            } else if (longitudeValue >= 180 || longitudeValue <= -180) {
-                labelLongitude.setTextColor(getColor(R.color.red));
-                errorMessage += getString(R.string.longitude_not_included);
-            }
         } catch (Exception e) {
             labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.longitude_not_float);
+            errorMessage = getString(R.string.longitude_not_float);
         }
+
+        if (isLongitudeValid(longitudeValue)) {
+            labelLongitude.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.longitude_not_included);
+        }
+
         return errorMessage;
     }
 
@@ -177,13 +185,12 @@ public class SignUp extends AppCompatActivity {
      */
     public String checkMail(String mailText) {
         String errorMessage = "";
-        if (mailText.isBlank()) {
+
+        if (isEmailValid(mailText)) {
             labelMail.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.mail_blank);
-        } else if (!mailText.matches(REGEX_MAIL)) {
-            labelMail.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.mail_regex_invalided);
+            errorMessage = getString(R.string.error_email_invalid);
         }
+
         return errorMessage;
     }
 
@@ -194,13 +201,15 @@ public class SignUp extends AppCompatActivity {
      */
     public String checkPassword(String passwordText) {
         String errorMessage = "";
+
         if (passwordText.isBlank()) {
             labelPassword.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.password_blank);
-        } else if (passwordText.length() < PASSWORD_MIN_SIZE) {
+            errorMessage = getString(R.string.password_blank);
+        } else if (isPasswordValid(passwordText)) {
             labelPassword.setTextColor(getColor(R.color.red));
-            errorMessage += getString(R.string.password_min_size_error);
+            errorMessage = getString(R.string.password_min_size_error);
         }
+
         return errorMessage;
     }
 
