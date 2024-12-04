@@ -27,6 +27,20 @@ public class SignUpService {
     private static final String TAG = SignUpService.class.getSimpleName();
     public static final String CLE_MAIL = "mail";
 
+    /**
+     * Sign up the user with the given information.
+     * <p>
+     * If the request is successful, a dialog is shown to the user with two buttons:
+     * <ul>
+     *     <li>One to dismiss the dialog</li>
+     *     <li>One to go to the login page</li>
+     * </ul>
+     *
+     * If the request fails, a dialog is shown to the user with an error message.
+     *
+     * @param signUpInput the information of the user
+     * @param context the context of the SignUp activity
+     */
     public static void signUp(SignUpInput signUpInput, Context context) {
         Log.d(TAG, "API URL: " + LOGIN_URL);
 
@@ -70,6 +84,9 @@ public class SignUpService {
         requestQueue.add(request);
     }
 
+    /**
+     * Information of the user to sign up.
+     */
     public static class SignUpInput {
         private final String firstName;
         private final String lastName;
