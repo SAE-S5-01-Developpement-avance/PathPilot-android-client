@@ -31,7 +31,7 @@ public class VolleyErrorHandler {
         String errorMessage = "Unknown error occurred";
 
         // Check network connectivity first
-        if (!Network.isNetworkConnected(context)) {
+        if (!NetworkUtils.isNetworkConnected(context)) {
             return "No internet connection. Please check your network settings.";
         }
 

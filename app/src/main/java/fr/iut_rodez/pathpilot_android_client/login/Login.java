@@ -13,8 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.signup.SignUp;
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
-import fr.iut_rodez.pathpilot_android_client.util.Network;
+import fr.iut_rodez.pathpilot_android_client.util.NetworkUtils;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
@@ -86,7 +85,7 @@ public class Login extends AppCompatActivity {
         } else if (!ValidateForm.isEmailValid(email)) { // Check if email is valid
 
             popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_email_invalid));
-        } else if (!Network.isNetworkConnected(this)) { // Check if the device is connected to the internet
+        } else if (!NetworkUtils.isNetworkConnected(this)) { // Check if the device is connected to the internet
 
             popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_no_internet));
         } else {

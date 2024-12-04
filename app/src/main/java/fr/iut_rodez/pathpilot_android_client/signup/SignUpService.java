@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.signup;
 
-import static fr.iut_rodez.pathpilot_android_client.util.Network.getRequestQueue;
+import static fr.iut_rodez.pathpilot_android_client.util.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
-import fr.iut_rodez.pathpilot_android_client.util.Network;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 

@@ -15,9 +15,9 @@ import java.util.Map;
 /**
  * Utility class to handle network requests.
  */
-public class Network {
+public class NetworkUtils {
 
-    private static Network instance;
+    private static NetworkUtils instance;
     private final Map<Context, RequestQueue> requestQueues;
 
     /**
@@ -30,14 +30,14 @@ public class Network {
         return true; //STUB
     }
 
-    public static Network getInstance() {
+    public static NetworkUtils getInstance() {
         if (instance == null) {
-            instance = new Network();
+            instance = new NetworkUtils();
         }
         return instance;
     }
 
-    private Network() {
+    private NetworkUtils() {
         requestQueues = new HashMap<>();
     }
 
