@@ -8,47 +8,72 @@ import org.junit.Test;
 
 /**
  * Test class for the ValidateForm class.
+ *
  * @author François de Saint Palais
  */
 public class ValidateFormTest {
 
     @Test
-    public void testIsEmailValidWithValidEmail() {
-        // Given an valid email
-        String email = "test.test@test.com";
-        // When we check if the email is valid
-        boolean result = ValidateForm.isEmailValid(email);
-        // Then the result should be true
-        assertTrue(result);
+    public void testIsEmailValid() {
+        //Valid email
+        assertTrue(ValidateForm.isEmailValid("test.test@test.com"));
+
+        // Invalid email
+        assertFalse(ValidateForm.isEmailValid("test.test"));
+        assertFalse(ValidateForm.isEmailValid(""));
+        assertFalse(ValidateForm.isEmailValid(null));
     }
 
     @Test
-    public void testIsEmailValidWithInvalidEmail() {
-        // Given an invalid email
-        String email = "test.test";
-        // When we check if the email is valid
-        boolean result = ValidateForm.isEmailValid(email);
-        // Then the result should be false
-        assertFalse(result);
+    public void testIsFirstNameValid() {
+        //Valid first name
+        assertTrue(ValidateForm.isFirstNameValid("John"));
+
+        // Invalid first name
+        assertFalse(ValidateForm.isFirstNameValid(""));
+        assertFalse(ValidateForm.isFirstNameValid(null));
     }
 
     @Test
-    public void testIsEmailValidWithEmptyEmail() {
-        // Given an empty email
-        String email = "";
-        // When we check if the email is valid
-        boolean result = ValidateForm.isEmailValid(email);
-        // Then the result should be false
-        assertFalse(result);
+    public void testIsLastNameValid() {
+        //Valid last name
+        assertTrue(ValidateForm.isLastNameValid("Doe"));
+
+        // Invalid last name
+        assertFalse(ValidateForm.isLastNameValid(""));
+        assertFalse(ValidateForm.isLastNameValid(null));
     }
 
     @Test
-    public void testIsEmailValidWithNullEmail() {
-        // Given a null email
-        String email = null;
-        // When we check if the email is valid
-        boolean result = ValidateForm.isEmailValid(email);
-        // Then the result should be false
-        assertFalse(result);
+    public void testIsLatitudeValid() {
+        //Valid latitude
+        assertTrue(ValidateForm.isLatitudeValid(45.0));
+
+        // Invalid latitude
+        assertFalse(ValidateForm.isLatitudeValid(Double.NaN));
+        assertFalse(ValidateForm.isLatitudeValid(91.0));
+        assertFalse(ValidateForm.isLatitudeValid(-91.0));
+    }
+
+    @Test
+    public void testIsLongitudeValid() {
+        //Valid longitude
+        assertTrue(ValidateForm.isLongitudeValid(45.0));
+
+        // Invalid longitude
+        assertFalse(ValidateForm.isLongitudeValid(Double.NaN));
+        assertFalse(ValidateForm.isLongitudeValid(181.0));
+        assertFalse(ValidateForm.isLongitudeValid(-181.0));
+    }
+
+    @Test
+    public void testIsPasswordValid() {
+        //Valid password
+        assertTrue(ValidateForm.isPasswordValid("12345678"));
+
+        // Invalid password
+        assertFalse(ValidateForm.isPasswordValid("1234567"));
+        assertFalse(ValidateForm.isPasswordValid(""));
+        assertFalse(ValidateForm.isPasswordValid(null));
     }
 }

@@ -26,22 +26,22 @@ public class ValidateForm {
     }
 
     public static boolean isFirstNameValid(String firstNameText) {
-        return !firstNameText.isBlank();
+        return firstNameText != null && !firstNameText.isBlank();
     }
 
     public static boolean isLastNameValid(String lastNameText) {
-        return !lastNameText.isBlank();
+        return lastNameText != null && !lastNameText.isBlank();
     }
 
     public static boolean isLatitudeValid(double latitude) {
-        return !Double.isNaN(latitude) && (latitude >= 90 || latitude <= -90);
+        return !Double.isNaN(latitude) && -90 <= latitude && latitude <= 90;
     }
 
     public static boolean isLongitudeValid(double longitude) {
-        return !Double.isNaN(longitude) && (longitude >= 180 || longitude <= -180);
+        return !Double.isNaN(longitude) && -180 <= longitude && longitude <= 180;
     }
 
     public static boolean isPasswordValid(String passwordText) {
-        return passwordText != null && !passwordText.isBlank() && passwordText.length() < PASSWORD_MIN_SIZE;
+        return passwordText != null && !passwordText.isBlank() && passwordText.length() >= PASSWORD_MIN_SIZE;
     }
 }

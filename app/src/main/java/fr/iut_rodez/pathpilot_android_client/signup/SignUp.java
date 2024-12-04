@@ -107,8 +107,8 @@ public class SignUp extends AppCompatActivity {
      */
     public String checkFirstName(String firstNameText) {
         String errorMessage = "";
-        
-        if (isFirstNameValid(firstNameText)) {
+
+        if (!isFirstNameValid(firstNameText)) {
             labelFirstName.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.first_name_blank);
         }
@@ -123,7 +123,7 @@ public class SignUp extends AppCompatActivity {
     public String checkLastName(String lastNameText) {
         String errorMessage = "";
 
-        if (isLastNameValid(lastNameText)) {
+        if (!isLastNameValid(lastNameText)) {
             labelLastName.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.last_name_blank);
         }
@@ -146,7 +146,7 @@ public class SignUp extends AppCompatActivity {
             errorMessage = getString(R.string.latitude_not_float);
         }
 
-        if (isLatitudeValid(latitudeValue)) {
+        if (!isLatitudeValid(latitudeValue)) {
             labelLatitude.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.latitude_not_included);
         }
@@ -170,7 +170,7 @@ public class SignUp extends AppCompatActivity {
             errorMessage = getString(R.string.longitude_not_float);
         }
 
-        if (isLongitudeValid(longitudeValue)) {
+        if (!isLongitudeValid(longitudeValue)) {
             labelLongitude.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.longitude_not_included);
         }
@@ -186,7 +186,7 @@ public class SignUp extends AppCompatActivity {
     public String checkMail(String mailText) {
         String errorMessage = "";
 
-        if (isEmailValid(mailText)) {
+        if (!isEmailValid(mailText)) {
             labelMail.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.error_email_invalid);
         }
@@ -205,7 +205,7 @@ public class SignUp extends AppCompatActivity {
         if (passwordText.isBlank()) {
             labelPassword.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.password_blank);
-        } else if (isPasswordValid(passwordText)) {
+        } else if (!isPasswordValid(passwordText)) {
             labelPassword.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.password_min_size_error);
         }
