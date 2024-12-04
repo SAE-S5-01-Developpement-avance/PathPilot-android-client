@@ -32,7 +32,7 @@
     <string name="radio_client">Client</string>
 
     <!--
-    Error messages for the sign up interface
+    Error messages for forms
     -->
     <string name="first_name_blank">Enter a first name</string>
     <string name="last_name_blank">Enter a last name</string>
@@ -46,6 +46,10 @@
     <string name="mail_regex_invalided">The email must be written as follows: jhon.doe@path-pilot.fr, jhon@mail.com …</string>
     <string name="password_blank">Enter a password</string>
     <string name="password_min_size_error">Password must be at least 8 characters long</string>
+    <string name="phone_number_blank">Enter a phone number</string>
+    <string name="phone_number_invalid">Phone number is invalid</string>
+    <string name="company_name_blank">Enter a company name</string>
+    <string name="description_blank">Enter a description</string>
 
     <!--
     Foot page without button
@@ -57,7 +61,7 @@
     -->
     <string name="newClientHeader">New client</string>
     <string name="icon">icon</string>
-    <string name="placeholder_phone_number">+33 7 85 84 96 12</string>
+    <string name="placeholder_phone_number">0785849612</string>
     <string name="radio_prospect">Prospect</string>
 
     <!--

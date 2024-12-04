@@ -86,6 +86,17 @@ public class Client implements Parcelable {
         }
     };
 
+    public Client(String companyName, double latitudeValue, double longitude, String descriptionText, boolean isClient, String firstNameText, String lastNameText, String phoneNumber) {
+        this.companyName = companyName;
+        this.latHomeAddress = latitudeValue;
+        this.longHomeAddress = longitude;
+        this.clientCategory = isClient ? "Client" : "Prospect";
+        this.description = descriptionText;
+        this.contactLastName = lastNameText;
+        this.contactFirstName = firstNameText;
+        this.phoneNumber = phoneNumber;
+    }
+
     public int getId() {
         return id;
     }
@@ -187,6 +198,24 @@ public class Client implements Parcelable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", salesman='" + salesman + '\'' +
                 '}';
+    }
+
+    public JSONObject toJson() {
+        JSONObject clientJson = new JSONObject();
+        try {
+            clientJson.put("companyName", companyName);
+            clientJson.put("latHomeAddress", latHomeAddress);
+            clientJson.put("longHomeAddress", longHomeAddress);
+            clientJson.put("clientCategory", clientCategory);
+            clientJson.put("description", description);
+            clientJson.put("contactLastName", contactLastName);
+            clientJson.put("contactFirstName", contactFirstName);
+            clientJson.put("phoneNumber", phoneNumber);
+            clientJson.put("salesman", salesman);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return clientJson;
     }
 
     @Override

@@ -91,4 +91,43 @@ public class ClientService {
 
         requestQueue.add(request);
     }
+
+    /**
+     * Request to the API to add a client.
+     * If the request is successful, it goes back to the previous activity.
+     * @param context Context of the application
+     * @param client The client to add
+     */
+    public static void addClient(Context context, Client client) {
+        Log.d(TAG, "API URL: " + API_BASE_URL);
+
+        Home homeActivity = (Home) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_BASE_URL, client.toJson(),
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+                    homeActivity.onBackPressed();
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwtToken);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+    }
 }

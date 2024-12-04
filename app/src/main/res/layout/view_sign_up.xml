@@ -6,10 +6,10 @@
     android:layout_height="match_parent">
 
     <!-- Header fixe -->
-    <include layout="@layout/header"/>
+    <include layout="@layout/component_header_no_text"/>
 
     <!-- Fix footer -->
-    <include layout="@layout/footer"/>
+    <include layout="@layout/component_footer"/>
 
     <!-- Form -->
     <ScrollView

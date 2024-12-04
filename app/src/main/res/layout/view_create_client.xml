@@ -66,26 +66,26 @@
 
                 <!-- lat / lon -->
                 <TextView
-                    android:id="@+id/label_position_lat"
+                    android:id="@+id/label_latitude"
                     android:layout_height="wrap_content"
                     android:layout_width="@dimen/no_dp"
                     android:layout_marginTop="@dimen/micro_gap"
                     android:text="@string/position_lat"
                     android:textSize="@dimen/normal_text"
-                    app:layout_constraintEnd_toStartOf="@id/label_position_long"
+                    app:layout_constraintEnd_toStartOf="@id/label_longitude"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/company_name" />
 
                 <TextView
-                    android:id="@+id/label_position_long"
+                    android:id="@+id/label_longitude"
                     android:layout_width="@dimen/no_dp"
                     android:layout_height="wrap_content"
                     android:maxLines="3"
                     android:text="@string/position_long"
                     android:textSize="@dimen/normal_text"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/label_position_lat"
-                    app:layout_constraintTop_toTopOf="@id/label_position_lat" />
+                    app:layout_constraintStart_toEndOf="@id/label_latitude"
+                    app:layout_constraintTop_toTopOf="@id/label_latitude" />
 
                 <EditText
                     android:id="@+id/latitude"
@@ -97,7 +97,7 @@
                     android:layout_marginStart="@dimen/micro_margin"
                     app:layout_constraintEnd_toStartOf="@id/longitude"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/label_position_lat" />
+                    app:layout_constraintTop_toBottomOf="@id/label_latitude" />
 
                 <EditText
                     android:id="@+id/longitude"
@@ -109,7 +109,7 @@
                     android:layout_marginEnd="@dimen/micro_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/latitude"
-                    app:layout_constraintTop_toBottomOf="@id/label_position_long" />
+                    app:layout_constraintTop_toBottomOf="@id/label_longitude" />
 
                 <TextView
                     android:id="@+id/optionnal_fields"
@@ -251,7 +251,7 @@
                     app:layout_constraintTop_toBottomOf="@id/first_name" />
 
                 <EditText
-                    android:id="@+id/phone_input"
+                    android:id="@+id/phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/normal_text"
@@ -269,7 +269,7 @@
                     android:text="@string/create_client"
                     android:textSize="@dimen/big_text"
                     android:elevation="5dp"
-                    app:layout_constraintTop_toBottomOf="@id/phone_input"/>
+                    app:layout_constraintTop_toBottomOf="@id/phone_number"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
