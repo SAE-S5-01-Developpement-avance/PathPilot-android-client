@@ -2,16 +2,16 @@
     <string name="app_name">PathPilot</string>
 
     <!--
-    String for the "sign up" page
+    String for the "sign up" page, the "create client" page
     -->
     <string name="first_name"><b>First name</b></string>
     <string name="placeholder_first_name">John</string>
     <string name="last_name"><b>Last name</b></string>
     <string name="placeholder_last_name">Doe</string>
 
-    <string name="position_lat"><b>Latitude</b></string>
+    <string name="position_lat"><b>latitude</b></string>
     <string name="placeholder_position_lat">41.40338</string>
-    <string name="position_long"><b>Longitude</b></string>
+<string name="position_long"><b>longitude</b></string>
     <string name="placeholder_position_long">2.17403</string>
     <string name="email"><b>Email</b></string>
     <string name="placeholder_email">exemple@mail.com</string>
@@ -20,8 +20,19 @@
     <string name="already_account"><b>Already have an account ? </b></string>
     <string name="link_sign_in"><u>Sign in now</u></string>
 
+    <string name="create_client">Create client</string>
+    <string name="mandatory_fields"><u>Mandatory fields</u></string>
+    <string name="company_name">Company name</string>
+    <string name="optional_fields"><u>Optional fields</u></string>
+    <string name="contact_informations">Contact informations</string>
+    <string name="description">Description</string>
+    <string name="description_placeholder">write your description here</string>
+    <string name="label_phone_number">Phone number</string>
+    <string name="client_type">Client type:</string>
+    <string name="radio_client">Client</string>
+
     <!--
-    Error messages for the sign up interface
+    Error messages for forms
     -->
     <string name="first_name_blank">Enter a first name</string>
     <string name="last_name_blank">Enter a last name</string>
@@ -35,11 +46,23 @@
     <string name="mail_regex_invalided">The email must be written as follows: jhon.doe@path-pilot.fr, jhon@mail.com …</string>
     <string name="password_blank">Enter a password</string>
     <string name="password_min_size_error">Password must be at least 8 characters long</string>
+    <string name="phone_number_blank">Enter a phone number</string>
+    <string name="phone_number_invalid">Phone number is invalid</string>
+    <string name="company_name_blank">Enter a company name</string>
+    <string name="description_blank">Enter a description</string>
 
     <!--
     Foot page without button
     -->
     <string name="informations">2024 IUT de Rodez. All rights reserved.</string>
+
+    <!--
+    headers
+    -->
+    <string name="newClientHeader">New client</string>
+    <string name="icon">icon</string>
+    <string name="placeholder_phone_number">0785849612</string>
+    <string name="radio_prospect">Prospect</string>
 
     <!--
     String for the "login" page

@@ -44,4 +44,12 @@ public class ValidateForm {
     public static boolean isPasswordValid(String passwordText) {
         return passwordText != null && !passwordText.isBlank() && passwordText.length() >= PASSWORD_MIN_SIZE;
     }
+
+    public static boolean isPhoneNumberValid(String phoneNumber) {
+        return phoneNumber != null && !phoneNumber.isBlank() && phoneNumber.length() == 10 && phoneNumber.matches("[0-9]+");
+    }
+
+    public static boolean isDescriptionValid(String descriptionText) {
+        return descriptionText != null && !descriptionText.isBlank();
+    }
 }

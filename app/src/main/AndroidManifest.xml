@@ -16,9 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PathPilotandroidclient"
         tools:targetApi="31">
+
         <activity
-            android:name=".signup.SignUp"
-            android:exported="true">
+            android:name=".login.Login"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,9 +27,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".login.Login"
-            android:exported="false" />
+        <activity android:name=".signup.SignUp" />
+        <activity android:name=".home.Home" />
+        <activity android:name=".home.clients.AddClient" />
     </application>
 
 </manifest>

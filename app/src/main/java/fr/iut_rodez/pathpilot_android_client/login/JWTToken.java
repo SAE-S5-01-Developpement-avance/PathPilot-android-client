@@ -21,9 +21,16 @@ public class JWTToken implements Parcelable {
     }
 
     /**
-     * @return the token
+     * Get the token JWT.
+     *
+     * @return the token JWT
+     * @throws IllegalStateException if the token JWT is expired
      */
     public String getToken() {
+        if (getExpirationDate().before(new java.util.Date())) {
+            throw new IllegalStateException("TokenJWT is expired");
+        }
+
         return token;
     }
 

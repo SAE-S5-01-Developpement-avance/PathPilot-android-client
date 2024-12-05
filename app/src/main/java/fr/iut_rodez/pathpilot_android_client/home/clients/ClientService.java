@@ -5,6 +5,7 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -48,7 +49,7 @@ public class ClientService {
 
         Home homeActivity = (Home) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = homeActivity.getJWTToken();
+        String jwtToken = homeActivity.getJWTToken().getToken();
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -74,6 +75,50 @@ public class ClientService {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwtToken);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+    }
+
+    /**
+     * Request to the API to add a client.
+     * If the request is successful, it goes back to the previous activity.
+     * @param context Context of the application
+     * @param client The client to add
+     */
+    public static void addClient(Context context, Client client) {
+        Log.d(TAG, "API URL: " + API_BASE_URL);
+
+        AddClient addClientActivity = (AddClient) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = addClientActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_BASE_URL, client.toJson(),
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(AddClient.CLE_CLIENT_ADDED, true);
+                    addClientActivity.setResult(AddClient.RESULT_OK, returnIntent);
+
+                    addClientActivity.finish();
                 },
                 error -> {
                     progressDialog.dismiss();

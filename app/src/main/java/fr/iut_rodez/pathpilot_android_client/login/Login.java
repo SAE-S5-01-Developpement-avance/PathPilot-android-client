@@ -35,7 +35,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.view_login);
 
         // Get xml elements
         loginButton = findViewById(R.id.login_btn);

@@ -1,11 +1,17 @@
 package fr.iut_rodez.pathpilot_android_client.home;
 
+import static fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.CLE_CLIENT_ADDED;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -15,19 +21,24 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
-import fr.iut_rodez.pathpilot_android_client.login.LoginService;
+import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.AddClient;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 
 /**
  * Handle the different fragments of the application and the JWT token.
  * The JWT token is passed from the login activity to the home activity.
  */
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements AddClient {
+
+    private static final String TAG = Home.class.getSimpleName();
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
 
     private JWTToken JWTToken;
+
+    private ActivityResultLauncher<Intent> addClientLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,18 +73,35 @@ public class Home extends AppCompatActivity {
         Intent intent = getIntent();
 
         JWTToken = intent.getParcelableExtra(LoginService.CLE_TOKEN);
+
+        addClientLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddClient);
     }
 
-    /**
-     * Get the token JWT.
-     *
-     * @return the token JWT
-     * @throws IllegalStateException if the token JWT is expired
-     */
-    public String getJWTToken() throws IllegalStateException {
-        if (JWTToken.getExpirationDate().before(new java.util.Date())) {
-            throw new IllegalStateException("TokenJWT is expired");
+    public JWTToken getJWTToken() {
+        return JWTToken;
+    }
+
+    private void returnFromAddClient(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Add client");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            // Goto the client fragment
+            viewPager.setCurrentItem(0);
+
+            // Load the clients
+            if (result.getData() != null
+                    && result.getData().hasExtra(CLE_CLIENT_ADDED)
+                    && result.getData().getBooleanExtra(CLE_CLIENT_ADDED, false)) {
+
+                FragmentClients fragmentClients = (FragmentClients) getSupportFragmentManager().getFragments().get(0);
+                fragmentClients.loadClients();
+            }
         }
-        return JWTToken.getToken();
+    }
+
+    @Override
+    public ActivityResultLauncher<Intent> getAddClientLauncher() {
+        return addClientLauncher;
     }
 }
