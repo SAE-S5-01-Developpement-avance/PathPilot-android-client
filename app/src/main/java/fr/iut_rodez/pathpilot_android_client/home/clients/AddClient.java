@@ -18,6 +18,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.model.Client;
 import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
@@ -28,6 +29,7 @@ import fr.iut_rodez.pathpilot_android_client.util.Popup;
 public class AddClient extends AppCompatActivity {
 
     private static final String TAG = fr.iut_rodez.pathpilot_android_client.signup.SignUp.class.getSimpleName();
+    public static final String CLE_CLIENT_ADDED = "clientAdded";
 
 
     private EditText companyName;
@@ -48,6 +50,7 @@ public class AddClient extends AppCompatActivity {
     private TextView labelPhoneNumber;
 
     private Popup popup;
+    private JWTToken jwtToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,9 @@ public class AddClient extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> gotoClient());
 
         popup = new Popup(this);
+
+        Intent intent = getIntent();
+        jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
     }
 
     /**
@@ -99,27 +105,27 @@ public class AddClient extends AppCompatActivity {
         errorMessage.append(checkCompanyName(companyNameText));
         errorMessage.append(checkLatitude(latitudeText));
         errorMessage.append(checkLongitude(longitudeText));
-        if (descriptionText.isEmpty()) {
-            descriptionText = "";
-        } else {
+
+        // If the optional description field is not empty, check it
+        if (!descriptionText.isEmpty()) {
             descriptionText = description.getText().toString();
             errorMessage.append(checkDescription(descriptionText));
         }
-        if (firstNameText.isEmpty()) {
-            errorMessage.append(checkFirstName(firstNameText));
-        } else {
+
+        // If the optional first name field is not empty, check it
+        if (!firstNameText.isEmpty()) {
             firstNameText = firstName.getText().toString();
             errorMessage.append(checkFirstName(firstNameText));
         }
-        if (lastNameText.isEmpty()) {
-            errorMessage.append(checkLastName(lastNameText));
-        } else {
+
+        // If the optional last name field is not empty, check it
+        if (!lastNameText.isEmpty()) {
             lastNameText = lastName.getText().toString();
             errorMessage.append(checkLastName(lastNameText));
         }
-        if (phoneNumberText.isEmpty()) {
-            errorMessage.append(checkPhoneNumber(phoneNumberText));
-        } else {
+
+        // If the optional phone number field is not empty, check it
+        if (!phoneNumberText.isEmpty()) {
             phoneNumberText = phoneNumber.getText().toString();
             errorMessage.append(checkPhoneNumber(phoneNumberText));
         }
@@ -281,7 +287,16 @@ public class AddClient extends AppCompatActivity {
      * Sends to the sign in interface when the sign in Textview is clicked.
      */
     public void gotoClient() {
-        Log.d(TAG, "Switch to Login activity");
+        Log.d(TAG, "Switch to Home activity");
+
+        Intent returnIntention = new Intent();
+        returnIntention.putExtra(CLE_CLIENT_ADDED, false);
+        setResult(RESULT_OK, returnIntention);
+
         finish();
+    }
+
+    public JWTToken getJWTToken() {
+        return jwtToken;
     }
 }

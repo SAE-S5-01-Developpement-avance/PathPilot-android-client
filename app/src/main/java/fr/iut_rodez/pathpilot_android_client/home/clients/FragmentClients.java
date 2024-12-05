@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
 import fr.iut_rodez.pathpilot_android_client.R;
@@ -28,9 +29,11 @@ public class FragmentClients extends Fragment {
      */
     public static final int ICON = R.drawable.icon_clients;
     private static final String TAG = FragmentClients.class.getSimpleName();
+    public static final String CLE_TOKEN = "token";
 
     private ImageButton addClientButton;
     private ListView listClientsView;
+    private Home homeActivity;
 
     public static FragmentClients newInstance() {
         return new FragmentClients();
@@ -48,23 +51,32 @@ public class FragmentClients extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
-        Home homeActivity = (Home) getActivity();
+        homeActivity = (Home) getActivity();
 
         addClientButton = view.findViewById(R.id.add_client);
         listClientsView = view.findViewById(R.id.clients_list);
 
         // Get the clients from the API
-        ClientService.getClients(homeActivity, listClientsView);
+        loadClients();
 
         addClientButton.setOnClickListener(v -> gotoCreateClient());
 
         return view;
     }
 
+    public void loadClients() {
+        ClientService.getClients(homeActivity, listClientsView);
+    }
+
     private void gotoCreateClient() {
         Log.d(TAG, "gotoCreateClient: Goto create client");
-        Intent intent = new Intent(getActivity(), AddClient.class);
-        intent.putExtra("token", ((Home) getActivity()).getJWTTokenObject());
-        startActivity(intent);
+        Intent intent = new Intent(getActivity(), fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.class);
+        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+
+        homeActivity.getAddClientLauncher().launch(intent);
+    }
+
+    public interface AddClient {
+        ActivityResultLauncher<Intent> getAddClientLauncher();
     }
 }

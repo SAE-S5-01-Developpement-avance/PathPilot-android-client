@@ -49,7 +49,7 @@ public class ClientService {
 
         Home homeActivity = (Home) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = homeActivity.getJWTToken();
+        String jwtToken = homeActivity.getJWTToken().getToken();
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -102,9 +102,9 @@ public class ClientService {
     public static void addClient(Context context, Client client) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
-        Home homeActivity = (Home) context;
+        AddClient addClientActivity = (AddClient) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = homeActivity.getJWTToken();
+        String jwtToken = addClientActivity.getJWTToken().getToken();
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -113,8 +113,12 @@ public class ClientService {
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
-                    Intent intent = new Intent(context, Home.class);
-                    context.startActivity(intent);
+
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra(AddClient.CLE_CLIENT_ADDED, true);
+                    addClientActivity.setResult(AddClient.RESULT_OK, returnIntent);
+
+                    addClientActivity.finish();
                 },
                 error -> {
                     progressDialog.dismiss();
