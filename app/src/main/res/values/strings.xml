@@ -86,4 +86,5 @@
     Clients
     -->
     <string name="client_contact">Contact</string>
+    <string name="delete_client">Delete the client</string>
 </resources>

@@ -53,4 +53,8 @@
     <string name="error_no_internet">Pas de connexion internet</string>
     <string name="error">Erreur</string>
     <string name="client_contact">Contact</string>
+    <!--
+    Clients
+    -->
+    <string name="delete_client">Supprimer le client</string>
 </resources>

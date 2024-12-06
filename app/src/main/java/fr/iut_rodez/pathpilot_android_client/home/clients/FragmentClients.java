@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -15,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.model.Client;
 
 /**
  * Display all the clients
@@ -59,9 +64,31 @@ public class FragmentClients extends Fragment {
         // Get the clients from the API
         loadClients();
 
+        registerForContextMenu(listClientsView);
+
         addClientButton.setOnClickListener(v -> gotoCreateClient());
 
         return view;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(getActivity()).inflate(R.menu.client_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Client clientSelected = (Client) listClientsView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.delete_client) {
+            Log.d(TAG, "onContextItemSelected: Delete client");
+            ClientService.deleteClient(homeActivity, clientSelected, listClientsView);
+        } else {
+            Log.e(TAG, "onContextItemSelected: Unknown option selected");
+        }
+        return (super.onContextItemSelected(item));
     }
 
     public void loadClients() {
