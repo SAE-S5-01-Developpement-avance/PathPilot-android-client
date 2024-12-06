@@ -36,7 +36,9 @@ android {
     productFlavors {
         dev {
             group = "environment"
-            buildConfigField "String", "API_BASE_URL", "\"http://127.0.0.1/\""
+            def localIp = InetAddress.getLocalHost().getHostAddress()
+            def apiBaseUrl = "http://${localIp}:8080/"
+            buildConfigField "String", "API_BASE_URL", "\"${apiBaseUrl}\""
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
         }
