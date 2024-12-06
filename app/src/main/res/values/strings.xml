@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PathPilot</string>
+    <string name="app_name" translatable="false">PathPilot</string>
 
     <!--
     String for the "sign up" page, the "create client" page
@@ -14,7 +14,7 @@
 <string name="position_long"><b>longitude</b></string>
     <string name="placeholder_position_long">2.17403</string>
     <string name="email"><b>Email</b></string>
-    <string name="placeholder_email">exemple@mail.com</string>
+    <string name="placeholder_email">example@mail.com</string>
     <string name="password"><b>Password</b></string>
     <string name="sign_up">Create account</string>
     <string name="already_account"><b>Already have an account ? </b></string>
@@ -38,12 +38,12 @@
     <string name="last_name_blank">Enter a last name</string>
     <string name="latitude_not_float">Latitude must be a number</string>
     <string name="latitude_blank">Enter a latitude</string>
-    <string name="latitude_not_included">Latitude must be between 90 and -90</string>
-    <string name="longitude_not_float">Longitude must be a float</string>
+    <string name="latitude_not_included">Latitude must be between -90 et 90</string>
+    <string name="longitude_not_float">Longitude must be a number</string>
     <string name="longitude_blank">Enter a longitude</string>
-    <string name="longitude_not_included">Longitude must be between 180 and -180</string>
+    <string name="longitude_not_included">Longitude must be between -180 and 180</string>
     <string name="mail_blank">Enter a mail</string>
-    <string name="mail_regex_invalided">The email must be written as follows: jhon.doe@path-pilot.fr, jhon@mail.com …</string>
+    <string name="mail_regex_invalided">The email must be written as follows: jhon.doe@path-pilot.en, jhon@mail.com …</string>
     <string name="password_blank">Enter a password</string>
     <string name="password_min_size_error">Password must be at least 8 characters long</string>
     <string name="phone_number_blank">Enter a phone number</string>
@@ -54,7 +54,7 @@
     <!--
     Foot page without button
     -->
-    <string name="informations">2024 IUT de Rodez. All rights reserved.</string>
+    <string name="informations">2024 IUT de Rodez. All copyright, all copyleft</string>
 
     <!--
     headers
