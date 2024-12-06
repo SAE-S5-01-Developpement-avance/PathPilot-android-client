@@ -6,9 +6,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +26,7 @@ import java.util.Map;
  */
 public class NetworkUtils {
 
+    private static final String TAG = NetworkUtils.class.getSimpleName();
     private static NetworkUtils instance;
     private final Map<Context, RequestQueue> requestQueues;
 
@@ -80,4 +89,48 @@ public class NetworkUtils {
         return getInstance().getRequestQueueInstance(context);
     }
 
+    /**
+     * Create a new JsonObjectRequest with the given parameters.
+     * <p>
+     * This request is authenticated.
+     *
+     * @param method          the HTTP method
+     * @param url             the URL of the request
+     * @param body            the body of the request
+     * @param onResponse      a listener when the request is successful
+     * @param onErrorResponse a listener when the request fails
+     * @param jwtToken        the JWT token to authenticate the request
+     * @return the JsonObjectRequest instance
+     */
+    public static JsonObjectRequest createAuthenticatedRequest(int method, String url, JSONObject body, String jwtToken, Listener<JSONObject> onResponse, ErrorListener onErrorResponse) {
+
+        assert jwtToken != null : "JWT token cannot be null";
+        assert !jwtToken.isBlank() : "JWT token cannot be empty";
+
+        if (method == Request.Method.DELETE && body != null) {
+            Log.w(TAG, "DELETE request will have an empty body");
+            return new JsonObjectRequest(method, url, null, onResponse, onErrorResponse) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + jwtToken);
+                    return headers;
+                }
+
+                @Override
+                public byte[] getBody() {
+                    return body.toString().getBytes(); // TODO: check if this is correct
+                }
+            };
+        }
+
+        return new JsonObjectRequest(method, url, body, onResponse, onErrorResponse) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwtToken);
+                return headers;
+            }
+        };
+    }
 }
