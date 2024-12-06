@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.signup;
 
-import static fr.iut_rodez.pathpilot_android_client.util.NetworkUtils.getRequestQueue;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
 import android.content.Context;
