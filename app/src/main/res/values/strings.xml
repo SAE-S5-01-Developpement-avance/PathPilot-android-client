@@ -24,9 +24,9 @@
     <string name="mandatory_fields"><u>Mandatory fields</u></string>
     <string name="company_name">Company name</string>
     <string name="optional_fields"><u>Optional fields</u></string>
-    <string name="contact_informations">Contact informations</string>
+    <string name="contact_informations">Contact information</string>
     <string name="description">Description</string>
-    <string name="description_placeholder">write your description here</string>
+    <string name="description_placeholder">Write your description here</string>
     <string name="label_phone_number">Phone number</string>
     <string name="client_type">Client type:</string>
     <string name="radio_client">Client</string>
@@ -43,7 +43,7 @@
     <string name="longitude_blank">Enter a longitude</string>
     <string name="longitude_not_included">Longitude must be between -180 and 180</string>
     <string name="mail_blank">Enter a mail</string>
-    <string name="mail_regex_invalided">The email must be written as follows: jhon.doe@path-pilot.en, jhon@mail.com …</string>
+    <string name="mail_regex_invalided">Email must be written as follows: jhon.doe@path-pilot.en, jhon@mail.com …</string>
     <string name="password_blank">Enter a password</string>
     <string name="password_min_size_error">Password must be at least 8 characters long</string>
     <string name="phone_number_blank">Enter a phone number</string>
