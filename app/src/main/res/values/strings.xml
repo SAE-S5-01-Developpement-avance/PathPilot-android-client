@@ -38,10 +38,10 @@
     <string name="last_name_blank">Enter a last name</string>
     <string name="latitude_not_float">Latitude must be a number</string>
     <string name="latitude_blank">Enter a latitude</string>
-    <string name="latitude_not_included">Latitude must be between -90 et 90</string>
+    <string name="latitude_not_included">Latitude must be between -90° et 90°</string>
     <string name="longitude_not_float">Longitude must be a number</string>
     <string name="longitude_blank">Enter a longitude</string>
-    <string name="longitude_not_included">Longitude must be between -180 and 180</string>
+    <string name="longitude_not_included">Longitude must be between -180° and 180°</string>
     <string name="mail_blank">Enter a mail</string>
     <string name="mail_regex_invalided">Email must be written as follows: jhon.doe@path-pilot.en, jhon@mail.com …</string>
     <string name="password_blank">Enter a password</string>
