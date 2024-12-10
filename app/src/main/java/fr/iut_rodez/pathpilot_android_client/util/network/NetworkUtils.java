@@ -109,22 +109,15 @@ public class NetworkUtils {
 
         Log.d(TAG, "method:" + method + " url:" + url + " body:" + body);
 
+        /*
+         * The Volley library does not support DELETE requests with a body.
+         * If the method is DELETE, the body will be null.
+         * This is a limitation of the Volley library.
+         *
+         * So we log a warning message to inform the developer.
+         */
         if (method == Request.Method.DELETE && body != null) {
             Log.e(TAG, "DELETE request will have an empty body");
-
-            return new JsonObjectRequest(method, url, null, onResponse, onErrorResponse) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer " + jwtToken);
-                    return headers;
-                }
-
-                @Override
-                public byte[] getBody() {
-                    return body.toString().getBytes(); // TODO: check if this is correct
-                }
-            };
         }
 
         return new JsonObjectRequest(method, url, body, onResponse, onErrorResponse) {
