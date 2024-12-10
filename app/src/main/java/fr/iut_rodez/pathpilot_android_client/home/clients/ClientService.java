@@ -64,7 +64,7 @@ public class ClientService {
                             JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientList");
                             Log.d(TAG, "getClients: " + clients);
                             for (int i = 0; i < clients.length(); i++) {
-                                clientsArray.add((new Client(clients.getJSONObject(i))));
+                                clientsArray.add(new Client(clients.getJSONObject(i)));
                             }
                         }
 
