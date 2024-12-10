@@ -56,5 +56,24 @@
     <!--
     Clients
     -->
+    <string name="client_contact">Contact</string>
     <string name="delete_client">Supprimer le client</string>
+
+
+    <!--
+Error messages
+-->
+    <string name="network_error_unable_to_connect_to_the_server">Erreur réseau. Impossible de se connecter au serveur.</string>
+    <string name="authentication_failed_give_valid_credentials">Authentification échouée. Veuillez donner des identifiants valides.</string>
+    <string name="unable_to_process_server_response">Impossible de traiter la réponse du serveur.</string>
+    <string name="connection_timed_out">Délai de connexion dépassé. Veuillez réessayer.</string>
+    <string name="bad_request">Mauvaise requête. Veuillez vérifier votre saisie.</string>
+    <string name="unauthorized">Non autorisé. Veuillez vous reconnecter.</string>
+    <string name="forbidden_dont_have_permision_to_access">Interdit. Vous n\'avez pas la permission d\'accéder à cette ressource.</string>
+    <string name="requested_resource_not_found">Ressource demandée introuvable.</string>
+    <string name="internal_server_error">Erreur interne du serveur. Veuillez réessayer plus tard.</string>
+    <string name="service_unavailable">Service indisponible. Le serveur est temporairement surchargé.</string>
+    <string name="unknow_server_error">Erreur du serveur. Code d\'erreur: %d</string>
+    <string name="unknown_error_occurred">Une erreur inconnue s\'est produite</string>
+    <string name="no_internet_connection">Pas de connexion internet. Veuillez vérifier vos paramètres réseau.</string>
 </resources>
