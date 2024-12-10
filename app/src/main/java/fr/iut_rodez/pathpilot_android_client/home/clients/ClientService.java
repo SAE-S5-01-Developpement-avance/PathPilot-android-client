@@ -59,13 +59,15 @@ public class ClientService {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
                     try {
-                        JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientList");
-                        Log.d(TAG, "getClients: " + clients);
-
-                        List<Client> clientsArray = new ArrayList<>(clients.length());
-                        for (int i = 0; i < clients.length(); i++) {
-                            clientsArray.add((new Client(clients.getJSONObject(i))));
+                        List<Client> clientsArray = new ArrayList<>();
+                        if (response.has("_embedded")) {
+                            JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientList");
+                            Log.d(TAG, "getClients: " + clients);
+                            for (int i = 0; i < clients.length(); i++) {
+                                clientsArray.add((new Client(clients.getJSONObject(i))));
+                            }
                         }
+
                         Log.d(TAG, "getClients: " + clientsArray);
 
                         ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientsArray);
