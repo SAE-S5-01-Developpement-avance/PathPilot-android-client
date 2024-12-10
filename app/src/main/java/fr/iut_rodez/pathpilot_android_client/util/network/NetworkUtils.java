@@ -107,8 +107,11 @@ public class NetworkUtils {
         assert jwtToken != null : "JWT token cannot be null";
         assert !jwtToken.isBlank() : "JWT token cannot be empty";
 
+        Log.d(TAG, "method:" + method + " url:" + url + " body:" + body);
+
         if (method == Request.Method.DELETE && body != null) {
-            Log.w(TAG, "DELETE request will have an empty body");
+            Log.e(TAG, "DELETE request will have an empty body");
+
             return new JsonObjectRequest(method, url, null, onResponse, onErrorResponse) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
