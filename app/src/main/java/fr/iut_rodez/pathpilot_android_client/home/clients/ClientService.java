@@ -152,8 +152,8 @@ public class ClientService {
      * @param listClientsView The view where the clients will be displayed
      */
     public static void deleteClient(Home homeActivity, Client clientSelected, ListView listClientsView) {
-        Log.d(TAG, "API URL: " + API_BASE_URL);
 
+        String apiURLDelete = API_BASE_URL + "/" + clientSelected.getId();
 
         RequestQueue requestQueue = getRequestQueue(homeActivity);
         String jwtToken = homeActivity.getJWTToken().getToken();
@@ -161,17 +161,9 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(homeActivity);
         progressDialog.show();
 
-        JSONObject clientId = new JSONObject();
-        try {
-            clientId.put("id", clientSelected.getId());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-            //TODO better exception handling
-        }
+        Log.d(TAG, "deleteClient: " + clientSelected.getId());
 
-        Log.d(TAG, "deleteClient: " + clientId);
-
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, API_BASE_URL, clientId, jwtToken,
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -190,6 +182,5 @@ public class ClientService {
         );
 
         requestQueue.add(request);
-
     }
 }
