@@ -52,7 +52,7 @@
     <string name="error_email_invalid">L\'e-amil est invalide</string>
     <string name="error_no_internet">Pas de connexion internet</string>
     <string name="error">Erreur</string>
-    <string name="client_contact">Contact</string>
+
     <!--
     Clients
     -->
@@ -61,8 +61,8 @@
 
 
     <!--
-Error messages
--->
+    Error messages
+    -->
     <string name="network_error_unable_to_connect_to_the_server">Erreur réseau. Impossible de se connecter au serveur.</string>
     <string name="authentication_failed_give_valid_credentials">Authentification échouée. Veuillez donner des identifiants valides.</string>
     <string name="unable_to_process_server_response">Impossible de traiter la réponse du serveur.</string>
