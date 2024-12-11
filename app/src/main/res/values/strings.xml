@@ -104,4 +104,11 @@
     <string name="unknow_server_error">Server error. Status code: %d</string>
     <string name="unknown_error_occurred">Unknown error occurred</string>
     <string name="no_internet_connection">No internet connection. Please check your network settings.</string>
+
+    <!--
+    Itinerary
+    -->
+    <string name="title_list_clients_added_for_itinerary"><u>Clients added</u></string>
+    <string name="button_create_itinerary">Create itinerary</string>
+    <string name="list_clients_to_add">Choosing clients</string>
 </resources>

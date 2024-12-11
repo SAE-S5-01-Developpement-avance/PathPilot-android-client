@@ -6,28 +6,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- TODO write the right title "New itinerary" -->
     <!-- Header fixe -->
-    <include layout="@layout/component_header_back_icon" />
+    <include layout="@layout/component_header_no_text" />
 
     <!-- TODO faire le vrai footer -->
     <!-- Fix footer -->
     <include layout="@layout/component_footer" />
-
+*
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="@dimen/no_dp"
         android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toTopOf="@id/footer">
-
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteTextView"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/form_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Rechercher..."
-            android:inputType="text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-    </ScrollView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_min="wrap"
+            android:layout_marginHorizontal="@dimen/form_margin">
 
+            <TextView
+                android:id="@+id/title_mandatory_fields"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_gap"
+                android:textSize="@dimen/big_text"
+                android:text="@string/mandatory_fields"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <AutoCompleteTextView
+                android:id="@+id/list_add_clients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/list_clients_to_add"
+                android:inputType="text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title_mandatory_fields"/>
+            <TextView
+                android:id="@+id/title_list_clients_added"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/big_text"
+                android:text="@string/title_list_clients_added_for_itinerary"
+                app:layout_constraintTop_toBottomOf="@+id/list_add_clients"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <ListView
+                android:id="@+id/list_items_clients_added"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/title_list_clients_added"
+                app:layout_constraintStart_toStartOf="@id/title_list_clients_added"
+                app:layout_constraintEnd_toEndOf="parent"/>
+            <Button
+                android:id="@+id/button_create_itinerary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_create_itinerary"
+                android:layout_marginTop="@dimen/normal_gap"
+                android:layout_marginBottom="@dimen/normal_gap"
+                android:textSize="@dimen/normal_text"
+                android:backgroundTint="@color/blue_0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/list_items_clients_added"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
