@@ -104,4 +104,6 @@
     <string name="unknow_server_error">Server error. Status code: %d</string>
     <string name="unknown_error_occurred">Unknown error occurred</string>
     <string name="no_internet_connection">No internet connection. Please check your network settings.</string>
+    <string name="header_itineraries_list">Itineraries</string>
+    <string name="header_clients_list">Clients</string>
 </resources>
