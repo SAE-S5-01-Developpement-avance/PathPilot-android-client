@@ -111,4 +111,6 @@
     <string name="title_list_clients_added_for_itinerary"><u>Clients added</u></string>
     <string name="button_create_itinerary">Create itinerary</string>
     <string name="list_clients_to_add">Choosing clients</string>
+    <string name="header_itineraries_list">Itineraries</string>
+    <string name="header_clients_list">Clients</string>
 </resources>

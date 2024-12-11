@@ -60,7 +60,8 @@
     Clients
     -->
     <string name="client_contact">Contact</string>
-    <string name="delete_client">Supprimer le client</string>
+    <string name="delete_client">Supprimer le client</string>*
+    <string name="header_clients_list">Clients</string>
 
 
     <!--
@@ -79,6 +80,11 @@
     <string name="unknow_server_error">Erreur du serveur. Code d\'erreur: %d</string>
     <string name="unknown_error_occurred">Une erreur inconnue s\'est produite</string>
     <string name="no_internet_connection">Pas de connexion internet. Veuillez vérifier vos paramètres réseau.</string>
+
+    <!--
+    Itineraries
+     -->
+    <string name="header_itineraries_list">Itinéraires</string>
     <string name="title_list_clients_added_for_itinerary"><u>Clients ajoutés</u></string>
     <string name="button_create_itinerary">Créer</string>
     <string name="list_clients_to_add">Choisir des clients</string>
