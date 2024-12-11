@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/itinerary_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Itinerary number"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/itinerary_coordinates"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Home: salesman home coos" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/itinerary_client_names_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itinerary_client_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Client Names: client names"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/itinerary_total_stops"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Stops: number of stops"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- make a small bar to separate items -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="@dimen/header_text"
+        android:background="@color/blue_0"/>
+
+</LinearLayout>
