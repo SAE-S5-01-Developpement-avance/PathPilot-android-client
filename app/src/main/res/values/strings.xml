@@ -86,4 +86,11 @@
     Clients
     -->
     <string name="client_contact">Contact</string>
+
+    <!--
+    Itinerary
+    -->
+    <string name="title_list_clients_added_for_itinerary"><u>Clients added</u></string>
+    <string name="button_create_itinerary">Create itinerary</string>
+    <string name="list_clients_to_add">Choosing clients</string>
 </resources>
