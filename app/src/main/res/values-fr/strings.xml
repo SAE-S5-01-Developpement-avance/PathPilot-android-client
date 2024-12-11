@@ -11,6 +11,7 @@
     <string name="email">Adresse e-mail</string>
     <string name="placeholder_email">exemple@mail.com</string>
     <string name="password">Mot de passe</string>
+    <string name="confirm_password">Confirmation mot de passe</string>
     <string name="sign_up">Créer mon compte</string>
     <string name="already_account">Vous avez déjà un compte?</string>
     <string name="link_sign_in">Se connecter</string>
@@ -40,16 +41,18 @@
     <string name="phone_number_invalid">Le numéro de téléphone est invalide</string>
     <string name="company_name_blank">Entrer le nom de l\'organisation</string>
     <string name="description_blank">Entrer une description</string>
+    <string name="confirm_password_blank">Confirmer mot dee passe</string>
+    <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
     <string name="informations">Tous droits d\'auteur, tous droits de propriété intellectuelle</string>
     <string name="newClientHeader">Nouveau client</string>
     <string name="icon">icon</string>
     <string name="placeholder_phone_number">0710115060</string>
     <string name="radio_prospect">Prospect</string>
-    <string name="sign_in">S\'inscrire</string>
+    <string name="sign_in">Se connecter</string>
     <string name="dont_have_account">Vous n\'avez pas de compte?</string>
-    <string name="link_sign_up"><u>Se connecter maintenant</u></string>
+    <string name="link_sign_up"><u>S\'inscrire maintenant</u></string>
     <string name="error_email_password_field_empty">L\'e-mail et le mot de passe doivent être entrés</string>
-    <string name="error_email_invalid">L\'e-amil est invalide</string>
+    <string name="error_email_invalid">L\'e-mail est invalide</string>
     <string name="error_no_internet">Pas de connexion internet</string>
     <string name="error">Erreur</string>
 
