@@ -4,21 +4,21 @@
     <!--
     String for the "sign up" page, the "create client" page
     -->
-    <string name="first_name"><b>First name</b></string>
+    <string name="first_name">First name</string>
     <string name="placeholder_first_name">John</string>
-    <string name="last_name"><b>Last name</b></string>
+    <string name="last_name">Last name</string>
     <string name="placeholder_last_name">Doe</string>
 
-    <string name="position_lat"><b>Latitude</b></string>
+    <string name="position_lat">Latitude</string>
     <string name="placeholder_position_lat">41.40338</string>
-    <string name="position_long"><b>Longitude</b></string>
+    <string name="position_long">Longitude</string>
     <string name="placeholder_position_long">2.17403</string>
-    <string name="email"><b>Email</b></string>
+    <string name="email">Email</string>
     <string name="placeholder_email">example@mail.com</string>
-    <string name="password"><b>Password</b></string>
-    <string name="confirm_password"><b>Confirm password</b></string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
     <string name="sign_up">Create account</string>
-    <string name="already_account"><b>Already have an account ? </b></string>
+    <string name="already_account">Already have an account ?</string>
     <string name="link_sign_in"><u>Sign in now</u></string>
 
     <string name="create_client">Create client</string>
