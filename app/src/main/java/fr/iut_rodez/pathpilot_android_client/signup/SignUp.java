@@ -26,22 +26,21 @@ import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
  * Handle the sign up Activity
  */
 public class SignUp extends AppCompatActivity {
-
     private static final String TAG = SignUp.class.getSimpleName();
-
-
     private EditText firstName;
     private EditText lastName;
     private EditText latitude;
     private EditText longitude;
     private EditText mail;
     private EditText password;
+    private EditText confirmPassord;
     private TextView labelFirstName;
     private TextView labelLastName;
     private TextView labelLatitude;
     private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
+    private TextView labelConfirmPassword;
 
     private Popup popup;
 
@@ -57,6 +56,7 @@ public class SignUp extends AppCompatActivity {
         longitude = findViewById(R.id.longitude);
         mail = findViewById(R.id.mail);
         password = findViewById(R.id.password);
+        confirmPassord = findViewById(R.id.confirm_password);
 
         labelFirstName = findViewById(R.id.label_first_name);
         labelLastName = findViewById(R.id.label_last_name);
@@ -64,6 +64,7 @@ public class SignUp extends AppCompatActivity {
         labelLongitude = findViewById(R.id.label_position_long);
         labelMail = findViewById(R.id.label_mail);
         labelPassword = findViewById(R.id.label_password);
+        labelConfirmPassword = findViewById(R.id.label_confirm_password);
 
         findViewById(R.id.sign_up_button).setOnClickListener(v -> createAccount());
         findViewById(R.id.link_sign_in).setOnClickListener(v -> gotoSignIn());
@@ -86,6 +87,7 @@ public class SignUp extends AppCompatActivity {
         String longitudeText = longitude.getText().toString();
         String mailText = mail.getText().toString();
         String passwordText = password.getText().toString();
+        String confirmPasswordText = confirmPassord.getText().toString();
 
         errorMessage.append(checkFirstName(firstNameText));
         errorMessage.append(checkLastName(lastNameText));
@@ -93,6 +95,7 @@ public class SignUp extends AppCompatActivity {
         errorMessage.append(checkLongitude(longitudeText));
         errorMessage.append(checkMail(mailText));
         errorMessage.append(checkPassword(passwordText));
+        errorMessage.append(checkConfirmPassword(passwordText, confirmPasswordText));
 
         if (errorMessage.length() != 0) {
             popup.showToastLong(errorMessage.toString());
@@ -105,7 +108,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the first name field.
-     *
+     * @param  firstNameText
      * @return errorMessage
      */
     public String checkFirstName(String firstNameText) {
@@ -120,7 +123,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the last name field.
-     *
+     * @param lastNameText
      * @return errorMessage
      */
     public String checkLastName(String lastNameText) {
@@ -135,7 +138,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the latitude field.
-     *
+     * @param latitudeText
      * @return errorMessage
      */
     public String checkLatitude(String latitudeText) {
@@ -159,7 +162,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the longitude field.
-     *
+     * @param longitudeText
      * @return errorMessage
      */
     public String checkLongitude(String longitudeText) {
@@ -183,7 +186,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the mail field.
-     *
+     * @param  mailText
      * @return errorMessage
      */
     public String checkMail(String mailText) {
@@ -199,7 +202,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the password field.
-     *
+     * @param passwordText
      * @return errorMessage
      */
     public String checkPassword(String passwordText) {
@@ -215,6 +218,27 @@ public class SignUp extends AppCompatActivity {
 
         return errorMessage;
     }
+
+    /**
+     * Check that the password is confirmed.
+     * @param password
+     * @param confirmPasswordText
+     * @return errorMessage
+     */
+    public String checkConfirmPassword(String password, String confirmPasswordText) {
+        String errorMessage = "";
+
+        if (confirmPasswordText.isBlank()) {
+            labelConfirmPassword.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.confirm_password_blank);
+        } else if (!confirmPasswordText.equals(password)) {
+            labelConfirmPassword.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.confirm_password_not_same);
+        }
+
+        return errorMessage;
+    }
+
 
     /**
      * Reset the style of sign up interface.

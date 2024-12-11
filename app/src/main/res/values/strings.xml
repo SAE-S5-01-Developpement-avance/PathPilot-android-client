@@ -9,13 +9,14 @@
     <string name="last_name"><b>Last name</b></string>
     <string name="placeholder_last_name">Doe</string>
 
-    <string name="position_lat"><b>latitude</b></string>
+    <string name="position_lat"><b>Latitude</b></string>
     <string name="placeholder_position_lat">41.40338</string>
-<string name="position_long"><b>longitude</b></string>
+    <string name="position_long"><b>Longitude</b></string>
     <string name="placeholder_position_long">2.17403</string>
     <string name="email"><b>Email</b></string>
     <string name="placeholder_email">example@mail.com</string>
     <string name="password"><b>Password</b></string>
+    <string name="confirm_password"><b>Confirm password</b></string>
     <string name="sign_up">Create account</string>
     <string name="already_account"><b>Already have an account ? </b></string>
     <string name="link_sign_in"><u>Sign in now</u></string>
@@ -50,6 +51,8 @@
     <string name="phone_number_invalid">Phone number is invalid</string>
     <string name="company_name_blank">Enter a company name</string>
     <string name="description_blank">Enter a description</string>
+    <string name="confirm_password_blank">Confirm your password</string>
+    <string name="confirm_password_not_same">Write a second time your password to confirm it</string>
 
     <!--
     Foot page without button
