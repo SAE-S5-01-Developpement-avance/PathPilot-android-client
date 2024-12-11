@@ -22,6 +22,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.AddClient;
+import fr.iut_rodez.pathpilot_android_client.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 
@@ -51,7 +52,8 @@ public class Home extends AppCompatActivity implements AddClient {
         viewPager.setAdapter(new FragmentAdapter(this));
 
         int[] icons = {
-                FragmentClients.ICON
+                FragmentClients.ICON,
+                FragmentItineraries.ICON
         };
 
         new TabLayoutMediator(tabManager, viewPager,
