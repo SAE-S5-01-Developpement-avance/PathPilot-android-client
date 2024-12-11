@@ -21,7 +21,6 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 
 /**
  * Service to handle login requests.
- * @author François de Saint Palais
  */
 public class LoginService {
 

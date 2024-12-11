@@ -31,8 +31,6 @@ import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
  * Service to handle all client related requests
- *
- * @author François de Saint Palais
  */
 public class ClientService {
 

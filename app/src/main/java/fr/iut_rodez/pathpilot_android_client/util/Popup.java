@@ -8,7 +8,6 @@ import android.widget.Toast;
 /**
  * Instanceable class to display popups.
  *
- * @author François de Saint Palais
  */
 public class Popup {
 

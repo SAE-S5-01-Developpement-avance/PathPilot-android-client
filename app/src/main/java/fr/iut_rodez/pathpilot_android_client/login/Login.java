@@ -19,7 +19,6 @@ import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
 /**
  * Handle the login Activity
- * @author François de Saint Palais
  */
 public class Login extends AppCompatActivity {
 
