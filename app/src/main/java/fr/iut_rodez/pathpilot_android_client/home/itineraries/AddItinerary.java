@@ -1,5 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.itineraries;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -8,10 +9,13 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 
 public class AddItinerary extends AppCompatActivity {
     private AutoCompleteTextView selectClientToAdd;
     private Button createItinerary;
+    private JWTToken jwtToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,8 @@ public class AddItinerary extends AppCompatActivity {
 
         selectClientToAdd = findViewById(R.id.list_add_clients);
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
+        Intent intent = getIntent();
+        jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
     }
 
     /**
