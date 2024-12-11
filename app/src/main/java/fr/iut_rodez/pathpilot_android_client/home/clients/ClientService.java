@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
-import static fr.iut_rodez.pathpilot_android_client.util.NetworkUtils.getRequestQueue;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
 
 import android.app.ProgressDialog;
@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +27,10 @@ import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.model.Client;
 import fr.iut_rodez.pathpilot_android_client.model.Client.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
  * Service to handle all client related requests
- * @author François de Saint Palais
  */
 public class ClientService {
 
@@ -41,7 +42,7 @@ public class ClientService {
      * If the request is successful, it adds the client to the adapter and links it to the view
      * If not it displays the error encounter.
      *
-     * @param context Context of the application
+     * @param context         Context of the application
      * @param listClientsView The view where the clients will be displayed
      */
     public static void getClients(Context context, ListView listClientsView) {
@@ -98,8 +99,9 @@ public class ClientService {
     /**
      * Request to the API to add a client.
      * If the request is successful, it goes back to the previous activity.
+     *
      * @param context Context of the application
-     * @param client The client to add
+     * @param client  The client to add
      */
     public static void addClient(Context context, Client client) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
@@ -135,6 +137,47 @@ public class ClientService {
                 return headers;
             }
         };
+
+        requestQueue.add(request);
+    }
+
+    /**
+     * Request to the API to delete a client.
+     * If the request is successful, it removed the client from the adapter
+     *
+     * @param homeActivity    Context of the application
+     * @param clientSelected  The client to delete
+     * @param listClientsView The view where the clients will be displayed
+     */
+    public static void deleteClient(Home homeActivity, Client clientSelected, ListView listClientsView) {
+
+        String apiURLDelete = API_BASE_URL + "/" + clientSelected.getId();
+
+        RequestQueue requestQueue = getRequestQueue(homeActivity);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(homeActivity);
+        progressDialog.show();
+
+        Log.d(TAG, "deleteClient: " + clientSelected.getId());
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+                    listClientsView.post(() -> {
+                        ClientArrayAdapter clientArrayAdapter = (ClientArrayAdapter) listClientsView.getAdapter();
+                        clientArrayAdapter.remove(clientSelected);
+                        clientArrayAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "deleteClient: Client" + clientSelected.getId() + "removed");
+                    });
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(homeActivity, error);
+                }
+        );
 
         requestQueue.add(request);
     }

@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import java.nio.charset.StandardCharsets;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
  * Utility class to handle Volley errors and provide user-friendly error messages
@@ -28,24 +29,24 @@ public class VolleyErrorHandler {
      * @return User-friendly error message
      */
     public static String handleError(Context context, VolleyError error) {
-        String errorMessage = "Unknown error occurred";
+        String errorMessage = context.getString(R.string.unknown_error_occurred);
 
         // Check network connectivity first
         if (!NetworkUtils.isNetworkConnected(context)) {
-            return "No internet connection. Please check your network settings.";
+            return context.getString(R.string.no_internet_connection);
         }
 
         // Detailed error handling
         if (error instanceof NetworkError) {
-            errorMessage = "Network error. Unable to connect to the server.";
+            errorMessage = context.getString(R.string.network_error_unable_to_connect_to_the_server);
         } else if (error instanceof ServerError) {
-            errorMessage = handleServerError(error);
+            errorMessage = handleServerError(context, error);
         } else if (error instanceof AuthFailureError) {
-            errorMessage = "Authentication failed. Please give valid credentials.";
+            errorMessage = context.getString(R.string.authentication_failed_give_valid_credentials);
         } else if (error instanceof ParseError) {
-            errorMessage = "Unable to process server response.";
+            errorMessage = context.getString(R.string.unable_to_process_server_response);
         } else if (error instanceof TimeoutError) {
-            errorMessage = "Connection timed out. Please try again.";
+            errorMessage = context.getString(R.string.connection_timed_out);
         }
 
         // Log detailed error information
@@ -64,23 +65,23 @@ public class VolleyErrorHandler {
      * @param error Volley error
      * @return Specific server error message
      */
-    private static String handleServerError(VolleyError error) {
+    private static String handleServerError(Context context, VolleyError error) {
         if (error.networkResponse != null) {
             switch (error.networkResponse.statusCode) {
                 case 400:
-                    return "Bad Request. Please check your input.";
+                    return context.getString(R.string.bad_request);
                 case 401:
-                    return "Unauthorized. Please log in again.";
+                    return context.getString(R.string.unauthorized);
                 case 403:
-                    return "Forbidden. You don't have permission to access this resource.";
+                    return context.getString(R.string.forbidden_dont_have_permision_to_access);
                 case 404:
-                    return "Requested resource not found.";
+                    return context.getString(R.string.requested_resource_not_found);
                 case 500:
-                    return "Internal server error. Please try again later.";
+                    return context.getString(R.string.internal_server_error);
                 case 503:
-                    return "Service unavailable. Server is temporarily overloaded.";
+                    return context.getString(R.string.service_unavailable);
                 default:
-                    return "Server error. Status code: " + error.networkResponse.statusCode;
+                    return context.getString(R.string.unknow_server_error, error.networkResponse.statusCode);
             }
         }
         return "Unknown server error occurred.";

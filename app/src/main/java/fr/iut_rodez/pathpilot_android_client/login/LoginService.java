@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
-import static fr.iut_rodez.pathpilot_android_client.util.NetworkUtils.getRequestQueue;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
 
 import android.app.ProgressDialog;
@@ -21,7 +21,6 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 
 /**
  * Service to handle login requests.
- * @author François de Saint Palais
  */
 public class LoginService {
 
