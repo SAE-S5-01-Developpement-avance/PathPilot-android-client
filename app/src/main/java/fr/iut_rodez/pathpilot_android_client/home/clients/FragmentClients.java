@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
@@ -41,6 +42,7 @@ public class FragmentClients extends Fragment {
     private ImageButton addClientButton;
     private ListView listClientsView;
     private Home homeActivity;
+    private TextView textHeader;
 
     public static FragmentClients newInstance() {
         return new FragmentClients();
@@ -60,7 +62,12 @@ public class FragmentClients extends Fragment {
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         homeActivity = (Home) getActivity();
 
-        addClientButton = view.findViewById(R.id.add_client);
+        addClientButton = view.findViewById(R.id.button_add);
+
+        //Set header text to itineraries
+        textHeader = view.findViewById(R.id.header_text);
+        textHeader.setText(R.string.header_clients_list);
+
         listClientsView = view.findViewById(R.id.clients_list);
 
         // Get the clients from the API
