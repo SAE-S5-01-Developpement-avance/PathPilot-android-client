@@ -13,29 +13,32 @@
         android:layout_height="@dimen/normal_logo"
         android:contentDescription="@string/icon"
         android:src="@drawable/icon_logo_pathpilot"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/header_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:text=""
         android:textAlignment="center"
-        android:text="@string/newClientHeader"
         android:textColor="@color/white"
         android:textSize="@dimen/header_text"
-        android:paddingTop="25dp"
-        app:layout_constraintStart_toEndOf="@id/logo"/>
+        app:layout_constraintStart_toEndOf="@id/logo"
+        app:layout_constraintEnd_toStartOf="@id/backButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageButton
         android:id="@+id/backButton"
-        android:layout_width="@dimen/normal_logo"
-        android:layout_height="@dimen/normal_logo"
-        android:background="@color/blue_0"
-        android:padding="@dimen/micro_gap"
-        app:srcCompat="@drawable/icon_back_arrow"
-        android:contentDescription="@string/icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/icon_leave"
+        android:layout_marginEnd="@dimen/small_gap"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/micro_gap"
-        android:layout_marginEnd="@dimen/micro_gap"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
