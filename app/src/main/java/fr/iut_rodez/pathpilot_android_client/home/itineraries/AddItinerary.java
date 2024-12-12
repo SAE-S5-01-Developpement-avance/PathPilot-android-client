@@ -35,7 +35,6 @@ public class AddItinerary extends AppCompatActivity {
 
         listClientsAdded = new ArrayList<>();
         listClientsToAdd = new ArrayList<>();
-        ClientService.getClientsForItinerary(this,listClientsToAdd);
         
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
         Intent intent = getIntent();
