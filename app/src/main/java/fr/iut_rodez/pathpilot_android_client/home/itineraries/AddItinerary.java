@@ -34,12 +34,12 @@ public class AddItinerary extends AppCompatActivity {
         listClientsAddedView = findViewById(R.id.list_items_clients_added);
 
         listClientsAdded = new ArrayList<>();
-        // TODO get all clients of the salesman and take into @listClientsToAdd
         listClientsToAdd = new ArrayList<>();
-
+        ClientService.getClientsForItinerary(this,listClientsToAdd);
+        
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
         Intent intent = getIntent();
-        jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
+        jwtToken = null;// TODO intent.getParcelableExtra(FragmentItinerary.CLE_TOKEN);
     }
 
     /**
@@ -57,5 +57,9 @@ public class AddItinerary extends AppCompatActivity {
     public void resetField() {
         listClientsAddedView.removeAllViews();
         selectClientToAdd.clearListSelection();
+    }
+
+    public JWTToken getJWTToken() {
+        return jwtToken;
     }
 }
