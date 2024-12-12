@@ -12,13 +12,11 @@ public class Itinerary {
     private int id;
     private ArrayList<Client> clients;
 
-    public Itinerary(int id,ArrayList<Client> clients) {
-        this.id = id;
+    public Itinerary(ArrayList<Client> clients) {
         this.clients = clients;
     }
 
-    public Itinerary (int id) {
-        this.id  = id;
+    public Itinerary () {
         this.clients = new ArrayList<>();
     }
 
