@@ -21,6 +21,7 @@ public class Itinerary {
     }
 
     public Itinerary(JSONObject itineraryJson) throws JSONException {
+        // TODO complete with the parameters send by the API
         //this.id = itineraryJson.getInt("");
         //this.clients = itineraryJson.getJSONArray("");
     }
@@ -39,5 +40,16 @@ public class Itinerary {
 
     public void setClients(ArrayList<Client> clients) {
         this.clients = clients;
+    }
+
+    public JSONObject toJson() {
+        JSONObject itineraryJson = new JSONObject();
+        try {
+            // TODO Call the parameter with the same name of the API
+            itineraryJson.put("", clients);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return itineraryJson;
     }
 }

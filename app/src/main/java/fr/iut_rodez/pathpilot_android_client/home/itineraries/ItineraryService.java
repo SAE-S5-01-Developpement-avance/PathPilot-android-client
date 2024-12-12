@@ -1,7 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.itineraries;
 
-import static fr.iut_rodez.pathpilot_android_client.util.NetworkUtils.getRequestQueue;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,31 +27,31 @@ public class ItineraryService {
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/"; // TODO Complete the URL
     private static final String TAG = ItineraryService.class.getSimpleName();
     /**
-     * Request to the API to add a client.
+     * Request to the API to add an itinerary.
      * If the request is successful, it goes back to the previous activity.
      * @param context Context of the application
-     * @param itinerary The client to add
+     * @param itinerary The itinerary to add
      */
     public static void addItinerary(Context context, Itinerary itinerary) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
-        AddClient addClientActivity = (AddClient) context;
+        AddItinerary addItineraryActivity = (AddItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = addClientActivity.getJWTToken().getToken();
+        String jwtToken = addItineraryActivity.getJWTToken().getToken();
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_BASE_URL, client.toJson(),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_BASE_URL, itinerary.toJson(),
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
 
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra(AddClient.CLE_CLIENT_ADDED, true);
-                    addClientActivity.setResult(AddClient.RESULT_OK, returnIntent);
+                    addItineraryActivity.setResult(AddClient.RESULT_OK, returnIntent);
 
-                    addClientActivity.finish();
+                    addItineraryActivity.finish();
                 },
                 error -> {
                     progressDialog.dismiss();
