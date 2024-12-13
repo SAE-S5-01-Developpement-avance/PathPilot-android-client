@@ -90,7 +90,7 @@ public class ItineraryService {
 
         requestQueue.add(request);
     }
-    
+
     /**
      * Request to the API the itineraries.
      * If the request is successful, it add itineraries to the adapter and link them to the view
