@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.model;
+package fr.iut_rodez.pathpilot_android_client.home.clients;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -95,6 +95,17 @@ public class Client implements Parcelable {
         this.contactLastName = lastNameText;
         this.contactFirstName = firstNameText;
         this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * Constructor for Itineraries clients
+     *
+     * @param id           id of the client
+     * @param companyName  the client's companyName
+     */
+    public Client(int id, String companyName) {
+        this.id = id;
+        this.companyName = companyName;
     }
 
     public int getId() {
@@ -198,6 +209,15 @@ public class Client implements Parcelable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", salesman='" + salesman + '\'' +
                 '}';
+    }
+
+    /**
+     * Return a short string representation of the client using the companyName
+     *
+     * @return the short string representation of the client
+     */
+    public String toShortString() {
+        return companyName;
     }
 
     public JSONObject toJson() {
