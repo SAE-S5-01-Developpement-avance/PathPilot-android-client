@@ -20,12 +20,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
-
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.AddClient;
-import fr.iut_rodez.pathpilot_android_client.itinerary.FragmentItineraries;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 import fr.iut_rodez.pathpilot_android_client.model.Client;

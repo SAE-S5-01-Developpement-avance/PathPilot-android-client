@@ -19,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
-import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 /**

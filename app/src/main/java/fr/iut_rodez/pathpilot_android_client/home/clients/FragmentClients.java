@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
 
 /**
  * Display all the clients

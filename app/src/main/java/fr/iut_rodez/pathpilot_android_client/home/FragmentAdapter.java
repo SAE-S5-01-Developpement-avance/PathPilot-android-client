@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
-import fr.iut_rodez.pathpilot_android_client.itinerary.FragmentItineraries;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 
 public class FragmentAdapter extends FragmentStateAdapter {
 
