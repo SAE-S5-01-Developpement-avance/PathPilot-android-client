@@ -73,8 +73,7 @@ public class Itinerary {
     public JSONObject toJson() {
         JSONObject itineraryJson = new JSONObject();
         try {
-            // TODO Call the parameter with the same name of the API
-            itineraryJson.put("", clients);
+            itineraryJson.put("clients_schedule", clients);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

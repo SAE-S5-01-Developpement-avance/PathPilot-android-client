@@ -45,10 +45,10 @@ public class AddItinerary extends AppCompatActivity {
         listClientsToAdd = new ArrayList<>(); // TODO stub get the data from intent
 
         // TODO write in the string file
-        listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
-        listClientsToAdd.add(new Client("Big company", 0, 0,"",true,"tom","tom","0123456789"));
-        listClientsToAdd.add(new Client("Big1 company", 0, 0,"",true,"tom","tom","0123456789"));
-        listClientsToAdd.add(new Client("Big2 company", 0, 0,"",true,"tom","tom","0123456789"));
+        //listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
+        //listClientsToAdd.add(new Client("Big company", 0, 0,"",true,"tom","tom","0123456789"));
+        //listClientsToAdd.add(new Client("Big1 company", 0, 0,"",true,"tom","tom","0123456789"));
+        //listClientsToAdd.add(new Client("Big2 company", 0, 0,"",true,"tom","tom","0123456789"));
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,listClientsToAdd) {
             @Override
@@ -93,16 +93,14 @@ public class AddItinerary extends AppCompatActivity {
 
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
         Intent intent = getIntent();
-        jwtToken = null;// TODO intent.getParcelableExtra(FragmentItinerary.CLE_TOKEN);
+        jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 
     /**
      * Create an itinerary with the clients selected.
      */
     public void createItinerary() {
-        // TODO add conditions
-        // TODO Send the Itinerary to the API
-        new Itinerary(listClientsAdded, 0, 0);
+        ItineraryService.addItinerary(this,new Itinerary(listClientsAdded, 0, 0));
         resetField();
     }
 
@@ -127,7 +125,7 @@ public class AddItinerary extends AppCompatActivity {
      */
     // TODO Use the methode to check if there is one or more client added.
     public String checkItinerary() {
-        String errorMessage = ""; // TODO delete this variable
+        String errorMessage = "ERROR : ADD A CLIENT "; // TODO delete this variable
         // TODO Add the right error message
         return listClientsAdded.isEmpty()? errorMessage : "";
     }
