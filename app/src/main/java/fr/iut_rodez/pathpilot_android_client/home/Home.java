@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home;
 
 import static fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.CLE_CLIENT_ADDED;
+import static fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary.CLE_ITINERARY_ADDED;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.AddClient;
@@ -36,6 +39,7 @@ public class Home extends AppCompatActivity implements AddClient {
 
     private static final String TAG = Home.class.getSimpleName();
     public static final int INDEX_FRAGMENT_CLIENT = 0;
+    public static final int INDEX_FRAGMENT_ITINERARY = 1;
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
@@ -43,6 +47,7 @@ public class Home extends AppCompatActivity implements AddClient {
     private JWTToken JWTToken;
 
     private ActivityResultLauncher<Intent> addClientLauncher;
+    private ActivityResultLauncher<Intent> addItineraryLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,7 @@ public class Home extends AppCompatActivity implements AddClient {
         JWTToken = intent.getParcelableExtra(LoginService.CLE_TOKEN);
 
         addClientLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddClient);
+        addItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddItinerary);
     }
 
     public JWTToken getJWTToken() {
@@ -92,15 +98,34 @@ public class Home extends AppCompatActivity implements AddClient {
             Log.d(TAG, "onCreate: " + result.getData());
 
             // Goto the client fragment
-            viewPager.setCurrentItem(0);
+            viewPager.setCurrentItem(INDEX_FRAGMENT_CLIENT);
 
-            // Load the clients
+            // Load the clients if the creation was successful
             if (result.getData() != null
                     && result.getData().hasExtra(CLE_CLIENT_ADDED)
                     && result.getData().getBooleanExtra(CLE_CLIENT_ADDED, false)) {
 
                 FragmentClients fragmentClients = (FragmentClients) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_CLIENT);
                 fragmentClients.loadClients();
+            }
+        }
+    }
+
+    private void returnFromAddItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Return From Add Itinerary");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            // Goto the client fragment
+            viewPager.setCurrentItem(INDEX_FRAGMENT_ITINERARY);
+
+            // Load the clients if the creation was successful
+            if (result.getData() != null
+                    && result.getData().hasExtra(CLE_ITINERARY_ADDED)
+                    && result.getData().getBooleanExtra(CLE_ITINERARY_ADDED, false)) {
+
+                FragmentItineraries fragmentItineraries = (FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY);
+                fragmentItineraries.loadItineraries();
             }
         }
     }
