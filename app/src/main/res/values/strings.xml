@@ -113,4 +113,7 @@
     <string name="list_clients_to_add">Choosing clients</string>
     <string name="header_itineraries_list">Itineraries</string>
     <string name="header_clients_list">Clients</string>
+    <string name="itinerary_number">Itinerary n°</string>
+    <string name="itinerary_coordinates">"Home : "</string>
+    <string name="itinerary_total_stops">"Total stops: "</string>
 </resources>
