@@ -217,7 +217,7 @@ public class ClientService {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                
+
                     handleError(context, error);
                 }
         ) {
