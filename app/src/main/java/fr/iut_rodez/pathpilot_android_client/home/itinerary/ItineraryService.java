@@ -67,4 +67,63 @@ public class ItineraryService {
 
         requestQueue.add(request);
     }
+    
+    /**
+     * Request to the API the itineraries.
+     * If the request is successful, it add itineraries to the adapter and link them to the view
+     * If not it displays the error encounter.
+     *
+     * @param context             Context of the application
+     * @param listItinerariesView The view where the itineraries will be displayed
+     */
+    public static void getItineraries(Context context, ListView listItinerariesView) {
+        Log.d(TAG, "API URL: " + API_BASE_URL);
+
+        Home homeActivity = (Home) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL, null,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+                    try {
+                        List<Itinerary> itineraryArray = new ArrayList<>();
+                        if (response.has("_embedded")) {
+                            JSONArray itineraries = response.getJSONObject("_embedded").getJSONArray("routeList");
+                            Log.d(TAG, "getItineraries: " + itineraries);
+                            for (int i = 0; i < itineraries.length(); i++) {
+                                itineraryArray.add(new Itinerary(itineraries.getJSONObject(i)));
+                            }
+                        }
+
+                        Log.d(TAG, "getItineraries: " + itineraryArray);
+
+                        ItineraryArrayAdapter adapter = new ItineraryArrayAdapter(homeActivity, itineraryArray);
+                        listItinerariesView.post(() -> {
+                            listItinerariesView.setAdapter(adapter);
+                        });
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwtToken);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+    }
 }
