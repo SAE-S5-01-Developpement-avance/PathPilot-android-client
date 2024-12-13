@@ -88,4 +88,7 @@
     <string name="title_list_clients_added_for_itinerary"><u>Clients ajoutés</u></string>
     <string name="button_create_itinerary">Créer</string>
     <string name="list_clients_to_add">Choisir des clients</string>
+    <string name="itinerary_number">Itinéraire n°</string>
+    <string name="itinerary_coordinates">"Départ : "</string>
+    <string name="itinerary_total_stops">"Nombre d'étapes: "</string>
 </resources>
