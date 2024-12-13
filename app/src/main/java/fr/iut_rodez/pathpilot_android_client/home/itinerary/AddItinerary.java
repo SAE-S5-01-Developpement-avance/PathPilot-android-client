@@ -45,7 +45,7 @@ public class AddItinerary extends AppCompatActivity {
         listClientsToAdd = new ArrayList<>(); // TODO stub get the data from intent
 
         // TODO write in the string file
-        //listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
+        listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
         //listClientsToAdd.add(new Client("Big company", 0, 0,"",true,"tom","tom","0123456789"));
         //listClientsToAdd.add(new Client("Big1 company", 0, 0,"",true,"tom","tom","0123456789"));
         //listClientsToAdd.add(new Client("Big2 company", 0, 0,"",true,"tom","tom","0123456789"));
