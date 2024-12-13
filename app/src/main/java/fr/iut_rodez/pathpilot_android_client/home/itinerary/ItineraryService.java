@@ -5,11 +5,13 @@ import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.ge
 
 import android.app.ProgressDialog;
 import android.content.Context;
+
 import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
