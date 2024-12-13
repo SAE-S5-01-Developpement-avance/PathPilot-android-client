@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,6 +27,7 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.AddClient;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
+import fr.iut_rodez.pathpilot_android_client.model.Client;
 
 /**
  * Handle the different fragments of the application and the JWT token.
@@ -34,6 +36,7 @@ import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 public class Home extends AppCompatActivity implements AddClient {
 
     private static final String TAG = Home.class.getSimpleName();
+    public static final int INDEX_FRAGMENT_CLIENT = 0;
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
@@ -96,7 +99,7 @@ public class Home extends AppCompatActivity implements AddClient {
                     && result.getData().hasExtra(CLE_CLIENT_ADDED)
                     && result.getData().getBooleanExtra(CLE_CLIENT_ADDED, false)) {
 
-                FragmentClients fragmentClients = (FragmentClients) getSupportFragmentManager().getFragments().get(0);
+                FragmentClients fragmentClients = (FragmentClients) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_CLIENT);
                 fragmentClients.loadClients();
             }
         }
@@ -107,5 +110,7 @@ public class Home extends AppCompatActivity implements AddClient {
         return addClientLauncher;
     }
 
-    
+    public ArrayList<Client> getClients() {
+        return ((FragmentClients) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_CLIENT)).getListClients();
+    }
 }

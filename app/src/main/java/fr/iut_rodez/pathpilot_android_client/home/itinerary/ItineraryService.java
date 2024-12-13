@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.home.itineraries;
+package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
@@ -18,8 +18,6 @@ import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.clients.AddClient;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
 import fr.iut_rodez.pathpilot_android_client.model.Itinerary;
 
 public class ItineraryService {

@@ -16,7 +16,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +24,8 @@ import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.itineraries.AddItinerary;
 import fr.iut_rodez.pathpilot_android_client.model.Client;
 import fr.iut_rodez.pathpilot_android_client.model.Client.ClientArrayAdapter;
-import fr.iut_rodez.pathpilot_android_client.model.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
