@@ -13,12 +13,14 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
-import fr.iut_rodez.pathpilot_android_client.model.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 
 public class AddItinerary extends AppCompatActivity {
     private Spinner selectClientToAdd;
@@ -100,7 +102,7 @@ public class AddItinerary extends AppCompatActivity {
     public void createItinerary() {
         // TODO add conditions
         // TODO Send the Itinerary to the API
-        new Itinerary(listClientsAdded);
+        new Itinerary(listClientsAdded, 0, 0);
         resetField();
     }
 

@@ -7,18 +7,25 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.AddClient;
-import fr.iut_rodez.pathpilot_android_client.model.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryArrayAdapter;
 
 public class ItineraryService {
 
