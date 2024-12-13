@@ -31,7 +31,7 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryA
 
 public class ItineraryService {
 
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/routes"; // TODO Complete the URL
+    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/routes";
     private static final String TAG = ItineraryService.class.getSimpleName();
     /**
      * Request to the API to add an itinerary.
