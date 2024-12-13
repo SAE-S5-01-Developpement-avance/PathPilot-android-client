@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <AutoCompleteTextView
+            <Spinner
                 android:id="@+id/list_add_clients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

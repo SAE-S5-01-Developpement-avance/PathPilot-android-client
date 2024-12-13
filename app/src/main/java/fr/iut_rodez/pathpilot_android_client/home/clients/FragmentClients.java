@@ -17,6 +17,8 @@ import android.widget.ListView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.model.Client;
@@ -105,5 +107,13 @@ public class FragmentClients extends Fragment {
 
     public interface AddClient {
         ActivityResultLauncher<Intent> getAddClientLauncher();
+    }
+
+    public ArrayList<Client> getListClients(){
+        ArrayList<Client> listClients = new ArrayList<>();
+        for (int i =0; listClientsView.getAdapter().getCount() > i; i++) {
+            listClients.add((Client) listClientsView.getAdapter().getItem(i));
+        }
+        return listClients;
     }
 }
