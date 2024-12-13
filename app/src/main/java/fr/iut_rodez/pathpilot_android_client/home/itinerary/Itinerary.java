@@ -47,13 +47,13 @@ public class Itinerary {
         this.clients = new ArrayList<>();
         JSONArray clientsSchedule = itineraryJson.getJSONArray("clients_schedule");
 
-        JSONObject coordinates = itineraryJson.getJSONObject("salesman_home");
+        JSONObject coordinates = itineraryJson.getJSONObject("salesmanHome");
         this.salesmanLatitude = coordinates.getDouble("latitude");
         this.salesmanLongitude = coordinates.getDouble("longitude");
 
         for (int i = 0; i < clientsSchedule.length(); i++) {
             JSONObject clientJson = clientsSchedule.getJSONObject(i);
-            Client client = new Client(clientJson.getInt("client"), clientJson.getString("company_name"));
+            Client client = new Client(clientJson.getInt("client"), clientJson.getString("companyName"));
             this.clients.add(client);
         }
     }

@@ -76,39 +76,15 @@ public class FragmentItineraries extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//        new MenuInflater(getActivity()).inflate(R.menu.client_context_menu, menu);
-//    }
-
-//    @Override
-//    public boolean onContextItemSelected(MenuItem item) {
-//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-//        Client clientSelected = (Client) listItinerariesView.getItemAtPosition(info.position);
-//        int optionSelected = item.getItemId();
-//
-//        if (optionSelected == R.id.delete_client) {
-//            Log.d(TAG, "onContextItemSelected: Delete itinerary");
-//            ItineraryService.deleteClient(homeActivity, clientSelected, listItinerariesView);
-//        } else {
-//            Log.e(TAG, "onContextItemSelected: Unknown option selected");
-//        }
-//        return (super.onContextItemSelected(item));
-//    }
-
     public void loadItineraries() {
         ItineraryService.getItineraries(homeActivity, listItinerariesView);
     }
 
     private void gotoCreateItinerary() {
         Log.d(TAG, "gotoCreateItinerary: Goto create itinerary");
-        //Intent intent = new Intent(getActivity(), fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.class);
-        //intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
-        // TODO faire add itinerary class
-        //homeActivity.getAddClientLauncher().launch(intent);
-    }
 
-    public interface AddClient {
-        ActivityResultLauncher<Intent> getAddClientLauncher();
+        Intent intent = new Intent(getActivity(), AddItinerary.class);
+        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+        homeActivity.getAddClientLauncher().launch(intent);
     }
 }
