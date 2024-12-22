@@ -30,6 +30,7 @@
         <activity android:name=".home.Home" />
         <activity android:name=".home.clients.AddClient" />
         <activity android:name=".home.itinerary.AddItinerary"/>
+        <activity android:name=".map.MapSelection" />
     </application>
 
 </manifest>
