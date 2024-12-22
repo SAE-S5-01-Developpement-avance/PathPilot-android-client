@@ -97,4 +97,6 @@
     Map selection
     -->
     <string name="validate_selected_position">Valider la position sélectionnée</string>
+    <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
+    <string name="search">Rechercher</string>
 </resources>

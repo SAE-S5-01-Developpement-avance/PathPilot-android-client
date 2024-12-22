@@ -123,4 +123,6 @@
     Map selection
     -->
     <string name="validate_selected_position">Validate selected position</string>
+    <string name="adress_not_found">The given address has not been found</string>
+    <string name="search">Search</string>
 </resources>
