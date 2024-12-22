@@ -32,11 +32,11 @@ public class SignUp extends AppCompatActivity {
     private static final String TAG = SignUp.class.getSimpleName();
     private EditText firstName;
     private EditText lastName;
-    private EditText latitude;
-    private EditText longitude;
     private EditText mail;
     private EditText password;
     private EditText confirmPassord;
+    private TextView latitude;
+    private TextView longitude;
     private TextView labelFirstName;
     private TextView labelLastName;
     private TextView labelLatitude;
@@ -92,6 +92,8 @@ public class SignUp extends AppCompatActivity {
                     longitude.setText(String.valueOf(longitudeSelected));
                 } else {
                     Log.e(TAG, "handleReturnedMapSelection: Latitude or longitude is NaN");
+                    latitude.setText("-");
+                    longitude.setText("-");
                 }
             }
         }

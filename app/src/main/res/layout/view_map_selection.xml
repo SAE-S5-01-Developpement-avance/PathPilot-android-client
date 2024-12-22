@@ -16,7 +16,7 @@
         android:id="@+id/select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select"
+        android:text="@string/validate_selected_position"
         app:layout_constraintTop_toBottomOf="@+id/mapview"
         app:layout_constraintBottom_toBottomOf="parent"
         />

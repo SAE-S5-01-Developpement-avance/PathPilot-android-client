@@ -94,31 +94,27 @@
                 app:layout_constraintStart_toEndOf="@id/label_position_lat"
                 app:layout_constraintTop_toTopOf="@id/label_position_lat" />
 
-            <EditText
+            <TextView
                 android:id="@+id/latitude"
+                android:text="-"
                 android:layout_width="@dimen/no_dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:hint="@string/placeholder_position_lat"
                 android:textSize="@dimen/normal_text"
                 android:layout_marginStart="@dimen/micro_margin"
-                android:maxLines="1"
-                android:inputType="numberDecimal|numberSigned"
                 app:layout_constraintEnd_toStartOf="@id/longitude"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/label_position_lat" />
 
-            <EditText
+            <TextView
                 android:id="@+id/longitude"
+                android:text="-"
                 android:layout_width="@dimen/no_dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:hint="@string/placeholder_position_long"
                 android:textSize="@dimen/normal_text"
                 android:layout_marginEnd="@dimen/micro_margin"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:maxLines="1"
-                android:inputType="numberDecimal|numberSigned"
                 app:layout_constraintStart_toEndOf="@id/latitude"
                 app:layout_constraintTop_toBottomOf="@id/label_position_long" />
 
@@ -129,7 +125,7 @@
                 android:layout_marginTop="@dimen/micro_gap"
                 android:backgroundTint="@color/blue_0"
                 android:minHeight="@dimen/normal_gap"
-                android:text="Selection"
+                android:text="@string/select_position"
                 android:textSize="@dimen/big_text"
                 android:elevation="5dp"
                 app:layout_constraintTop_toBottomOf="@id/latitude"/>
@@ -140,6 +136,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/email"
                 android:textSize="@dimen/normal_text"
+                android:layout_marginTop="@dimen/normal_gap"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/selection_map_button" />
 
