@@ -24,6 +24,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     private static final String TAG = MapSelection.class.getSimpleName();
     public static final String KEY_LATITUDE = "latitude";
     public static final String KEY_LONGITUDE = "longitude";
+    public static final GeoPoint PARIS_POINT = new GeoPoint(48.8566, 2.3522);
 
     private MapView map = null;
     private Button selectButton = null;
@@ -35,36 +36,33 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Important! Initialiser la configuration OSMdroid
+        // Important! Initialise the osmdroid configuration
         Configuration.getInstance().load(getApplicationContext(),
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
 
-        // Définir le layout
         setContentView(R.layout.view_map_selection);
-
-        // Initialiser la carte
-        map = findViewById(R.id.mapview);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-
-        // Activer le zoom et les contrôles
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
-//        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-
-        // Contrôleur de carte
-        IMapController mapController = map.getController();
-        mapController.setZoom(10.0);
-
-        // Centrer la carte sur Paris
-        GeoPoint startPoint = new GeoPoint(48.8566, 2.3522);
-        mapController.setCenter(startPoint);
-
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        map.getOverlays().add(mapEventsOverlay);
 
         selectButton = findViewById(R.id.select);
         selectButton.setOnClickListener(v -> sendSelectedPoint());
         selectButton.setEnabled(pointSelected != null);
+
+        // Initialise the map
+        map = findViewById(R.id.mapview);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        // Enable zoom buttons and multi-touch zoom
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
+        map.setMultiTouchControls(true);
+
+        // Set the map center and zoom level
+        IMapController mapController = map.getController();
+        mapController.setZoom(10.0);
+        // Set the map center to Paris
+        mapController.setCenter(PARIS_POINT);
+
+        // Add a map event overlay to handle the long press event
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
+        map.getOverlays().add(mapEventsOverlay);
     }
 
     /**
@@ -87,45 +85,59 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     @Override
     protected void onResume() {
         super.onResume();
-        // Nécessaire pour OSMdroid
+        // Needed for OSMdroid
         map.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Nécessaire pour OSMdroid
+        // Needed for OSMdroid
         map.onPause();
     }
 
+    /**
+     * Called when a single tap event is detected
+     * @param p the point where the tap occurred
+     * @return true if the event is consumed, false otherwise
+     */
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
         return false;
     }
 
+    /**
+     * Called when a long press event is detected
+     * @param p the point where the long press occurred
+     * @return true if the event is consumed, false otherwise
+     */
     @Override
     public boolean longPressHelper(GeoPoint p) {
         if (p != null) {
-            double latitude = p.getLatitude();
-            double longitude = p.getLongitude();
-            Log.d("MapClick", "Coordonnées : Lat=" + latitude + ", Lon=" + longitude);
             setSelectedPoint(p);
         }
         return true;
     }
 
+    /**
+     * Set the selected point on the map
+     * @param geoPoint the point to select
+     */
     private void setSelectedPoint(GeoPoint geoPoint) {
         if (selectedMarker != null) {
+            // Remove the previous selected marker if it exists
             map.getOverlays().remove(selectedMarker);
         }
         pointSelected = geoPoint;
 
+        // Add a new marker at the selected point
         selectedMarker = new Marker(map);
         selectedMarker.setPosition(pointSelected);
         selectedMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         map.getOverlays().add(selectedMarker);
         map.invalidate();
 
+        // Enable the select button
         selectButton.setEnabled(pointSelected != null);
     }
 }
