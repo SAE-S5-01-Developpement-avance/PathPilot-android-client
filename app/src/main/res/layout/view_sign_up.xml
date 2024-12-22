@@ -122,15 +122,26 @@
                 app:layout_constraintStart_toEndOf="@id/latitude"
                 app:layout_constraintTop_toBottomOf="@id/label_position_long" />
 
+            <Button
+                android:id="@+id/selection_map_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/micro_gap"
+                android:backgroundTint="@color/blue_0"
+                android:minHeight="@dimen/normal_gap"
+                android:text="Selection"
+                android:textSize="@dimen/big_text"
+                android:elevation="5dp"
+                app:layout_constraintTop_toBottomOf="@id/latitude"/>
+
             <TextView
                 android:id="@+id/label_mail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_gap"
                 android:text="@string/email"
                 android:textSize="@dimen/normal_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/latitude" />
+                app:layout_constraintTop_toBottomOf="@id/selection_map_button" />
 
             <EditText
                 android:id="@+id/mail"
