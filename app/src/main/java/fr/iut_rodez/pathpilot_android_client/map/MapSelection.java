@@ -1,10 +1,13 @@
 package fr.iut_rodez.pathpilot_android_client.map;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import org.osmdroid.api.IMapController;
@@ -17,7 +20,11 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
+import java.util.List;
+import java.util.Locale;
+
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class MapSelection extends AppCompatActivity implements MapEventsReceiver {
 
@@ -26,25 +33,31 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     public static final String KEY_LONGITUDE = "longitude";
     public static final GeoPoint PARIS_POINT = new GeoPoint(48.8566, 2.3522);
 
+    private Button selectButton;
+    private EditText adresseInput;
     private MapView map = null;
-    private Button selectButton = null;
 
     private GeoPoint pointSelected = null;
     private Marker selectedMarker = null;
 
+    private Popup popup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        popup = new Popup(this);
 
         // Important! Initialise the osmdroid configuration
-        Configuration.getInstance().load(getApplicationContext(),
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
 
         setContentView(R.layout.view_map_selection);
 
         selectButton = findViewById(R.id.select);
         selectButton.setOnClickListener(v -> sendSelectedPoint());
         selectButton.setEnabled(pointSelected != null);
+        adresseInput = findViewById(R.id.adresse_input);
+
+        findViewById(R.id.search).setOnClickListener(v -> searchAddress());
 
         // Initialise the map
         map = findViewById(R.id.mapview);
@@ -80,6 +93,37 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
             finish();
         }
+    }
+
+    private void searchAddress() {
+        String addressStr = adresseInput.getText().toString();
+        if (!addressStr.isEmpty()) {
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocationName(addressStr, 1);
+
+                if (addresses != null && !addresses.isEmpty()) {
+                    // An improvement could be to show a list of addresses and let the user choose
+                    Address address = addresses.get(0);
+
+                    // Set the selected point to the address
+                    setSelectedPoint(new GeoPoint(address.getLatitude(), address.getLongitude()));
+
+                    centerToSelected();
+                } else {
+                    popup.showToastLong(getString(R.string.adress_not_found)); // TODO: i18n
+                }
+
+            } catch (Exception e) {
+                // TODO: i18n
+                popup.showAlertDialog("Erreur", "Erreur lors de la recherche: " + e.getMessage());
+            }
+        }
+    }
+
+    private void centerToSelected() {
+        map.getController().animateTo(pointSelected);
+        map.getController().setZoom(17.0);
     }
 
     @Override
