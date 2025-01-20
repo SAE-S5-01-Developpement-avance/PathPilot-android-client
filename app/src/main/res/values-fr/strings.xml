@@ -41,7 +41,7 @@
     <string name="phone_number_invalid">Le numéro de téléphone est invalide</string>
     <string name="company_name_blank">Entrer le nom de l\'organisation</string>
     <string name="description_blank">Entrer une description</string>
-    <string name="confirm_password_blank">Confirmer mot dee passe</string>
+    <string name="confirm_password_blank">Confirmer mot de passe</string>
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
     <string name="informations">Tous droits d\'auteur, tous droits de propriété intellectuelle</string>
     <string name="newClientHeader">Nouveau client</string>
