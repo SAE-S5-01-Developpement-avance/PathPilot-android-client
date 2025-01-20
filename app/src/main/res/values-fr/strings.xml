@@ -50,7 +50,7 @@
     <string name="radio_prospect">Prospect</string>
     <string name="sign_in">Se connecter</string>
     <string name="dont_have_account">Vous n\'avez pas de compte?</string>
-    <string name="link_sign_up"><u>S\'inscrir maintenant</u></string>
+    <string name="link_sign_up"><u>S\'inscrire maintenant</u></string>
     <string name="error_email_password_field_empty">L\'e-mail et le mot de passe doivent être entrés</string>
     <string name="error_email_invalid">L\'e-mail est invalide</string>
     <string name="error_no_internet">Pas de connexion internet</string>
