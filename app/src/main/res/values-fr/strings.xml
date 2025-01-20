@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="first_name">Prénom</string>
+    <string name="first_name"><b>Prénom</b></string>
     <string name="placeholder_first_name">Martin</string>
-    <string name="last_name">Nom</string>
+    <string name="last_name"><b>Nom</b></string>
     <string name="placeholder_last_name">Dupont</string>
-    <string name="position_lat">Latitude</string>
+    <string name="position_lat"><b>Latitude</b></string>
     <string name="placeholder_position_lat">48.85341</string>
-    <string name="position_long">Longitude</string>
+    <string name="position_long"><b>Longitude</b></string>
     <string name="placeholder_position_long">2.34880</string>
-    <string name="email">Adresse e-mail</string>
+    <string name="email"><b>Adresse e-mail</b></string>
     <string name="placeholder_email">exemple@mail.com</string>
-    <string name="password">Mot de passe</string>
     <string name="confirm_password">Confirmation mot de passe</string>
+    <string name="password"><b>Mot de passe</b></string>
     <string name="sign_up">Créer mon compte</string>
     <string name="already_account">Vous avez déjà un compte?</string>
     <string name="link_sign_in">Se connecter</string>
@@ -50,7 +50,7 @@
     <string name="radio_prospect">Prospect</string>
     <string name="sign_in">Se connecter</string>
     <string name="dont_have_account">Vous n\'avez pas de compte?</string>
-    <string name="link_sign_up"><u>S\'inscrire maintenant</u></string>
+    <string name="link_sign_up"><u>S\'inscrir maintenant</u></string>
     <string name="error_email_password_field_empty">L\'e-mail et le mot de passe doivent être entrés</string>
     <string name="error_email_invalid">L\'e-mail est invalide</string>
     <string name="error_no_internet">Pas de connexion internet</string>
