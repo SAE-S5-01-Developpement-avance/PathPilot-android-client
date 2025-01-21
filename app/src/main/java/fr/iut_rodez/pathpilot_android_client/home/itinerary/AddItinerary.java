@@ -1,7 +1,9 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
@@ -19,8 +23,9 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.model.Client;
+import fr.iut_rodez.pathpilot_android_client.model.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.model.Itinerary;
 
 public class AddItinerary extends AppCompatActivity {
 
@@ -32,7 +37,7 @@ public class AddItinerary extends AppCompatActivity {
     private JWTToken jwtToken;
     private ArrayList<Client> listClientsAdded;
     private ArrayAdapter<Client> clientsToAddAdapter;
-    private ArrayAdapter<Client> clientsAddedAdapter;
+    private ClientArrayAdapter clientsAddedAdapter;
 
 
     @Override
@@ -69,7 +74,7 @@ public class AddItinerary extends AppCompatActivity {
                 return view;
             }
         };
-        clientsAddedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listClientsAdded);
+        clientsAddedAdapter = new ClientArrayAdapter(this, listClientsAdded);
         listClientsAddedView.setAdapter(clientsAddedAdapter);
         selectClientToAdd.setAdapter(clientsToAddAdapter);
 

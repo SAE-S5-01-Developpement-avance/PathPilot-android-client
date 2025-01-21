@@ -24,7 +24,8 @@ import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.model.Client;
+import fr.iut_rodez.pathpilot_android_client.model.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
