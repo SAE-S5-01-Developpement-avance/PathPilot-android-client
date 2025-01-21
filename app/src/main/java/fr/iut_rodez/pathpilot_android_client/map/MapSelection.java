@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -70,12 +70,46 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         // Set the map center and zoom level
         IMapController mapController = map.getController();
         mapController.setZoom(10.0);
-        // Set the map center to Paris
-        mapController.setCenter(PARIS_POINT);
+        // Set the map center to the given point or the default point
+        mapController.setCenter(getGivenSelectedPointOrDefault());
+
+        if (getGivenSelectedPoint() != null) {
+            setSelectedPoint(getGivenSelectedPoint());
+        }
 
         // Add a map event overlay to handle the long press event
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
+    }
+
+    /**
+     * Get the selected point from the intent or return the default point
+     * <p>
+     * The default point is the center of Paris
+     * </p>
+     *
+     * @return the selected point or the default point
+     */
+    private GeoPoint getGivenSelectedPointOrDefault() {
+        GeoPoint point = getGivenSelectedPoint();
+        if (point == null) {
+            point = PARIS_POINT;
+        }
+        return point;
+    }
+
+    private GeoPoint getGivenSelectedPoint() {
+        Intent intent = getIntent();
+        GeoPoint point = null;
+        if (intent != null && intent.hasExtra(KEY_LATITUDE) && intent.hasExtra(KEY_LONGITUDE)) {
+            double latitude = intent.getDoubleExtra(KEY_LATITUDE, Double.NaN);
+            double longitude = intent.getDoubleExtra(KEY_LONGITUDE, Double.NaN);
+
+            if (!Double.isNaN(latitude) && !Double.isNaN(longitude)) {
+                point = new GeoPoint(latitude, longitude);
+            }
+        }
+        return point;
     }
 
     /**
@@ -142,6 +176,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
     /**
      * Called when a single tap event is detected
+     *
      * @param p the point where the tap occurred
      * @return true if the event is consumed, false otherwise
      */
@@ -152,6 +187,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
     /**
      * Called when a long press event is detected
+     *
      * @param p the point where the long press occurred
      * @return true if the event is consumed, false otherwise
      */
@@ -165,6 +201,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
     /**
      * Set the selected point on the map
+     *
      * @param geoPoint the point to select
      */
     private void setSelectedPoint(GeoPoint geoPoint) {
