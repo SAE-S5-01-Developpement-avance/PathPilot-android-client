@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="first_name">Prénom</string>
+    <string name="first_name"><b>Prénom</b></string>
     <string name="placeholder_first_name">Martin</string>
-    <string name="last_name">Nom</string>
+    <string name="last_name"><b>Nom</b></string>
     <string name="placeholder_last_name">Dupont</string>
-    <string name="position_lat">Latitude</string>
+    <string name="position_lat"><b>Latitude</b></string>
     <string name="placeholder_position_lat">48.85341</string>
-    <string name="position_long">Longitude</string>
+    <string name="position_long"><b>Longitude</b></string>
     <string name="placeholder_position_long">2.34880</string>
-    <string name="email">Adresse e-mail</string>
+    <string name="email"><b>Adresse e-mail</b></string>
     <string name="placeholder_email">exemple@mail.com</string>
-    <string name="password">Mot de passe</string>
     <string name="confirm_password">Confirmation mot de passe</string>
+    <string name="password"><b>Mot de passe</b></string>
     <string name="sign_up">Créer mon compte</string>
     <string name="already_account">Vous avez déjà un compte?</string>
     <string name="link_sign_in">Se connecter</string>
@@ -41,7 +41,7 @@
     <string name="phone_number_invalid">Le numéro de téléphone est invalide</string>
     <string name="company_name_blank">Entrer le nom de l\'organisation</string>
     <string name="description_blank">Entrer une description</string>
-    <string name="confirm_password_blank">Confirmer mot dee passe</string>
+    <string name="confirm_password_blank">Confirmer mot de passe</string>
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
     <string name="informations">Tous droits d\'auteur, tous droits de propriété intellectuelle</string>
     <string name="newClientHeader">Nouveau client</string>
