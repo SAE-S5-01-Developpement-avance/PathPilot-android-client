@@ -83,7 +83,7 @@ public class AddClient extends AppCompatActivity {
 
         findViewById(R.id.create_client_button).setOnClickListener(v -> createAccount());
         findViewById(R.id.backButton).setOnClickListener(v -> gotoClient());
-        findViewById(R.id.selection_map_button).setOnClickListener(v -> launcherMapSelection.launch(new Intent(this, MapSelection.class)));
+        findViewById(R.id.selection_map_button).setOnClickListener(v -> gotoMapSelection());
 
         popup = new Popup(this);
 
@@ -91,6 +91,22 @@ public class AddClient extends AppCompatActivity {
         jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
 
         launcherMapSelection = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::handleReturnedMapSelection);
+    }
+
+    private void gotoMapSelection() {
+        Intent intent = new Intent(this, MapSelection.class);
+        if (!latitude.getText().toString().isEmpty() && !longitude.getText().toString().isEmpty()) {
+            try {
+                double latitudeValue = Double.parseDouble(latitude.getText().toString());
+                double longitudeValue = Double.parseDouble(longitude.getText().toString());
+                intent.putExtra(MapSelection.KEY_LATITUDE, latitudeValue);
+                intent.putExtra(MapSelection.KEY_LONGITUDE, longitudeValue);
+            } catch (NumberFormatException e) {
+                Log.i(TAG, "gotoSelectionMap: Latitude or longitude is not a number. No value will be sent to the MapSelection activity", e);
+            }
+        }
+
+        launcherMapSelection.launch(intent);
     }
 
     private void handleReturnedMapSelection(ActivityResult result) {

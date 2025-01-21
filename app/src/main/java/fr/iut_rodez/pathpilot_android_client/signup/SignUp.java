@@ -100,7 +100,18 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void gotoSelectionMap() {
-        launcherMapSelection.launch(new Intent(this, MapSelection.class));
+        Intent intent = new Intent(this, MapSelection.class);
+        if (!latitude.getText().toString().isEmpty() && !longitude.getText().toString().isEmpty()) {
+            try {
+                double latitudeValue = Double.parseDouble(latitude.getText().toString());
+                double longitudeValue = Double.parseDouble(longitude.getText().toString());
+                intent.putExtra(MapSelection.KEY_LATITUDE, latitudeValue);
+                intent.putExtra(MapSelection.KEY_LONGITUDE, longitudeValue);
+            } catch (NumberFormatException e) {
+                Log.i(TAG, "gotoSelectionMap: Latitude or longitude is not a number. No value will be sent to the MapSelection activity", e);
+            }
+        }
+        launcherMapSelection.launch(intent);
     }
 
     /**
