@@ -44,7 +44,7 @@ android {
         }
         prod {
             group = "environment"
-            buildConfigField "String", "API_BASE_URL", "\"https://api.example.com/\"" // TODO: Change this
+            buildConfigField "String", "API_BASE_URL", "\"http://13.60.81.173:8080/\""
         }
     }
 }
