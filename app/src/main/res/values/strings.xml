@@ -125,4 +125,10 @@
     <string name="validate_selected_position">Validate selected position</string>
     <string name="adress_not_found">The given address has not been found</string>
     <string name="search">Search</string>
+
+    <!--
+    Pagination
+    -->
+    <string name="next_page">Next page</string>
+    <string name="previous_page">Previous page</string>
 </resources>
