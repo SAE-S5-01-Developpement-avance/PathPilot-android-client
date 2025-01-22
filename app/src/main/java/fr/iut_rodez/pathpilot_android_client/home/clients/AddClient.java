@@ -10,15 +10,21 @@ import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isPhoneNum
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
+import fr.iut_rodez.pathpilot_android_client.model.Client;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 /**
@@ -29,10 +35,12 @@ public class AddClient extends AppCompatActivity {
     private static final String TAG = fr.iut_rodez.pathpilot_android_client.signup.SignUp.class.getSimpleName();
     public static final String CLE_CLIENT_ADDED = "clientAdded";
 
+    private ActivityResultLauncher<Intent> launcherMapSelection;
 
+    private Button selectButton;
     private EditText companyName;
-    private EditText latitude;
-    private EditText longitude;
+    private TextView latitude;
+    private TextView longitude;
     private EditText description;
     private RadioGroup clientType;
     private EditText firstName;
@@ -75,11 +83,49 @@ public class AddClient extends AppCompatActivity {
 
         findViewById(R.id.create_client_button).setOnClickListener(v -> createAccount());
         findViewById(R.id.backButton).setOnClickListener(v -> gotoClient());
+        findViewById(R.id.selection_map_button).setOnClickListener(v -> gotoMapSelection());
 
         popup = new Popup(this);
 
         Intent intent = getIntent();
         jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
+
+        launcherMapSelection = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::handleReturnedMapSelection);
+    }
+
+    private void gotoMapSelection() {
+        Intent intent = new Intent(this, MapSelection.class);
+        if (!latitude.getText().toString().isEmpty() && !longitude.getText().toString().isEmpty()) {
+            try {
+                double latitudeValue = Double.parseDouble(latitude.getText().toString());
+                double longitudeValue = Double.parseDouble(longitude.getText().toString());
+                intent.putExtra(MapSelection.KEY_LATITUDE, latitudeValue);
+                intent.putExtra(MapSelection.KEY_LONGITUDE, longitudeValue);
+            } catch (NumberFormatException e) {
+                Log.i(TAG, "gotoSelectionMap: Latitude or longitude is not a number. No value will be sent to the MapSelection activity", e);
+            }
+        }
+
+        launcherMapSelection.launch(intent);
+    }
+
+    private void handleReturnedMapSelection(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                double latitudeSelected = data.getDoubleExtra(MapSelection.KEY_LATITUDE, Double.NaN);
+                double longitudeSelected = data.getDoubleExtra(MapSelection.KEY_LONGITUDE, Double.NaN);
+
+                if (!Double.isNaN(latitudeSelected) && !Double.isNaN(longitudeSelected)) {
+                    latitude.setText(String.valueOf(latitudeSelected));
+                    longitude.setText(String.valueOf(longitudeSelected));
+                } else {
+                    Log.e(TAG, "handleReturnedMapSelection: Latitude or longitude is NaN");
+                    latitude.setText("-");
+                    longitude.setText("-");
+                }
+            }
+        }
     }
 
     /**

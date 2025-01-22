@@ -32,6 +32,8 @@
     <string name="client_type">Client type:</string>
     <string name="radio_client">Client</string>
 
+    <string name="select_position">Select position</string>
+
     <!--
     Error messages for forms
     -->
@@ -116,4 +118,11 @@
     <string name="itinerary_number">Itinerary n°</string>
     <string name="itinerary_coordinates">"Home : "</string>
     <string name="itinerary_total_stops">"Total stops: "</string>
+
+    <!--
+    Map selection
+    -->
+    <string name="validate_selected_position">Validate selected position</string>
+    <string name="adress_not_found">The given address has not been found</string>
+    <string name="search">Search</string>
 </resources>

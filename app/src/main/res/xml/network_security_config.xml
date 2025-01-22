@@ -8,6 +8,10 @@
         <domain includeSubdomains="true">10.0.0.214</domain>
         <domain includeSubdomains="true">192.168.1.40</domain>
         <domain includeSubdomains="true">192.168.8.165</domain>
+        <domain includeSubdomains="true">51.20.1.248</domain>
+        <domain includeSubdomains="true">10.109.1.35</domain>
+        <domain includeSubdomains="true">192.168.1.180</domain>
+        <domain includeSubdomains="true">192.168.166.163</domain>
         <domain includeSubdomains="true">192.168.21.165</domain>
         <domain includeSubdomains="true">13.60.81.173</domain>
     </domain-config>
