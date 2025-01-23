@@ -57,8 +57,6 @@ public class AddItinerary extends AppCompatActivity {
         listClientsAdded = new ArrayList<>();
         listClientsToAdd = new ArrayList<>();
 
-        listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
-
         listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
@@ -86,15 +84,12 @@ public class AddItinerary extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (listClientsAdded.size() < 8) {
-                    if (position != AdapterView.INVALID_POSITION && position != 0) {
+                    if (position != AdapterView.INVALID_POSITION) {
                         Client selectedClient = listClientsToAdd.get(position);
                         listClientsAdded.add(selectedClient);
                         clientsAddedAdapter.notifyDataSetChanged();
                         listClientsToAdd.remove(position);
                         clientsToAddAdapter.notifyDataSetChanged();
-                        if (!listClientsToAdd.isEmpty()) {
-                            selectClientToAdd.setSelection(0);
-                        }
                     }
                 } else if (position != 0){
                     popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
@@ -112,8 +107,6 @@ public class AddItinerary extends AppCompatActivity {
 
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
-
-
 
     /**
      * Create an itinerary with the clients selected.
