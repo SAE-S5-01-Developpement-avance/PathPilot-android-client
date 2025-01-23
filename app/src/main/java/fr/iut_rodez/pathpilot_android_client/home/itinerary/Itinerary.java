@@ -45,15 +45,15 @@ public class Itinerary {
     public Itinerary(JSONObject itineraryJson) throws JSONException {
         this.id = itineraryJson.getString("id");
         this.clients = new ArrayList<>();
-        JSONArray clientsSchedule = itineraryJson.getJSONArray("clients_schedule");
 
         JSONObject coordinates = itineraryJson.getJSONObject("salesman_home");
         this.salesmanLongitude = coordinates.getDouble("x");
         this.salesmanLatitude = coordinates.getDouble("y");
 
+        JSONArray clientsSchedule = itineraryJson.getJSONArray("clients_schedule");
         for (int i = 0; i < clientsSchedule.length(); i++) {
             JSONObject clientJson = clientsSchedule.getJSONObject(i);
-            JSONObject clientCoordinates = clientJson.getJSONObject("companyLocation");
+            JSONObject companyLocation = clientJson.getJSONObject("companyLocation");
             Client client = new Client(
                     clientJson.getInt("id"),
                     clientJson.getString("companyName"),
