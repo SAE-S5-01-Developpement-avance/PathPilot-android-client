@@ -88,15 +88,20 @@ public class AddItinerary extends AppCompatActivity {
         selectClientToAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != AdapterView.INVALID_POSITION && position != 0) {
-                    Client selectedClient = listClientsToAdd.get(position);
-                    listClientsAdded.add(selectedClient);
-                    clientsAddedAdapter.notifyDataSetChanged();
-                    listClientsToAdd.remove(position);
-                    clientsToAddAdapter.notifyDataSetChanged();
-                    if (!listClientsToAdd.isEmpty()) {
-                        selectClientToAdd.setSelection(0);
+                if (listClientsAdded.size() < 8) {
+                    if (position != AdapterView.INVALID_POSITION && position != 0) {
+                        Client selectedClient = listClientsToAdd.get(position);
+                        listClientsAdded.add(selectedClient);
+                        clientsAddedAdapter.notifyDataSetChanged();
+                        listClientsToAdd.remove(position);
+                        clientsToAddAdapter.notifyDataSetChanged();
+                        if (!listClientsToAdd.isEmpty()) {
+                            selectClientToAdd.setSelection(0);
+                        }
                     }
+                } else if (position != 0){
+                    popup.showAlertDialog("error","Max 8 clients"); //TODO add to the strings files
+                    selectClientToAdd.setSelection(0);
                 }
             }
 
@@ -116,31 +121,24 @@ public class AddItinerary extends AppCompatActivity {
 
     /**
      * Create an itinerary with the clients selected.
+     * The itinerary can be create if it has one or more clients attached.
      */
     public void createItinerary() {
-        try {
-            ItineraryService.addItinerary(this,listClientsAdded);
-        } catch (JSONException e) {
-            // TODO i18n
-            popup.showAlertDialog("Error","Création de la requete d'ajout d'un itinéraire");
+        if (listClientsAdded.isEmpty()) {
+            // TODO Add the right error message and add it to the strings files
+            popup.showAlertDialog("ERROR","You have to add a client");
+        } else {
+            try {
+                ItineraryService.addItinerary(this,listClientsAdded);
+            } catch (JSONException e) {
+                // TODO i18n
+                popup.showAlertDialog("Error","Création de la requete d'ajout d'un itinéraire");
+            }
         }
     }
 
     public JWTToken getJWTToken() {
         return jwtToken;
-    }
-
-    /**
-     * Check if the itinerary is valid.
-     * The itinerary can be create if it has one or more clients attached.
-     *
-     * @return errorMessage
-     */
-    // TODO Use the methode to check if there is one or more client added.
-    public String checkItinerary() {
-        String errorMessage = "ERROR : ADD A CLIENT "; // TODO delete this variable
-        // TODO Add the right error message
-        return listClientsAdded.isEmpty() ? errorMessage : "";
     }
 
     @Override
