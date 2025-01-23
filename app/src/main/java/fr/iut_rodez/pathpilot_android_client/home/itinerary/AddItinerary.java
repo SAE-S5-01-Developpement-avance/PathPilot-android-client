@@ -57,10 +57,9 @@ public class AddItinerary extends AppCompatActivity {
         registerForContextMenu(listClientsAddedView);
 
         listClientsAdded = new ArrayList<>();
-        listClientsToAdd = new ArrayList<>(); // TODO stub get the data from intent
+        listClientsToAdd = new ArrayList<>();
 
-        // TODO write in the string file
-        listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
+        listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0,0,"",true,"","",""));
 
         listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
 
@@ -99,7 +98,7 @@ public class AddItinerary extends AppCompatActivity {
                         }
                     }
                 } else if (position != 0){
-                    popup.showAlertDialog("error","Max 8 clients"); //TODO add to the strings files
+                    popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
                     selectClientToAdd.setSelection(0);
                 }
             }
@@ -121,14 +120,12 @@ public class AddItinerary extends AppCompatActivity {
      */
     public void createItinerary() {
         if (listClientsAdded.isEmpty()) {
-            // TODO Add the right error message and add it to the strings files
-            popup.showAlertDialog("ERROR","You have to add a client");
+            popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_min_clients_per_itinerary));
         } else {
             try {
                 ItineraryService.addItinerary(this,listClientsAdded);
             } catch (JSONException e) {
-                // TODO i18n
-                popup.showAlertDialog("Error","Création de la requete d'ajout d'un itinéraire");
+                popup.showAlertDialog(getString(R.string.error_title),getString(R.string.internal_server_error));
             }
         }
     }
