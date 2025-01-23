@@ -1,7 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
-import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,9 +24,6 @@ import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.itineraries.AddItinerary;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
-import fr.iut_rodez.pathpilot_android_client.model.Client.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
@@ -179,56 +176,6 @@ public class ClientService {
                     handleError(homeActivity, error);
                 }
         );
-        requestQueue.add(request);
-    }
-    /**
-     * Request to the API the clients.
-     * If the request is successful, it adds the client to the adapter and links it to the view
-     * If not it displays the error encounter.
-     *
-     * @param context Context of the application
-     * @param listClientsToAdd The view where the clients will be displayed
-     */
-    public static void getClientsForItinerary(Context context, ArrayList<Client> listClientsToAdd) {
-        Log.d(TAG, "API URL: " + API_BASE_URL);
-
-        AddItinerary addItineraryActivity = (AddItinerary) context;
-        RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = addItineraryActivity.getJWTToken().getToken();
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL, null,
-                response -> {
-                    progressDialog.dismiss();
-                    Log.d(TAG, "onResponse: " + response);
-                    try {
-                        if (response.has("_embedded")) {
-                            JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientList");
-                            Log.d(TAG, "getClients: " + clients);
-                            for (int i = 0; i < clients.length(); i++) {
-                                listClientsToAdd.add(new Client(clients.getJSONObject(i)));
-                            }
-                        }
-
-                        Log.d(TAG, "getClients: " + listClientsToAdd);
-
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    handleError(context, error);
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
-
         requestQueue.add(request);
     }
 }

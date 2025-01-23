@@ -95,12 +95,11 @@ public class AddItinerary extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button_create_itinerary).setOnClickListener(v -> {
-            Log.d(TAG, "Create itinerary");
-        });
         Intent intent = getIntent();
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
+
+
 
     /**
      * Reset the content of "add itinerary" interface.
