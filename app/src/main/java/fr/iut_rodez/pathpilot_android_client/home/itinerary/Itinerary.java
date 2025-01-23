@@ -1,9 +1,12 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -64,6 +67,25 @@ public class Itinerary {
         }
     }
 
+    protected Itinerary(Parcel in) {
+        id = in.readInt();
+        clients = in.createTypedArrayList(Client.CREATOR);
+        salesmanLatitude = in.readDouble();
+        salesmanLongitude = in.readDouble();
+    }
+
+    public static final Creator<Itinerary> CREATOR = new Creator<Itinerary>() {
+        @Override
+        public Itinerary createFromParcel(Parcel in) {
+            return new Itinerary(in);
+        }
+
+        @Override
+        public Itinerary[] newArray(int size) {
+            return new Itinerary[size];
+        }
+    };
+
     public String getId() {
         return id;
     }
@@ -100,6 +122,19 @@ public class Itinerary {
 
     public double getSalesmanLatitude() {
         return salesmanLatitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeTypedList(clients);
+        dest.writeDouble(salesmanLatitude);
+        dest.writeDouble(salesmanLongitude);
     }
 
     /**
