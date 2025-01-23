@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,16 +14,15 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 
 public class AddItinerary extends AppCompatActivity {
+
+    public static final String TAG = AddItinerary.class.getSimpleName();
 
     public static final String CLE_ITINERARY_ADDED = "itineraryAdded";
 
@@ -48,12 +48,12 @@ public class AddItinerary extends AppCompatActivity {
         listClientsToAdd = new ArrayList<>(); // TODO stub get the data from intent
 
         // TODO write in the string file
-        listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
+        listClientsToAdd.add(new Client("Select clients", 0, 0, "", true, "", "", ""));
         //listClientsToAdd.add(new Client("Big company", 0, 0,"",true,"tom","tom","0123456789"));
         //listClientsToAdd.add(new Client("Big1 company", 0, 0,"",true,"tom","tom","0123456789"));
         //listClientsToAdd.add(new Client("Big2 company", 0, 0,"",true,"tom","tom","0123456789"));
 
-        clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,listClientsToAdd) {
+        clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -61,6 +61,7 @@ public class AddItinerary extends AppCompatActivity {
                 textView.setText(getItem(position).getCompanyName());
                 return view;
             }
+
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -94,20 +95,12 @@ public class AddItinerary extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
+        findViewById(R.id.button_create_itinerary).setOnClickListener(v -> {
+            Log.d(TAG, "Create itinerary");
+        });
         Intent intent = getIntent();
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
-
-    /**
-     * Create an itinerary with the clients selected.
-     */
-    public void createItinerary() {
-        ItineraryService.addItinerary(this,new Itinerary(listClientsAdded, 0, 0));
-        resetField();
-    }
-
-
 
     /**
      * Reset the content of "add itinerary" interface.
@@ -124,12 +117,13 @@ public class AddItinerary extends AppCompatActivity {
     /**
      * Check if the itinerary is valid.
      * The itinerary can be create if it has one or more clients attached.
+     *
      * @return errorMessage
      */
     // TODO Use the methode to check if there is one or more client added.
     public String checkItinerary() {
         String errorMessage = "ERROR : ADD A CLIENT "; // TODO delete this variable
         // TODO Add the right error message
-        return listClientsAdded.isEmpty()? errorMessage : "";
+        return listClientsAdded.isEmpty() ? errorMessage : "";
     }
 }
