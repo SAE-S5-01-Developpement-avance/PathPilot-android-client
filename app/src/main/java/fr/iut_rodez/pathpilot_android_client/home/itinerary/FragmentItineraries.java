@@ -31,6 +31,7 @@ public class FragmentItineraries extends Fragment {
     public static final int ICON = R.drawable.icon_list;
     private static final String TAG = FragmentItineraries.class.getSimpleName();
     public static final String CLE_TOKEN = "token";
+    public static final String CLE_LIST_CLIENT = "listClient";
 
     private ImageButton addItineraryButton;
     private ListView listItinerariesView;
@@ -79,8 +80,13 @@ public class FragmentItineraries extends Fragment {
     private void gotoCreateItinerary() {
         Log.d(TAG, "gotoCreateItinerary: Goto create itinerary");
 
-        Intent intent = new Intent(getActivity(), AddItinerary.class);
+        Intent intent = new Intent(getActivity(), fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary.class);
         intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
-        homeActivity.getAddClientLauncher().launch(intent);
+        intent.putExtra(CLE_LIST_CLIENT, homeActivity.getClients());
+        homeActivity.getAddItineraryLauncher().launch(intent);
+    }
+
+    public interface AddItinerary{
+        ActivityResultLauncher<Intent> getAddItineraryLauncher();
     }
 }

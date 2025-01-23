@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.model;
+package fr.iut_rodez.pathpilot_android_client.home.clients;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 
 /**
  * Adapter for the list of clients.

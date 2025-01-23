@@ -34,7 +34,7 @@ import fr.iut_rodez.pathpilot_android_client.login.LoginService;
  * Handle the different fragments of the application and the JWT token.
  * The JWT token is passed from the login activity to the home activity.
  */
-public class Home extends AppCompatActivity implements AddClient {
+public class Home extends AppCompatActivity implements AddClient, FragmentItineraries.AddItinerary {
 
     private static final String TAG = Home.class.getSimpleName();
     public static final int INDEX_FRAGMENT_CLIENT = 0;
@@ -129,9 +129,11 @@ public class Home extends AppCompatActivity implements AddClient {
         }
     }
 
-    @Override
     public ActivityResultLauncher<Intent> getAddClientLauncher() {
         return addClientLauncher;
+    }
+    public ActivityResultLauncher<Intent> getAddItineraryLauncher() {
+        return addItineraryLauncher;
     }
 
     public ArrayList<Client> getClients() {

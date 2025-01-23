@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary;
 
 /**
@@ -59,7 +60,7 @@ public class LoginService {
 
                         JWTToken JWTToken = new JWTToken(token, expiresIn);
 
-                        Intent intent = new Intent(context, AddItinerary.class);
+                        Intent intent = new Intent(context, Home.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(CLE_TOKEN, JWTToken);
 
