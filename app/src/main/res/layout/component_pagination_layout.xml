@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:padding="8dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <!-- Previous Button -->
+    <ImageButton
+        android:id="@+id/prev_button"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:background="@drawable/pagination_previous_next_button"
+        android:src="@drawable/icon_chevron_left"
+        android:contentDescription="@string/previous_page"
+        android:scaleType="center"
+        android:elevation="3dp"/>
+
+    <!-- Page Indicator -->
+    <TextView
+        android:id="@+id/page_indicator"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:background="@drawable/pagination_page_number"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginVertical="2dp"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        android:text="1 of 20"
+        android:elevation="1dp"/>
+
+    <!-- Next Button -->
+    <ImageButton
+        android:id="@+id/next_button"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:background="@drawable/pagination_previous_next_button"
+        android:src="@drawable/icon_chevron_right"
+        android:contentDescription="@string/next_page"
+        android:scaleType="center"
+        android:elevation="3dp"/>
+</LinearLayout>

@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import fr.iut_rodez.pathpilot_android_client.signup.SignUp;
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.signup.SignUp;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
+import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
  * Handle the login Activity
