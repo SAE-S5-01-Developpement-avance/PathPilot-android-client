@@ -3,13 +3,13 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
@@ -38,7 +38,8 @@ public class InfoItinerary extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
         Intent intent = getIntent();
-        itinerary = intent.getParcelableExtra("itinerary");
+        itinerary = intent.getParcelableExtra(FragmentItineraries.ITINERARY_KEY);
+
         if (itinerary == null) {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
             popup.showAlertDialog("Error", "No itinerary found in the intent"); // TODO i18n
@@ -47,7 +48,7 @@ public class InfoItinerary extends AppCompatActivity {
 
         clientsAddedAdapter = new ClientArrayAdapter(this, itinerary.getClients());
         listItemsClientsAdded.setAdapter(clientsAddedAdapter);
-        ((TextView) findViewById(R.id.header_text)).setText(getString(R.string.itinerary_number) + itinerary.getId());
+        ((TextView) findViewById(R.id.header_text)).setText(getString(R.string.itinerary_number) + " detail");
     }
 
     private void startItinerary() {

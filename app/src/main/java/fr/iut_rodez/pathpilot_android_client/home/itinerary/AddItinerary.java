@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
@@ -59,7 +58,7 @@ public class AddItinerary extends AppCompatActivity {
 
         listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
 
-        listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
+        listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY));
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
             @Override
