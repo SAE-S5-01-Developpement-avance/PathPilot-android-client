@@ -13,13 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class InfoItinerary extends AppCompatActivity {
 
     private static final String TAG = InfoItinerary.class.getSimpleName();
 
-    private Client.ClientArrayAdapter clientsAddedAdapter;
+    private ClientArrayAdapter clientsAddedAdapter;
     private Itinerary itinerary;
     private Popup popup;
     private ListView listItemsClientsAdded;
@@ -44,7 +45,7 @@ public class InfoItinerary extends AppCompatActivity {
             finish();
         }
 
-        clientsAddedAdapter = new Client.ClientArrayAdapter(this, itinerary.getClients());
+        clientsAddedAdapter = new ClientArrayAdapter(this, itinerary.getClients());
         listItemsClientsAdded.setAdapter(clientsAddedAdapter);
         ((TextView) findViewById(R.id.header_text)).setText(getString(R.string.itinerary_number) + itinerary.getId());
     }
