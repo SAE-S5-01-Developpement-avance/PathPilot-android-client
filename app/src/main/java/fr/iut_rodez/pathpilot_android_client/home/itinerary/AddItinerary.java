@@ -1,8 +1,13 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,46 +17,49 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class AddItinerary extends AppCompatActivity {
-
-    public static final String TAG = AddItinerary.class.getSimpleName();
-
     public static final String CLE_ITINERARY_ADDED = "itineraryAdded";
-
     private Spinner selectClientToAdd;
     private ListView listClientsAddedView;
     private ArrayList<Client> listClientsToAdd;
     private JWTToken jwtToken;
     private ArrayList<Client> listClientsAdded;
     private ArrayAdapter<Client> clientsToAddAdapter;
-    private ArrayAdapter<Client> clientsAddedAdapter;
-
+    private ClientArrayAdapter clientsAddedAdapter;
+    private Popup popup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.view_create_itinerary);
-
+        Intent intent = getIntent();
+        popup = new Popup(this);
         selectClientToAdd = findViewById(R.id.list_add_clients);
         listClientsAddedView = findViewById(R.id.list_items_clients_added);
+        registerForContextMenu(listClientsAddedView);
 
         listClientsAdded = new ArrayList<>();
-        listClientsToAdd = new ArrayList<>(); // TODO stub get the data from intent
+        listClientsToAdd = new ArrayList<>();
 
-        // TODO write in the string file
-        listClientsToAdd.add(new Client("Select clients", 0, 0, "", true, "", "", ""));
-        //listClientsToAdd.add(new Client("Big company", 0, 0,"",true,"tom","tom","0123456789"));
-        //listClientsToAdd.add(new Client("Big1 company", 0, 0,"",true,"tom","tom","0123456789"));
-        //listClientsToAdd.add(new Client("Big2 company", 0, 0,"",true,"tom","tom","0123456789"));
+        listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
+
+        listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
             @Override
@@ -70,22 +78,27 @@ public class AddItinerary extends AppCompatActivity {
                 return view;
             }
         };
-        clientsAddedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listClientsAdded);
+        clientsAddedAdapter = new ClientArrayAdapter(this, listClientsAdded);
         listClientsAddedView.setAdapter(clientsAddedAdapter);
         selectClientToAdd.setAdapter(clientsToAddAdapter);
 
         selectClientToAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != AdapterView.INVALID_POSITION && position != 0) {
-                    Client selectedClient = listClientsToAdd.get(position);
-                    listClientsAdded.add(selectedClient);
-                    clientsAddedAdapter.notifyDataSetChanged();
-                    listClientsToAdd.remove(position);
-                    clientsToAddAdapter.notifyDataSetChanged();
-                    if (!listClientsToAdd.isEmpty()) {
-                        selectClientToAdd.setSelection(0);
+                if (listClientsAdded.size() < 8) {
+                    if (position != AdapterView.INVALID_POSITION && position != 0) {
+                        Client selectedClient = listClientsToAdd.get(position);
+                        listClientsAdded.add(selectedClient);
+                        clientsAddedAdapter.notifyDataSetChanged();
+                        listClientsToAdd.remove(position);
+                        clientsToAddAdapter.notifyDataSetChanged();
+                        if (!listClientsToAdd.isEmpty()) {
+                            selectClientToAdd.setSelection(0);
+                        }
                     }
+                } else if (position != 0){
+                    popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
+                    selectClientToAdd.setSelection(0);
                 }
             }
 
@@ -95,34 +108,50 @@ public class AddItinerary extends AppCompatActivity {
             }
         });
 
-        Intent intent = getIntent();
+        findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
+
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 
 
 
     /**
-     * Reset the content of "add itinerary" interface.
+     * Create an itinerary with the clients selected.
+     * The itinerary can be create if it has one or more clients attached.
      */
-    public void resetField() {
-        listClientsAddedView.removeAllViews();
-        //selectClientToAdd.clearListSelection();
+    public void createItinerary() {
+        if (listClientsAdded.isEmpty()) {
+            popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_min_clients_per_itinerary));
+        } else {
+            try {
+                ItineraryService.addItinerary(this,listClientsAdded);
+            } catch (JSONException e) {
+                popup.showAlertDialog(getString(R.string.error_title),getString(R.string.internal_server_error));
+            }
+        }
     }
 
     public JWTToken getJWTToken() {
         return jwtToken;
     }
 
-    /**
-     * Check if the itinerary is valid.
-     * The itinerary can be create if it has one or more clients attached.
-     *
-     * @return errorMessage
-     */
-    // TODO Use the methode to check if there is one or more client added.
-    public String checkItinerary() {
-        String errorMessage = "ERROR : ADD A CLIENT "; // TODO delete this variable
-        // TODO Add the right error message
-        return listClientsAdded.isEmpty() ? errorMessage : "";
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(this).inflate(R.menu.client_of_itinerary_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Client clientSelected = (Client) listClientsAddedView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.delete_client) {
+            listClientsAdded.remove(clientSelected);
+            clientsAddedAdapter.notifyDataSetChanged();
+
+            listClientsToAdd.add(clientSelected);
+        }
+        return (super.onContextItemSelected(item));
     }
 }

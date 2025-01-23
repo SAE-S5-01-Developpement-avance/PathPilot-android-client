@@ -85,12 +85,16 @@
     Itineraries
      -->
     <string name="header_itineraries_list">Itinéraires</string>
+    <string name="error_min_clients_per_itinerary">Vous devez ajouter au moins 1 client dans un itinéraire pour le créer</string>
     <string name="title_list_clients_added_for_itinerary"><u>Clients ajoutés</u></string>
     <string name="button_create_itinerary">Créer</string>
     <string name="list_clients_to_add">Choisir des clients</string>
     <string name="itinerary_number">Itinéraire n°</string>
     <string name="itinerary_coordinates">"Départ : "</string>
     <string name="itinerary_total_stops">"Nombre d'étapes: "</string>
+    <string name="error_title">Attention</string>
+    <string name="error_max_clients_per_itinerary">Vous ne pouvez pas ajouter plus de 8 clients à un itinéraire</string>
+    <string name="select_client_to_create_itinerary">Sélectionner des clients</string>
 
     <string name="select_position">Sélectionner une position</string>
     <!--
