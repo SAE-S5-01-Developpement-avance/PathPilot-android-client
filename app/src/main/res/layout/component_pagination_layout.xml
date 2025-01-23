@@ -9,7 +9,7 @@
 
     <!-- Previous Button -->
     <ImageButton
-        android:id="@+id/prevButton"
+        android:id="@+id/prev_button"
         android:layout_width="56dp"
         android:layout_height="40dp"
         android:background="@drawable/pagination_previous_next_button"
@@ -20,7 +20,7 @@
 
     <!-- Page Indicator -->
     <TextView
-        android:id="@+id/pageIndicator"
+        android:id="@+id/page_indicator"
         android:layout_width="120dp"
         android:layout_height="40dp"
         android:background="@drawable/pagination_page_number"
@@ -35,7 +35,7 @@
 
     <!-- Next Button -->
     <ImageButton
-        android:id="@+id/nextButton"
+        android:id="@+id/next_button"
         android:layout_width="56dp"
         android:layout_height="40dp"
         android:background="@drawable/pagination_previous_next_button"
