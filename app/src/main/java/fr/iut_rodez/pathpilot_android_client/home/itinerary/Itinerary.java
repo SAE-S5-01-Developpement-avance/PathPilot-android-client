@@ -27,8 +27,8 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 public class Itinerary {
     private int id;
     private ArrayList<Client> clients;
-    private final double salesmanLatitude;
-    private final double salesmanLongitude;
+    private double salesmanLatitude;
+    private double salesmanLongitude;
 
     public Itinerary(ArrayList<Client> clients, double salesmanLatitude, double salesmanLongitude) {
         this.clients = clients;
@@ -64,6 +64,14 @@ public class Itinerary {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setSalesmanLongitude(double salesmanLongitude) {
+        this.salesmanLongitude = salesmanLongitude;
+    }
+
+    public void setSalesmanLatitude(double salesmanLatitude) {
+        this.salesmanLatitude = salesmanLatitude;
     }
 
     public ArrayList<Client> getClients() {

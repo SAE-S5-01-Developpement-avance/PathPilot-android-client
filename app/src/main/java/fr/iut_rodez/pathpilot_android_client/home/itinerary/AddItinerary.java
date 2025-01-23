@@ -22,10 +22,11 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.model.Client;
-import fr.iut_rodez.pathpilot_android_client.model.ClientArrayAdapter;
-import fr.iut_rodez.pathpilot_android_client.model.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class AddItinerary extends AppCompatActivity {
 
@@ -38,14 +39,15 @@ public class AddItinerary extends AppCompatActivity {
     private ArrayList<Client> listClientsAdded;
     private ArrayAdapter<Client> clientsToAddAdapter;
     private ClientArrayAdapter clientsAddedAdapter;
-
+    private Popup popup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.view_create_itinerary);
-
+        Intent intent = getIntent();
+        popup = new Popup(this);
         selectClientToAdd = findViewById(R.id.list_add_clients);
         listClientsAddedView = findViewById(R.id.list_items_clients_added);
 
@@ -54,9 +56,8 @@ public class AddItinerary extends AppCompatActivity {
 
         // TODO write in the string file
         listClientsToAdd.add(new Client("Select clients", 0,0,"",true,"","",""));
-        //listClientsToAdd.add(new Client("Big company", 0, 0,"",true,"tom","tom","0123456789"));
-        //listClientsToAdd.add(new Client("Big1 company", 0, 0,"",true,"tom","tom","0123456789"));
-        //listClientsToAdd.add(new Client("Big2 company", 0, 0,"",true,"tom","tom","0123456789"));
+
+        listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,listClientsToAdd) {
             @Override
@@ -100,7 +101,7 @@ public class AddItinerary extends AppCompatActivity {
         });
 
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
-        Intent intent = getIntent();
+
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 
@@ -108,18 +109,12 @@ public class AddItinerary extends AppCompatActivity {
      * Create an itinerary with the clients selected.
      */
     public void createItinerary() {
-        ItineraryService.addItinerary(this,new Itinerary(listClientsAdded, 0, 0));
-        resetField();
-    }
-
-
-
-    /**
-     * Reset the content of "add itinerary" interface.
-     */
-    public void resetField() {
-        listClientsAddedView.removeAllViews();
-        //selectClientToAdd.clearListSelection();
+        try {
+            ItineraryService.addItinerary(this,listClientsAdded);
+        } catch (JSONException e) {
+            // TODO i18n
+            popup.showAlertDialog("Error","Création de la requete d'ajout d'un itinéraire");
+        }
     }
 
     public JWTToken getJWTToken() {
