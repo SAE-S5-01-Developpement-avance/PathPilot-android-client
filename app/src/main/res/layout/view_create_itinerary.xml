@@ -37,14 +37,7 @@
                 android:text="@string/mandatory_fields"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
-            <TextView
-                android:id="@+id/label_select_clients"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/select_client_to_create_itinerary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_mandatory_fields"
-                />
+
             <Spinner
                 android:id="@+id/list_add_clients"
                 android:layout_width="match_parent"
@@ -52,7 +45,7 @@
                 android:hint="@string/list_clients_to_add"
                 android:inputType="text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/label_select_clients"/>
+                app:layout_constraintTop_toBottomOf="@id/title_mandatory_fields"/>
             <TextView
                 android:id="@+id/title_list_clients_added"
                 android:layout_width="wrap_content"
