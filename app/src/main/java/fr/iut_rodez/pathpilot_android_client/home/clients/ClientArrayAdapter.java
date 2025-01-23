@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 
 /**
  * Adapter for the list of clients.
