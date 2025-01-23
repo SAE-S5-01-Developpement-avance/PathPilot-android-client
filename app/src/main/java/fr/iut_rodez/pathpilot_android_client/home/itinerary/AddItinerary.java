@@ -3,7 +3,11 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,6 +54,7 @@ public class AddItinerary extends AppCompatActivity {
         popup = new Popup(this);
         selectClientToAdd = findViewById(R.id.list_add_clients);
         listClientsAddedView = findViewById(R.id.list_items_clients_added);
+        registerForContextMenu(listClientsAddedView);
 
         listClientsAdded = new ArrayList<>();
         listClientsToAdd = new ArrayList<>(); // TODO stub get the data from intent
@@ -136,5 +141,25 @@ public class AddItinerary extends AppCompatActivity {
         String errorMessage = "ERROR : ADD A CLIENT "; // TODO delete this variable
         // TODO Add the right error message
         return listClientsAdded.isEmpty() ? errorMessage : "";
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(this).inflate(R.menu.client_of_itinerary_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Client clientSelected = (Client) listClientsAddedView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.delete_client) {
+            listClientsAdded.remove(clientSelected);
+            clientsAddedAdapter.notifyDataSetChanged();
+
+            listClientsToAdd.add(clientSelected);
+        }
+        return (super.onContextItemSelected(item));
     }
 }
