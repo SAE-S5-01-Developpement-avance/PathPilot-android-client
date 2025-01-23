@@ -44,7 +44,7 @@ android {
         }
         prod {
             group = "environment"
-            buildConfigField "String", "API_BASE_URL", "\"https://api.example.com/\"" // TODO: Change this
+            buildConfigField "String", "API_BASE_URL", "\"http://13.60.81.173:8080/\""
         }
     }
 }
@@ -64,4 +64,6 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    // Dependency for OpenStreetMap
+    implementation libs.osmdroid.android
 }

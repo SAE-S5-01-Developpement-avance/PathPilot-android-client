@@ -1,23 +1,12 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
-
-import fr.iut_rodez.pathpilot_android_client.R;
 
 /**
  * Class representing a client.
@@ -53,7 +42,7 @@ public class Client implements Parcelable {
         this.companyName = clientJson.getString("companyName");
         this.latHomeAddress = clientJson.getDouble("latHomeAddress");
         this.longHomeAddress = clientJson.getDouble("longHomeAddress");
-        this.clientCategory = clientJson.getString("clientCategory");
+        this.clientCategory = "Type: " + clientJson.getJSONObject("clientCategory").getString("name");
         this.description = clientJson.getString("description");
         this.contactLastName = clientJson.getString("contactLastName");
         this.contactFirstName = clientJson.getString("contactFirstName");

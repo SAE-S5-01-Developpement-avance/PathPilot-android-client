@@ -10,8 +10,8 @@
     <string name="placeholder_position_long">2.34880</string>
     <string name="email"><b>Adresse e-mail</b></string>
     <string name="placeholder_email">exemple@mail.com</string>
+    <string name="password">Mot de passe</string>
     <string name="confirm_password">Confirmation mot de passe</string>
-    <string name="password"><b>Mot de passe</b></string>
     <string name="sign_up">Créer mon compte</string>
     <string name="already_account">Vous avez déjà un compte?</string>
     <string name="link_sign_in">Se connecter</string>
@@ -95,4 +95,18 @@
     <string name="error_title">Attention</string>
     <string name="error_max_clients_per_itinerary">Vous ne pouvez pas ajouter plus de 8 clients à un itinéraire</string>
     <string name="select_client_to_create_itinerary">Sélectionner des clients</string>
+
+    <string name="select_position">Sélectionner une position</string>
+    <!--
+    Map selection
+    -->
+    <string name="validate_selected_position">Valider la position sélectionnée</string>
+    <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
+    <string name="search">Rechercher</string>
+
+    <!--
+    Pagination
+    -->
+    <string name="next_page">Page suivante</string>
+    <string name="previous_page">Page précédente</string>
 </resources>

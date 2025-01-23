@@ -1,7 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
-import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
 import android.content.Context;

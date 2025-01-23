@@ -34,6 +34,8 @@ import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class AddItinerary extends AppCompatActivity {
 
+    public static final String TAG = AddItinerary.class.getSimpleName();
+
     public static final String CLE_ITINERARY_ADDED = "itineraryAdded";
 
     private Spinner selectClientToAdd;
@@ -59,11 +61,11 @@ public class AddItinerary extends AppCompatActivity {
         listClientsAdded = new ArrayList<>();
         listClientsToAdd = new ArrayList<>();
 
-        listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0,0,"",true,"","",""));
+        listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
 
         listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
 
-        clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,listClientsToAdd) {
+        clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -71,6 +73,7 @@ public class AddItinerary extends AppCompatActivity {
                 textView.setText(getItem(position).getCompanyName());
                 return view;
             }
+
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -113,6 +116,8 @@ public class AddItinerary extends AppCompatActivity {
 
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
+
+
 
     /**
      * Create an itinerary with the clients selected.

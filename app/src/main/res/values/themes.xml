@@ -7,4 +7,17 @@
     </style>
     <style name="Theme.PathPilotandroidclient" parent="Base.Theme.PathPilotandroidclient" />
 
+    <!-- Button -->
+    <style name="DefaultButtonStyle" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/blue_0</item>
+        <item name="android:minHeight">@dimen/normal_gap</item>
+        <item name="android:textSize">@dimen/big_text</item>
+        <item name="android:elevation">5dp</item>
+    </style>
+
+    <!-- Label -->
+    <style name="DefaultLabelStyle">
+        <item name="android:textSize">@dimen/normal_text</item>
+    </style>
+
 </resources>

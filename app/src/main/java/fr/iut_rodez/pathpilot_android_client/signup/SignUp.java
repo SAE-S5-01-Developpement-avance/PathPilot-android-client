@@ -14,13 +14,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
+import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
 import fr.iut_rodez.pathpilot_android_client.signup.SignUpService.SignUpInput;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
-import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
 
 /**
  * Handle the sign up Activity
@@ -29,11 +32,11 @@ public class SignUp extends AppCompatActivity {
     private static final String TAG = SignUp.class.getSimpleName();
     private EditText firstName;
     private EditText lastName;
-    private EditText latitude;
-    private EditText longitude;
     private EditText mail;
     private EditText password;
     private EditText confirmPassord;
+    private TextView latitude;
+    private TextView longitude;
     private TextView labelFirstName;
     private TextView labelLastName;
     private TextView labelLatitude;
@@ -43,6 +46,8 @@ public class SignUp extends AppCompatActivity {
     private TextView labelConfirmPassword;
 
     private Popup popup;
+
+    private ActivityResultLauncher<Intent> launcherMapSelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +73,45 @@ public class SignUp extends AppCompatActivity {
 
         findViewById(R.id.sign_up_button).setOnClickListener(v -> createAccount());
         findViewById(R.id.link_sign_in).setOnClickListener(v -> gotoSignIn());
+        findViewById(R.id.selection_map_button).setOnClickListener(v -> gotoSelectionMap());
 
         popup = new Popup(this);
+
+        launcherMapSelection = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::handleReturnedMapSelection);
+    }
+
+    private void handleReturnedMapSelection(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                double latitudeSelected = data.getDoubleExtra(MapSelection.KEY_LATITUDE, Double.NaN);
+                double longitudeSelected = data.getDoubleExtra(MapSelection.KEY_LONGITUDE, Double.NaN);
+
+                if (!Double.isNaN(latitudeSelected) && !Double.isNaN(longitudeSelected)) {
+                    latitude.setText(String.valueOf(latitudeSelected));
+                    longitude.setText(String.valueOf(longitudeSelected));
+                } else {
+                    Log.e(TAG, "handleReturnedMapSelection: Latitude or longitude is NaN");
+                    latitude.setText("-");
+                    longitude.setText("-");
+                }
+            }
+        }
+    }
+
+    private void gotoSelectionMap() {
+        Intent intent = new Intent(this, MapSelection.class);
+        if (!latitude.getText().toString().isEmpty() && !longitude.getText().toString().isEmpty()) {
+            try {
+                double latitudeValue = Double.parseDouble(latitude.getText().toString());
+                double longitudeValue = Double.parseDouble(longitude.getText().toString());
+                intent.putExtra(MapSelection.KEY_LATITUDE, latitudeValue);
+                intent.putExtra(MapSelection.KEY_LONGITUDE, longitudeValue);
+            } catch (NumberFormatException e) {
+                Log.i(TAG, "gotoSelectionMap: Latitude or longitude is not a number. No value will be sent to the MapSelection activity", e);
+            }
+        }
+        launcherMapSelection.launch(intent);
     }
 
     /**
@@ -108,7 +150,8 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the first name field.
-     * @param  firstNameText
+     *
+     * @param firstNameText
      * @return errorMessage
      */
     public String checkFirstName(String firstNameText) {
@@ -123,6 +166,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the last name field.
+     *
      * @param lastNameText
      * @return errorMessage
      */
@@ -138,6 +182,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the latitude field.
+     *
      * @param latitudeText
      * @return errorMessage
      */
@@ -162,6 +207,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the longitude field.
+     *
      * @param longitudeText
      * @return errorMessage
      */
@@ -186,7 +232,8 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the mail field.
-     * @param  mailText
+     *
+     * @param mailText
      * @return errorMessage
      */
     public String checkMail(String mailText) {
@@ -202,6 +249,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check the password field.
+     *
      * @param passwordText
      * @return errorMessage
      */
@@ -221,6 +269,7 @@ public class SignUp extends AppCompatActivity {
 
     /**
      * Check that the password is confirmed.
+     *
      * @param password
      * @param confirmPasswordText
      * @return errorMessage
