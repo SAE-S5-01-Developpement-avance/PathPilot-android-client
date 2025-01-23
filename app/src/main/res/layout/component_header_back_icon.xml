@@ -35,7 +35,7 @@
         android:id="@+id/backButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/icon_leave"
+        android:background="@drawable/icon_back_arrow"
         android:layout_marginEnd="@dimen/small_gap"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -113,6 +113,10 @@ String for Login activity
     <string name="select_position">Sélectionner une position</string>
     <string name="client_address_not_found">Adresse introuvable</string>
     <string name="delete_itinerary">Suppimer</string>
+    <!--
+    Itinerary info
+    -->
+    <string name="button_start_itinerary">Démarrer</string>
 
     <!--
     Map selection
