@@ -57,10 +57,13 @@
 
             <ListView
                 android:id="@+id/list_items_clients_added"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scrollbars="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/title_list_clients_added"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintBottom_toTopOf="@+id/button_create_itinerary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
             <Button
                 android:id="@+id/button_create_itinerary"
                 android:layout_width="wrap_content"
