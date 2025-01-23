@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,10 +41,8 @@ public class FragmentClients extends Fragment {
     private static final String TAG = FragmentClients.class.getSimpleName();
     public static final String CLE_TOKEN = "token";
 
-    private ImageButton addClientButton;
     private ListView listClientsView;
     private Home homeActivity;
-    private TextView textHeader;
 
 
 
@@ -63,15 +60,11 @@ public class FragmentClients extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         homeActivity = (Home) getActivity();
 
-        addClientButton = view.findViewById(R.id.button_add);
-
         //Set header text to itineraries
-        textHeader = view.findViewById(R.id.header_text);
-        textHeader.setText(R.string.header_clients_list);
+        ((TextView) view.findViewById(R.id.header_text)).setText(R.string.header_clients_list);
 
         listClientsView = view.findViewById(R.id.clients_list);
 
@@ -98,8 +91,7 @@ public class FragmentClients extends Fragment {
         loadClients();
 
         registerForContextMenu(listClientsView);
-
-        addClientButton.setOnClickListener(v -> gotoCreateClient());
+        view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateClient());
 
         return view;
     }
@@ -141,9 +133,9 @@ public class FragmentClients extends Fragment {
         ClientPage getClientPage();
     }
 
-    public ArrayList<Client> getListClients(){
+    public ArrayList<Client> getListClients() {
         ArrayList<Client> listClients = new ArrayList<>();
-        for (int i =0; listClientsView.getAdapter().getCount() > i; i++) {
+        for (int i = 0; listClientsView.getAdapter().getCount() > i; i++) {
             listClients.add((Client) listClientsView.getAdapter().getItem(i));
         }
         return listClients;
