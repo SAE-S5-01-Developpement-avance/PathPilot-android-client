@@ -11,37 +11,36 @@
     <ImageButton
         android:id="@+id/prevButton"
         android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:background="@drawable/pagination_previous_next_button"
         android:src="@drawable/icon_chevron_left"
         android:contentDescription="@string/previous_page"
         android:scaleType="center"
-        android:padding="16dp"/>
+        android:elevation="3dp"/>
 
     <!-- Page Indicator -->
     <TextView
         android:id="@+id/pageIndicator"
         android:layout_width="120dp"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:background="@drawable/pagination_page_number"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginVertical="2dp"
         android:gravity="center"
-        android:text="1 of 20"
         android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textSize="14sp"
+        android:text="1 of 20"
+        android:elevation="1dp"/>
 
     <!-- Next Button -->
     <ImageButton
         android:id="@+id/nextButton"
         android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:background="@drawable/pagination_previous_next_button"
         android:src="@drawable/icon_chevron_right"
         android:contentDescription="@string/next_page"
         android:scaleType="center"
-        android:padding="16dp"/>
+        android:elevation="3dp"/>
 </LinearLayout>
