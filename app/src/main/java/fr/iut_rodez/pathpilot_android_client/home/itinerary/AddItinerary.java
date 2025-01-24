@@ -111,6 +111,8 @@ public class AddItinerary extends AppCompatActivity {
             }
         });
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 
