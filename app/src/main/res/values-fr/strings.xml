@@ -102,6 +102,7 @@
     Map selection
     -->
     <string name="address_not_found">A</string>
+    <string name="create_route_on_itinerary_menu">Créer un parcours</string>
     <string name="validate_selected_position">Valider la position sélectionnée</string>
     <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
     <string name="search">Rechercher</string>

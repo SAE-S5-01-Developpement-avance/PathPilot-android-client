@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -89,5 +91,10 @@ public class FragmentItineraries extends Fragment {
 
     public interface AddItinerary{
         ActivityResultLauncher<Intent> getAddItineraryLauncher();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
     }
 }
