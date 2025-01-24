@@ -9,7 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
@@ -53,8 +56,14 @@ public class InfoItinerary extends AppCompatActivity {
             popup.showAlertDialog("Error", "No itinerary found in the intent"); // TODO i18n
             finish();
         }
+        List<Client> clients = itinerary.getClients();
 
-        clientsAddedAdapter = new ClientArrayAdapter(this, itinerary.getClients());
+        for (Client client : clients) {
+            client.setAddressDisplayName(this);
+            Log.d(TAG, "setUpListClient: Client: " + client);
+        }
+
+        clientsAddedAdapter = new ClientArrayAdapter(this, clients);
         listItemsClientsAdded.setAdapter(clientsAddedAdapter);
         ((TextView) findViewById(R.id.header_text)).setText(itinerary.getDisplayName());
     }
