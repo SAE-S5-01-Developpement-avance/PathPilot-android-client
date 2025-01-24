@@ -27,6 +27,7 @@ public class Client implements Parcelable {
     private String companyName;
     private double latHomeAddress;
     private double longHomeAddress;
+    private String addressDisplayName;
     private String clientCategory;
     private String description;
     private String contactLastName;
@@ -64,6 +65,7 @@ public class Client implements Parcelable {
         companyName = in.readString();
         latHomeAddress = in.readDouble();
         longHomeAddress = in.readDouble();
+        addressDisplayName = in.readString();
         clientCategory = in.readString();
         description = in.readString();
         contactLastName = in.readString();
@@ -190,6 +192,20 @@ public class Client implements Parcelable {
         this.salesman = salesman;
     }
 
+    @NonNull
+    public String getAddressDisplayName() {
+        return addressDisplayName != null ? addressDisplayName : "";
+    }
+
+    /**
+     * Set the address name of the client.
+     *
+     * @param context context of the Geocoder.
+     */
+    public void setAddressDisplayName(Context context) {
+        this.addressDisplayName = getAddressDisplayName(context, latHomeAddress, longHomeAddress);
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -203,6 +219,7 @@ public class Client implements Parcelable {
                 ", contactFirstName='" + contactFirstName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", salesman='" + salesman + '\'' +
+                ", addressDisplayName='" + addressDisplayName + '\'' +
                 '}';
     }
 
@@ -244,6 +261,7 @@ public class Client implements Parcelable {
         dest.writeString(this.companyName);
         dest.writeDouble(this.latHomeAddress);
         dest.writeDouble(this.longHomeAddress);
+        dest.writeString(this.addressDisplayName);
         dest.writeString(this.clientCategory);
         dest.writeString(this.description);
         dest.writeString(this.contactLastName);
@@ -252,13 +270,7 @@ public class Client implements Parcelable {
         dest.writeString(this.salesman);
     }
 
-    /**
-     * Get the Street details by geolocation.
-     *
-     * @param context context of the Geocoder.
-     * @return the full name of the street.
-     */
-    public String getHomeAddress(Context context) {
+    private static String getAddressDisplayName(Context context, double latHomeAddress, double longHomeAddress) {
         String placeName = "";
         Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
         try {
