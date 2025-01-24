@@ -66,8 +66,7 @@ public class AddItinerary extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                textView.setText(getItem(position).getCompanyName()
-                        + getStreetByGeolocation(getItem(position).getLatHomeAddress(),getItem(position).getLongHomeAddress()));
+                textView.setText(getItem(position).getCompanyName());
                 return view;
             }
 
@@ -75,8 +74,12 @@ public class AddItinerary extends AppCompatActivity {
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                textView.setText(getItem(position).getCompanyName() + " - "
-                        + getStreetByGeolocation(getItem(position).getLatHomeAddress(),getItem(position).getLongHomeAddress()));
+                if (position != 0) {
+                    textView.setText(getItem(position).getCompanyName() + " - "
+                            + getStreetByGeolocation(getItem(position).getLatHomeAddress(), getItem(position).getLongHomeAddress()));
+                } else {
+                    textView.setText(getItem(position).getCompanyName());
+                }
                 return view;
             }
         };
@@ -168,9 +171,11 @@ public class AddItinerary extends AppCompatActivity {
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
                 placeName = address.getAddressLine(0);
+            } else {
+                placeName += getString(R.string.client_address_not_found);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            placeName += getString(R.string.client_address_not_found);
         }
         return placeName;
     }
