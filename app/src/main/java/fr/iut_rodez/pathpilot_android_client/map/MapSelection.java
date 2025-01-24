@@ -76,7 +76,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         mapController.setCenter(getGivenSelectedPointOrDefault());
         currentPosition.requestLocationPermission(() -> {
             mapController.setCenter(getGivenSelectedPointOrDefault());
-        });
+        }, null);
 
         GeoPoint givenSelectedPoint = getGivenSelectedPoint();
         if (givenSelectedPoint != null) {

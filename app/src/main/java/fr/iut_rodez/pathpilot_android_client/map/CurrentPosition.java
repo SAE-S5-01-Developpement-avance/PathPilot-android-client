@@ -19,6 +19,7 @@ public class CurrentPosition {
     private final Activity activity;
     private Location currentLocation;
     private Runnable permissionGrantedCallback;
+    private Runnable permissionDeniedCallback;
 
     public CurrentPosition(Activity activity) {
         this.activity = activity;
@@ -35,16 +36,19 @@ public class CurrentPosition {
     /**
      * Request location permission with an optional callback
      *
-     * @param callback Runnable to execute when permission is granted
+     * @param grantedCallback Runnable to execute when permission is granted
+     * @param deniedCallback  Runnable to execute when permission is denied
      */
-    public void requestLocationPermission(Runnable callback) {
-        this.permissionGrantedCallback = callback;
+    public void requestLocationPermission(Runnable grantedCallback, Runnable deniedCallback) {
+        this.permissionGrantedCallback = grantedCallback;
+        this.permissionDeniedCallback = deniedCallback;
         final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        Log.d(TAG, "requestLocationPermission: Requesting GPS Location permission");
         activity.requestPermissions(permissions, REQUEST_POSITION_CODE);
     }
 
     public void requestLocationPermission() {
-        requestLocationPermission(null);
+        requestLocationPermission(null, null);
     }
 
     /**
@@ -55,6 +59,7 @@ public class CurrentPosition {
      * {@code
      * @Override
      * public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+     *     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
      *     currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
      * }
      * }
@@ -65,11 +70,14 @@ public class CurrentPosition {
      * @param permissions The permissions requested
      * @param grantResults The result of the request
      * @see Activity#onRequestPermissionsResult(int, String[], int[])
-     * @see CurrentPosition#requestLocationPermission(Runnable)
+     * @see CurrentPosition#requestLocationPermission(Runnable, Runnable)
      */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
         if (requestCode == REQUEST_POSITION_CODE) {
+            Log.d(TAG, "onRequestPermissionsResult: " + grantResults);
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "onRequestPermissionsResult: " + grantResults[0]);
                 Log.d(TAG, "GPS Location permission granted");
 
                 // Execute callback if provided
@@ -81,6 +89,13 @@ public class CurrentPosition {
             } else {
                 // Permission denied
                 Log.d(TAG, "Location permission denied");
+
+                // Execute callback if provided
+                if (permissionDeniedCallback != null) {
+                    permissionDeniedCallback.run();
+                    // Reset callback to avoid multiple executions
+                    permissionDeniedCallback = null;
+                }
             }
         }
     }
