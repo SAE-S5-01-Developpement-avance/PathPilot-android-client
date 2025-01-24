@@ -132,12 +132,22 @@
     <string name="validate_selected_position">Validate selected position</string>
     <string name="adress_not_found">The given address has not been found</string>
     <string name="search">Search</string>
+    <string name="address_unknown">Unknown address</string>
+
 
     <!--
     Pagination
     -->
     <string name="next_page">Next page</string>
     <string name="previous_page">Previous page</string>
+
+    <!--
+    Itinerary Player
+    -->
+    <string name="need_to_allow_location_permission">You need to allow the location permission to use the map.</string>
+    <string name="no_you_can_t_use_this_feature">No (You can\'t use this feature)</string>
+    <string name="yes_give_access">Yes give access</string>
+    <string name="distance_in_km">%.2f km</string>
 
 
     <string name="content_description_pathpilot_icon" translatable="false">PathPilot icon</string>

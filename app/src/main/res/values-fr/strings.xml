@@ -73,6 +73,7 @@ String for Login activity
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
     <string name="address_missing">Selectionnez votre position</string>
 
+
     <!--
     Foot page without button
     -->
@@ -122,6 +123,7 @@ String for Login activity
     <!--
     Map selection
     -->
+    <string name="address_unknown">Adresse inconnu</string>
     <string name="validate_selected_position">Valider la position sélectionnée</string>
     <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
     <string name="search">Rechercher</string>
@@ -139,4 +141,12 @@ String for Login activity
     <string name="client_contact">Contact</string>
     <string name="delete_client">Supprimer le client</string>*
     <string name="header_clients_list">Clients</string>
+
+    <!--
+    Itinerary Player
+    -->
+    <string name="need_to_allow_location_permission">You need to allow the location permission to use the map.</string>
+    <string name="no_you_can_t_use_this_feature">No (You can\'t use this feature)</string>
+    <string name="yes_give_access">Yes give access</string>
+    <string name="distance_in_km">%.2f km</string>
 </resources>
