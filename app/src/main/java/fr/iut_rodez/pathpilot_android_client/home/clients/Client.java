@@ -1,5 +1,8 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,6 +10,12 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import fr.iut_rodez.pathpilot_android_client.R;
 
 /**
  * Class representing a client.
@@ -129,13 +138,6 @@ public class Client implements Parcelable {
         this.longHomeAddress = longHomeAddress;
     }
 
-    public String getHomeAddress() {
-        String nOrS = latHomeAddress > 0 ? "N" : "S";
-        String eOrW = longHomeAddress > 0 ? "E" : "W";
-
-        return String.format("%.2f°%s, %.2f°%s", latHomeAddress, nOrS, longHomeAddress, eOrW);
-    }
-
     public String getClientCategory() {
         return clientCategory;
     }
@@ -244,5 +246,27 @@ public class Client implements Parcelable {
         dest.writeString(this.contactFirstName);
         dest.writeString(this.phoneNumber);
         dest.writeString(this.salesman);
+    }
+
+    /**
+     * Get the Street details by geolocation.
+     * @param context context of the Geocoder.
+     * @return the full name of the street.
+     */
+    public String getHomeAddress(Context context){
+        String placeName = "";
+        Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoderAddress.getFromLocation(latHomeAddress, longHomeAddress, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                placeName = address.getAddressLine(0);
+            } else {
+                placeName += context.getString(R.string.client_address_not_found);
+            }
+        } catch (IOException e) {
+            placeName += context.getString(R.string.client_address_not_found);
+        }
+        return placeName;
     }
 }

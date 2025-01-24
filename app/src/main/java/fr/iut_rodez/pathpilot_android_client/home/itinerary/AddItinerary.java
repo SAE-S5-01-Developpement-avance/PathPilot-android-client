@@ -76,7 +76,7 @@ public class AddItinerary extends AppCompatActivity {
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
                 if (position != 0) {
                     textView.setText(getItem(position).getCompanyName() + " - "
-                            + getStreetByGeolocation(getItem(position).getLatHomeAddress(), getItem(position).getLongHomeAddress()));
+                            + getItem(position).getHomeAddress(AddItinerary.this));
                 } else {
                     textView.setText(getItem(position).getCompanyName());
                 }
@@ -155,28 +155,5 @@ public class AddItinerary extends AppCompatActivity {
             listClientsToAdd.add(clientSelected);
         }
         return (super.onContextItemSelected(item));
-    }
-
-    /**
-     * Get the Street details by geolocation.
-     * @param latitude latitude of the location
-     * @param longitude longitude of the location
-     * @return the full name of the street
-     */
-    public String getStreetByGeolocation(double latitude, double longitude){
-        String placeName = "";
-        Geocoder geocoderAddress = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoderAddress.getFromLocation(latitude, longitude, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                placeName = address.getAddressLine(0);
-            } else {
-                placeName += getString(R.string.client_address_not_found);
-            }
-        } catch (IOException e) {
-            placeName += getString(R.string.client_address_not_found);
-        }
-        return placeName;
     }
 }
