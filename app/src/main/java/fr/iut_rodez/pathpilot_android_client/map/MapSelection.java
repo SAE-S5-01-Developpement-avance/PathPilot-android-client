@@ -41,11 +41,13 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     private Marker selectedMarker = null;
 
     private Popup popup;
+    private CurrentPosition currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popup = new Popup(this);
+        currentPosition = new CurrentPosition(this);
 
         // Important! Initialise the osmdroid configuration
         Configuration.getInstance().setUserAgentValue(getPackageName());
@@ -72,14 +74,24 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         mapController.setZoom(10.0);
         // Set the map center to the given point or the default point
         mapController.setCenter(getGivenSelectedPointOrDefault());
+        currentPosition.requestLocationPermission(() -> {
+            mapController.setCenter(getGivenSelectedPointOrDefault());
+        });
 
-        if (getGivenSelectedPoint() != null) {
-            setSelectedPoint(getGivenSelectedPoint());
+        GeoPoint givenSelectedPoint = getGivenSelectedPoint();
+        if (givenSelectedPoint != null) {
+            setSelectedPoint(givenSelectedPoint);
         }
 
         // Add a map event overlay to handle the long press event
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     /**
@@ -91,9 +103,12 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
      * @return the selected point or the default point
      */
     private GeoPoint getGivenSelectedPointOrDefault() {
-        GeoPoint point = getGivenSelectedPoint();
+        var point = getGivenSelectedPoint();
         if (point == null) {
-            point = PARIS_POINT;
+            point = currentPosition.getCurrentGeoPoint(true);
+            if (point == null) {
+                point = PARIS_POINT;
+            }
         }
         return point;
     }
