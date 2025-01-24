@@ -178,4 +178,9 @@ public class FragmentItineraries extends Fragment {
         }
         return (super.onContextItemSelected(item));
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
+    }
 }
