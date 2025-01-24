@@ -160,4 +160,9 @@ public class FragmentItineraries extends Fragment {
         ActivityResultLauncher<Intent> getAddItineraryLauncher();
         ItineraryPage getItineraryPage();
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
+    }
 }
