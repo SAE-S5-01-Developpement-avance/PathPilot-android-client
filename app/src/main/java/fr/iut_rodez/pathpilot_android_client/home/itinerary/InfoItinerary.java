@@ -27,7 +27,6 @@ public class InfoItinerary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.view_info_itineray);
-        ((TextView) findViewById(R.id.header_text)).setText(getString(R.string.itinerary_number) + " detail");
         findViewById(R.id.button_start_itinerary).setOnClickListener(v -> startItinerary());
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
@@ -56,6 +55,7 @@ public class InfoItinerary extends AppCompatActivity {
 
         clientsAddedAdapter = new ClientArrayAdapter(this, itinerary.getClients());
         listItemsClientsAdded.setAdapter(clientsAddedAdapter);
+        ((TextView) findViewById(R.id.header_text)).setText(itinerary.getDisplayName());
     }
 
     private void startItinerary() {

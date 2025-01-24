@@ -106,11 +106,8 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         var point = getGivenSelectedPoint();
         if (point == null) {
             point = currentPosition.getCurrentGeoPoint(true);
-            if (point == null) {
-                point = PARIS_POINT;
-            }
         }
-        return point;
+        return point != null ? point : PARIS_POINT;
     }
 
     private GeoPoint getGivenSelectedPoint() {

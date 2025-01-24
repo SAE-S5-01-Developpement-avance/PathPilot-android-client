@@ -26,7 +26,8 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 /**
  * Class representing an itinerary.
  */
-public class Itinerary {
+public class Itinerary implements Parcelable {
+    private String displayName;
     private String id;
     private ArrayList<Client> clients;
     private double salesmanLatitude;
@@ -71,6 +72,7 @@ public class Itinerary {
         clients = in.createTypedArrayList(Client.CREATOR);
         salesmanLatitude = in.readDouble();
         salesmanLongitude = in.readDouble();
+        displayName = in.readString();
     }
 
     public static final Creator<Itinerary> CREATOR = new Creator<Itinerary>() {
@@ -105,6 +107,22 @@ public class Itinerary {
         return clients;
     }
 
+    public double getSalesmanLongitude() {
+        return salesmanLongitude;
+    }
+
+    public double getSalesmanLatitude() {
+        return salesmanLatitude;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public JSONObject toJson() {
         JSONObject itineraryJson = new JSONObject();
         try {
@@ -113,14 +131,6 @@ public class Itinerary {
             throw new RuntimeException(e);
         }
         return itineraryJson;
-    }
-
-    public double getSalesmanLongitude() {
-        return salesmanLongitude;
-    }
-
-    public double getSalesmanLatitude() {
-        return salesmanLatitude;
     }
 
     @Override
@@ -134,6 +144,7 @@ public class Itinerary {
         dest.writeTypedList(clients);
         dest.writeDouble(salesmanLatitude);
         dest.writeDouble(salesmanLongitude);
+        dest.writeString(displayName);
     }
 
     /**
@@ -167,8 +178,7 @@ public class Itinerary {
             Itinerary itinerary = itineraries.get(position);
 
             // Définir les valeurs des TextView
-            String itineraryNumberString = context.getString(R.string.itinerary_number) + itinerary.getId();
-            itineraryNumber.setText(itineraryNumberString);
+            itineraryNumber.setText(itinerary.getDisplayName());
 
             String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + itinerary.getCoordinates();
             itineraryCoordinates.setText(itineraryCoordinatesString);

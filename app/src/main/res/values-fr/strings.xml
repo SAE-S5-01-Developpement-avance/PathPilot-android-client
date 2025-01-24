@@ -99,6 +99,7 @@ String for Login activity
     <!--
     Itineraries
      -->
+    <string name="itinerary">Itinéraire</string>
     <string name="header_itineraries_list">Itinéraires</string>
     <string name="error_min_clients_per_itinerary">Vous devez ajouter au moins 1 client dans un itinéraire pour le créer</string>
     <string name="title_list_clients_added_for_itinerary"><u>Clients ajoutés</u></string>
