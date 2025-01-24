@@ -1,11 +1,10 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
-import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +16,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
@@ -66,7 +66,8 @@ public class AddItinerary extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                textView.setText(getItem(position).getCompanyName());
+                textView.setText(getItem(position).getCompanyName()
+                        + getStreetByGeolocation(getItem(position).getLatHomeAddress(),getItem(position).getLongHomeAddress()));
                 return view;
             }
 
@@ -74,7 +75,8 @@ public class AddItinerary extends AppCompatActivity {
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                textView.setText(getItem(position).getCompanyName());
+                textView.setText(getItem(position).getCompanyName() + " - "
+                        + getStreetByGeolocation(getItem(position).getLatHomeAddress(),getItem(position).getLongHomeAddress()));
                 return view;
             }
         };
@@ -96,20 +98,17 @@ public class AddItinerary extends AppCompatActivity {
                             selectClientToAdd.setSelection(0);
                         }
                     }
-                } else if (position != 0){
+                } else if (position != 0) {
                     popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
                     selectClientToAdd.setSelection(0);
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Nothing to do
             }
         });
-
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
-
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 
@@ -153,5 +152,26 @@ public class AddItinerary extends AppCompatActivity {
             listClientsToAdd.add(clientSelected);
         }
         return (super.onContextItemSelected(item));
+    }
+
+    /**
+     * Get the Street details by geolocation.
+     * @param latitude latitude of the location
+     * @param longitude longitude of the location
+     * @return the full name of the street
+     */
+    public String getStreetByGeolocation(double latitude, double longitude){
+        String placeName = "";
+        Geocoder geocoderAddress = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoderAddress.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                placeName = address.getAddressLine(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return placeName;
     }
 }
