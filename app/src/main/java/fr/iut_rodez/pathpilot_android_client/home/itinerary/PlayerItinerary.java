@@ -18,6 +18,7 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
@@ -28,19 +29,16 @@ public class PlayerItinerary extends AppCompatActivity {
     private static final int ICON_PLAY = R.drawable.icon_start;
     private static final int ICON_PAUSE = R.drawable.icon_pause;
 
-    private ImageButton detailClientBtn;
     private TextView clientName;
     private TextView clientAddress;
     private TextView clientDistance;
     private TextView counterVisitedClients;
     private MapView mapView;
-    private ImageButton stopBtn;
     private ImageButton pauseBtn;
-    private ImageButton clientVisitedBtn;
-    private ImageButton listClientsBtn;
 
     private Itinerary itinerary;
-    private boolean itineraryIsPause = false;
+    private Client nextClient; // TODO read this data from a Route
+    private boolean itineraryIsPause = false; // TODO read this data from a Route
 
     private final Popup popup = new Popup(this);
     private final CurrentPosition currentPosition = new CurrentPosition(this);
@@ -54,16 +52,16 @@ public class PlayerItinerary extends AppCompatActivity {
 
         setContentView(R.layout.view_player_itinerary);
 
-        detailClientBtn = findViewById(R.id.detail_client_btn);
+        ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
         clientName = findViewById(R.id.client_name);
         clientAddress = findViewById(R.id.client_address);
         clientDistance = findViewById(R.id.client_distance);
         counterVisitedClients = findViewById(R.id.counter_visited_clients);
         mapView = findViewById(R.id.mapview);
-        stopBtn = findViewById(R.id.stop_btn);
+        ImageButton stopBtn = findViewById(R.id.stop_btn);
         pauseBtn = findViewById(R.id.pause_btn);
-        clientVisitedBtn = findViewById(R.id.client_visited_btn);
-        listClientsBtn = findViewById(R.id.clients_setting_btn);
+        ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
+        ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
 
         // Set onClickListener
         detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
@@ -91,19 +89,22 @@ public class PlayerItinerary extends AppCompatActivity {
         // Set the map center and zoom level
         Log.d(TAG, "initialiseMap: Set the map center and zoom level");
         IMapController mapController = mapView.getController();
-        mapController.setZoom(10.0);
+        mapController.setZoom(15.0);
         // Set the map center to the given point or the default point
         Runnable setCenterWithCurrentPosition = () -> mapController.setCenter(getCurrentPositionOrDefault());
+
         currentPosition.requestLocationPermission(setCenterWithCurrentPosition, () -> {
-            Popup.Button no = new Popup.Button("No (You can't use this feature)", (dialog, which) -> {
+            Popup.Button no = new Popup.Button(getString(R.string.no_you_can_t_use_this_feature), (dialog, which) -> {
                 dialog.dismiss();
+                Log.d(TAG, "initialiseMap: Said no, so finishing the activity");
                 finish();
             });
-            Popup.Button yes = new Popup.Button("Yes give access", (dialog, which) -> {
+            Popup.Button yes = new Popup.Button(getString(R.string.yes_give_access), (dialog, which) -> {
                 dialog.dismiss();
+                Log.d(TAG, "initialiseMap: Said yes, so requesting location permission again");
                 currentPosition.requestLocationPermission(setCenterWithCurrentPosition, null);
             });
-            popup.showAlertDialog("Warning", "You need to allow the location permission to use the map.", yes, null, no);
+            popup.showAlertDialog(getString(R.string.warning), getString(R.string.need_to_allow_location_permission), yes, null, no);
         });
     }
 
@@ -122,6 +123,16 @@ public class PlayerItinerary extends AppCompatActivity {
             popup.showAlertDialog("Error", "No itinerary found in the intent"); // TODO i18n
             finish();
         }
+
+        nextClient = itinerary.getClients().get(0);
+        clientName.setText(nextClient.getCompanyName());
+        clientAddress.setText(nextClient.getAddressDisplayName());
+        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(nextClient)));
+    }
+
+    private double distanceToClient(Client nextClient) {
+        // TODO calculate with the roads and not in a straight line
+        return currentPosition.getCurrentGeoPoint(true).distanceToAsDouble(nextClient.getGeoPoint()) / 1000;
     }
 
     /**
