@@ -44,8 +44,9 @@
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/micro_gap"
         app:layout_constraintTop_toBottomOf="@+id/adresse_input_layout"
-        app:layout_constraintHeight_percent="0.6" />
+        app:layout_constraintBottom_toTopOf="@+id/select" />
 
     <Button
         android:id="@+id/select"
