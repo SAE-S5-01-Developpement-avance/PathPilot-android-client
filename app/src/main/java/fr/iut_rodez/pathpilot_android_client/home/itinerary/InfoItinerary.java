@@ -27,13 +27,24 @@ public class InfoItinerary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.view_info_itineray);
-
-        popup = new Popup(this);
-        listItemsClientsAdded = findViewById(R.id.list_items_clients_added);
-
+        ((TextView) findViewById(R.id.header_text)).setText(getString(R.string.itinerary_number) + " detail");
         findViewById(R.id.button_start_itinerary).setOnClickListener(v -> startItinerary());
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
+        popup = new Popup(this);
+
+        setUpListClient();
+    }
+
+    /**
+     * Set up the list of clients of the itinerary.
+     * <p>
+     *     Retrieve the itinerary from the intent and the list of clients from the itinerary.
+     *     Set the adapter of the list view with the list of clients.
+     * </p>
+     */
+    private void setUpListClient() {
+        listItemsClientsAdded = findViewById(R.id.list_items_clients_added);
         Intent intent = getIntent();
         itinerary = intent.getParcelableExtra(FragmentItineraries.ITINERARY_KEY);
 
@@ -45,7 +56,6 @@ public class InfoItinerary extends AppCompatActivity {
 
         clientsAddedAdapter = new ClientArrayAdapter(this, itinerary.getClients());
         listItemsClientsAdded.setAdapter(clientsAddedAdapter);
-        ((TextView) findViewById(R.id.header_text)).setText(getString(R.string.itinerary_number) + " detail");
     }
 
     private void startItinerary() {
