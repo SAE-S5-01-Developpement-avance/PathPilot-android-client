@@ -1,11 +1,10 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
-import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +16,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
@@ -74,7 +74,12 @@ public class AddItinerary extends AppCompatActivity {
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                textView.setText(getItem(position).getCompanyName());
+                if (position != 0) {
+                    textView.setText(getItem(position).getCompanyName() + " - "
+                            + getItem(position).getHomeAddress(AddItinerary.this));
+                } else {
+                    textView.setText(getItem(position).getCompanyName());
+                }
                 return view;
             }
         };
@@ -96,20 +101,17 @@ public class AddItinerary extends AppCompatActivity {
                             selectClientToAdd.setSelection(0);
                         }
                     }
-                } else if (position != 0){
+                } else if (position != 0) {
                     popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
                     selectClientToAdd.setSelection(0);
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Nothing to do
             }
         });
-
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
-
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 

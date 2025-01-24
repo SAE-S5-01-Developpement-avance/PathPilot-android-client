@@ -50,7 +50,7 @@ public class ClientArrayAdapter extends ArrayAdapter<Client> {
 
         // Définir les valeurs des TextView
         clientName.setText(client.getCompanyName());
-        clientAddress.setText(client.getHomeAddress());
+        clientAddress.setText(client.getHomeAddress(context));
         clientCategory.setText(client.getClientCategory());
         clientDescription.setText(client.getDescription());
         clientContactFirstName.setText(client.getContactFirstName());
