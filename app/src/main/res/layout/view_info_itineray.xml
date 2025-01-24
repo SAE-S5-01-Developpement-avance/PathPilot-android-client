@@ -25,9 +25,9 @@
             android:id="@+id/title_list_clients_added"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_gap"
             android:text="@string/title_list_clients_added_for_itinerary"
             android:textSize="@dimen/big_text"
-            android:layout_marginTop="@dimen/small_gap"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/form_container" />
 
@@ -35,11 +35,9 @@
         <ListView
             android:id="@+id/list_items_clients_added"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/title_list_clients_added"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/button_start_itinerary"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/title_list_clients_added" />
 
         <Button
             android:id="@+id/button_start_itinerary"
@@ -48,13 +46,12 @@
             android:layout_marginTop="@dimen/normal_gap"
             android:layout_marginBottom="@dimen/normal_gap"
             android:backgroundTint="@color/blue_0"
-            android:text="@string/button_start_itinerary"
             android:drawableLeft="@drawable/icon_start"
+            android:text="@string/button_start_itinerary"
             android:textSize="@dimen/normal_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
