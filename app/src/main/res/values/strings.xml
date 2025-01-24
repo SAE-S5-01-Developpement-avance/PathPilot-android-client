@@ -131,6 +131,7 @@
     Itinerary info
     -->
     <string name="button_create_and_start_itinerary">Create and start a new route</string>
+    <string name="create_route_on_itinerary_menu">Create route</string>
 
     <!--
     Map selection
