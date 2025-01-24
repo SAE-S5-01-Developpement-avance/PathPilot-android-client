@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.util.List;
@@ -272,5 +273,9 @@ public class Client implements Parcelable {
             placeName += context.getString(R.string.client_address_not_found);
         }
         return placeName;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return new GeoPoint(latHomeAddress, longHomeAddress);
     }
 }
