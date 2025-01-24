@@ -1,8 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -15,15 +13,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
@@ -72,12 +66,12 @@ public class AddItinerary extends AppCompatActivity {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
-                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(android.R.id.text1);
+                Client client = getItem(position);
                 if (position != 0) {
-                    textView.setText(getItem(position).getCompanyName() + " - "
-                            + getItem(position).getHomeAddress(AddItinerary.this));
+                    textView.setText(client.getCompanyName() + " - " + client.getAddressDisplayName());
                 } else {
-                    textView.setText(getItem(position).getCompanyName());
+                    textView.setText(client.getCompanyName());
                 }
                 return view;
             }
@@ -101,10 +95,11 @@ public class AddItinerary extends AppCompatActivity {
                         }
                     }
                 } else if (position != 0) {
-                    popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
+                    popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
                     selectClientToAdd.setSelection(0);
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Nothing to do
@@ -117,19 +112,18 @@ public class AddItinerary extends AppCompatActivity {
     }
 
 
-
     /**
      * Create an itinerary with the clients selected.
      * The itinerary can be create if it has one or more clients attached.
      */
     public void createItinerary() {
         if (listClientsAdded.isEmpty()) {
-            popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_min_clients_per_itinerary));
+            popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_min_clients_per_itinerary));
         } else {
             try {
-                ItineraryService.addItinerary(this,listClientsAdded);
+                ItineraryService.addItinerary(this, listClientsAdded);
             } catch (JSONException e) {
-                popup.showAlertDialog(getString(R.string.error_title),getString(R.string.internal_server_error));
+                popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
             }
         }
     }
