@@ -16,6 +16,7 @@ import fr.iut_rodez.pathpilot_android_client.util.Popup;
 public class InfoItinerary extends AppCompatActivity {
 
     private static final String TAG = InfoItinerary.class.getSimpleName();
+    public static final String ITINERARY_KEY = "itinerary";
 
     private ClientArrayAdapter clientsAddedAdapter;
     private Itinerary itinerary;
@@ -60,5 +61,8 @@ public class InfoItinerary extends AppCompatActivity {
 
     private void startItinerary() {
         Log.d(TAG, "startItinerary: Start the itinerary");
+        Intent intent = new Intent(this, PlayerItinerary.class);
+        intent.putExtra(ITINERARY_KEY, itinerary);
+        startActivity(intent);
     }
 }

@@ -68,13 +68,13 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/backButton"
+            app:layout_constraintEnd_toStartOf="@id/back_btn"
             app:layout_constraintStart_toEndOf="@id/separator"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Client Address (12 rue du bal 12000 Rodez)" />
 
         <ImageButton
-            android:id="@+id/backButton"
+            android:id="@+id/back_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="@dimen/small_gap"
