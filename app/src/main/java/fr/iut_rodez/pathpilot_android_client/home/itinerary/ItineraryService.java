@@ -1,7 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
-import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -19,26 +17,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.clients.AddClient;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 public class ItineraryService {
 
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/routes";
     private static final String TAG = ItineraryService.class.getSimpleName();
+
     /**
      * Request to the API to add an itinerary.
      * If the request is successful, it goes back to the previous activity.
-     * @param context Context of the application
+     *
+     * @param context     Context of the application
      * @param listClients The list of clients to create an itinerary
      */
     public static void addItinerary(Context context, List<Client> listClients) throws JSONException {
@@ -50,22 +48,22 @@ public class ItineraryService {
         JSONArray listIdClient = new JSONArray();
         JSONObject itinerariesInput = new JSONObject();
 
-        for (Client client: listClients) {
+        for (Client client : listClients) {
             listIdClient.put(client.getId());
         }
-        itinerariesInput.put("clients_schedule",listIdClient);
+        itinerariesInput.put("clients_schedule", listIdClient);
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST,API_BASE_URL,itinerariesInput,jwtToken,
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, itinerariesInput, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
 
                     Intent returnIntent = new Intent(addItineraryActivity, Home.class);
                     addItineraryActivity.setResult(AddItinerary.RESULT_OK, returnIntent);
-                    returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED,true);
+                    returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, true);
                     addItineraryActivity.finish();
                 },
                 error -> {
@@ -75,6 +73,7 @@ public class ItineraryService {
                 });
         requestQueue.add(request);
     }
+
     /**
      * Request to the API the itineraries.
      * If the request is successful, it add itineraries to the adapter and link them to the view
@@ -97,25 +96,13 @@ public class ItineraryService {
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
-                    try {
-                        List<Itinerary> itineraryArray = new ArrayList<>();
-                        if (response.has("_embedded")) {
-                            JSONArray itineraries = response.getJSONObject("_embedded").getJSONArray("routeList");
-                            Log.d(TAG, "getItineraries: " + itineraries);
-                            for (int i = 0; i < itineraries.length(); i++) {
-                                itineraryArray.add(new Itinerary(itineraries.getJSONObject(i)));
-                            }
-                        }
+                    List<Itinerary> itineraryArray = Parser.getItinerariesPageable(response);
+                    Log.d(TAG, "getItineraries: " + itineraryArray);
 
-                        Log.d(TAG, "getItineraries: " + itineraryArray);
-
-                        Itinerary.ItineraryArrayAdapter adapter = new Itinerary.ItineraryArrayAdapter(homeActivity, itineraryArray);
-                        listItinerariesView.post(() -> {
-                            listItinerariesView.setAdapter(adapter);
-                        });
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Itinerary.ItineraryArrayAdapter adapter = new Itinerary.ItineraryArrayAdapter(homeActivity, itineraryArray);
+                    listItinerariesView.post(() -> {
+                        listItinerariesView.setAdapter(adapter);
+                    });
                 },
                 error -> {
                     progressDialog.dismiss();
