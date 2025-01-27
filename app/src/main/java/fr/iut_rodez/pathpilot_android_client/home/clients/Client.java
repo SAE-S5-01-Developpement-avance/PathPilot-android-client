@@ -51,12 +51,11 @@ public class Client implements Parcelable {
         this.companyName = clientJson.getString("companyName");
         this.latHomeAddress = clientJson.getDouble("latHomeAddress");
         this.longHomeAddress = clientJson.getDouble("longHomeAddress");
-        this.clientCategory = "Type: " + clientJson.getJSONObject("clientCategory").getString("name");
+        this.clientCategory = clientJson.getJSONObject("clientCategory").getString("name");
         this.description = clientJson.getString("description");
         this.contactLastName = clientJson.getString("contactLastName");
         this.contactFirstName = clientJson.getString("contactFirstName");
         this.phoneNumber = clientJson.getString("phoneNumber");
-        this.salesman = clientJson.getString("salesman");
     }
 
     protected Client(Parcel in) {
