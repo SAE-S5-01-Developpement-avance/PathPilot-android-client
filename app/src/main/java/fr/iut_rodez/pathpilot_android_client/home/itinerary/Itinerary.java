@@ -36,7 +36,7 @@ public class Itinerary {
         this.salesmanLongitude = salesmanLongitude;
     }
 
-    public Itinerary () {
+    public Itinerary() {
         this.clients = new ArrayList<>();
         this.salesmanLatitude = 0;
         this.salesmanLongitude = 0;
@@ -53,7 +53,13 @@ public class Itinerary {
 
         for (int i = 0; i < clientsSchedule.length(); i++) {
             JSONObject clientJson = clientsSchedule.getJSONObject(i);
-            Client client = new Client(clientJson.getInt("client"), clientJson.getString("companyName"));
+            JSONObject clientCoordinates = clientJson.getJSONObject("companyLocation");
+            Client client = new Client(
+                    clientJson.getInt("client"),
+                    clientJson.getString("companyName"),
+                    clientCoordinates.getDouble("latitude"),
+                    clientCoordinates.getDouble("longitude")
+            );
             this.clients.add(client);
         }
     }

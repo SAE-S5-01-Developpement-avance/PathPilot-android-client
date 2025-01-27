@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 
 /**
  * Utility class that abstracts the parsing of Volley responses
@@ -48,5 +49,32 @@ public class Parser {
         }
 
         return listClients;
+    }
+
+    /**
+     * Parse the JSON response of the GET itineraries request and return a list of itineraries
+     * <p>
+     *     Request URL example:
+     *     <a href="http://localhost:8080/api/routes">/api/routes</a>
+     * @param response JSON response of the GET itineraries request
+     * @return List of itineraries parsed from the JSON response. If an error occurs, an empty list is returned
+     */
+    public static List<Itinerary> getItinerariesPageable(JSONObject response) {
+        ArrayList<Itinerary> listItineraries = new ArrayList<>();
+
+        try {
+            JSONArray embeddedListItineraries = response
+                    .getJSONObject("_embedded")
+                    .getJSONArray("routeList");
+
+            for (int i = 0; i < embeddedListItineraries.length(); i++) {
+                JSONObject itineraryJson = embeddedListItineraries.getJSONObject(i);
+                listItineraries.add(new Itinerary(itineraryJson));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error while parsing the JSON response", e);
+        }
+
+        return listItineraries;
     }
 }

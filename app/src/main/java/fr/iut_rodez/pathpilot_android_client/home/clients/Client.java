@@ -97,12 +97,16 @@ public class Client implements Parcelable {
     /**
      * Constructor for Itineraries clients
      *
-     * @param id           id of the client
-     * @param companyName  the client's companyName
+     * @param idCLient        id of the client
+     * @param companyName     the client's companyName
+     * @param latHomeAddress  the latitude of the client's home address
+     * @param longHomeAddress the longitude of the client's home address
      */
-    public Client(int id, String companyName) {
-        this.id = id;
+    public Client(int idCLient, String companyName, double latHomeAddress, double longHomeAddress) {
+        this.id = idCLient;
         this.companyName = companyName;
+        this.latHomeAddress = latHomeAddress;
+        this.longHomeAddress = longHomeAddress;
     }
 
     public int getId() {
@@ -249,10 +253,11 @@ public class Client implements Parcelable {
 
     /**
      * Get the Street details by geolocation.
+     *
      * @param context context of the Geocoder.
      * @return the full name of the street.
      */
-    public String getHomeAddress(Context context){
+    public String getHomeAddress(Context context) {
         String placeName = "";
         Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
         try {
