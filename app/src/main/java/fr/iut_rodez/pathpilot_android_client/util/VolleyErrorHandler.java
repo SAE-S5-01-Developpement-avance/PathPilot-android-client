@@ -81,7 +81,7 @@ public class VolleyErrorHandler {
                 case 503:
                     return context.getString(R.string.service_unavailable);
                 default:
-                    return context.getString(R.string.unknow_server_error, error.networkResponse.statusCode);
+                    return context.getString(R.string.unknown_server_error, error.networkResponse.statusCode);
             }
         }
         return "Unknown server error occurred.";

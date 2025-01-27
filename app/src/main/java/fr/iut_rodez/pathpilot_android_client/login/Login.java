@@ -86,7 +86,7 @@ public class Login extends AppCompatActivity {
             popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_email_invalid));
         } else if (!NetworkUtils.isNetworkConnected(this)) { // Check if the device is connected to the internet
 
-            popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.error_no_internet));
+            popup.showAlertDialog(getString(R.string.error), getResources().getString(R.string.no_internet_connection));
         } else {
 
             // Send request to server
