@@ -2,7 +2,16 @@
     <string name="app_name" translatable="false">PathPilot</string>
 
     <!--
-    String for the "sign up" page, the "create client" page
+    String for Login activity
+    -->
+    <string name="error_email_password_field_empty">Email and password must not be empty</string>
+    <string name="error_email_invalid">Email is invalid</string>
+    <string name="sign_in">Sign in</string>
+    <string name="dont_have_account">Don\'t have an account ?</string>
+    <string name="link_sign_up"><u>Sign up now</u></string>
+
+    <!--
+    String for Sign up activité
     -->
     <string name="first_name">First name</string>
     <string name="placeholder_first_name">John</string>
@@ -21,6 +30,9 @@
     <string name="already_account">Already have an account ?</string>
     <string name="link_sign_in"><u>Sign in now</u></string>
 
+    <!--
+    Creation of a client
+    -->
     <string name="create_client">Create client</string>
     <string name="mandatory_fields"><u>Mandatory fields</u></string>
     <string name="company_name">Company name</string>
@@ -29,10 +41,11 @@
     <string name="description">Description</string>
     <string name="description_placeholder">Write your description here</string>
     <string name="label_phone_number">Phone number</string>
+    <string name="placeholder_phone_number">0785849612</string>
     <string name="client_type">Client type:</string>
     <string name="radio_client">Client</string>
+    <string name="radio_prospect">Prospect</string>
 
-    <string name="select_position">Select position</string>
 
     <!--
     Error messages for forms
@@ -62,29 +75,6 @@
     <string name="informations">2024 IUT de Rodez. All copyright, all copyleft</string>
 
     <!--
-    headers
-    -->
-    <string name="newClientHeader">New client</string>
-    <string name="icon">icon</string>
-    <string name="placeholder_phone_number">0785849612</string>
-    <string name="radio_prospect">Prospect</string>
-
-    <!--
-    String for the "login" page
-    -->
-    <string name="sign_in">Sign in</string>
-    <string name="dont_have_account">Don\'t have an account ?</string>
-    <string name="link_sign_up"><u>Sign up now</u></string>
-
-    <!--
-    String for Login activity
-    -->
-    <string name="error_email_password_field_empty">Email and password must not be empty</string>
-    <string name="error_email_invalid">Email is invalid</string>
-    <string name="error_no_internet">No internet connection</string>
-    <string name="error">Error</string>
-
-    <!--
     Clients
     -->
     <string name="client_contact">Contact</string>
@@ -93,6 +83,7 @@
     <!--
     Error messages
     -->
+    <string name="error">Error</string>
     <string name="network_error_unable_to_connect_to_the_server">Network error. Unable to connect to the server.</string>
     <string name="authentication_failed_give_valid_credentials">Authentication failed. Please give valid credentials.</string>
     <string name="unable_to_process_server_response">Unable to process server response.</string>
@@ -103,7 +94,7 @@
     <string name="requested_resource_not_found">Requested resource not found.</string>
     <string name="internal_server_error">Internal server error. Please try again later.</string>
     <string name="service_unavailable">Service unavailable. Server is temporarily overloaded.</string>
-    <string name="unknow_server_error">Server error. Status code: %d</string>
+    <string name="unknown_server_error">Server error. Status code: %d</string>
     <string name="unknown_error_occurred">Unknown error occurred</string>
     <string name="no_internet_connection">No internet connection. Please check your network settings.</string>
     <string name="error_title">Warning</string>
@@ -127,6 +118,7 @@
     <!--
     Map selection
     -->
+    <string name="select_position">Select position</string>
     <string name="validate_selected_position">Validate selected position</string>
     <string name="adress_not_found">The given address has not been found</string>
     <string name="search">Search</string>
@@ -136,4 +128,7 @@
     -->
     <string name="next_page">Next page</string>
     <string name="previous_page">Previous page</string>
+
+
+    <string name="newClientHeader">New client</string>
 </resources>
