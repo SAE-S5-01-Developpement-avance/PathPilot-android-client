@@ -12,8 +12,8 @@ String for Login activity
 
 
     <!--
-String for Sign up activité
--->
+    String for Sign up activité
+    -->
     <string name="first_name"><b>Prénom</b></string>
     <string name="placeholder_first_name">Martin</string>
     <string name="last_name"><b>Nom</b></string>
@@ -32,8 +32,8 @@ String for Sign up activité
     <string name="link_sign_in">Se connecter</string>
 
     <!--
-Creation of a client
--->
+    Creation of a client
+    -->
     <string name="create_client">Créer un client</string>
     <string name="mandatory_fields">Champs obligatoires</string>
     <string name="company_name">Nom de l\'organisation</string>
@@ -49,8 +49,8 @@ Creation of a client
 
 
     <!--
-Error messages for forms
--->
+    Error messages for forms
+    -->
     <string name="first_name_blank">Entrer un prénom</string>
     <string name="last_name_blank">Entrer un nom</string>
     <string name="latitude_not_float">La latitude doit être un nombre</string>
@@ -60,7 +60,7 @@ Error messages for forms
     <string name="longitude_blank">Entrer une longitude</string>
     <string name="longitude_not_included">La longitude doit être comprise entre -180° et 180°</string>
     <string name="mail_blank">Entrer un e-mail</string>
-    <string name="mail_regex_invalided">L\'e-mail doit être écrit sous la forme suivante: martin.dupont@path-pilot.fr</string>
+    <string name="mail_regex_invalided">L\'e-mail doit être écrit sous la forme suivante : martin.dupont@path-pilot.fr</string>
     <string name="password_blank">Entrer un mot de passe</string>
     <string name="password_min_size_error">Le mot de passe doit contenir au moins 8 caractères</string>
     <string name="phone_number_blank">Entrer un numéro de téléphone</string>
@@ -71,8 +71,8 @@ Error messages for forms
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
 
     <!--
-Foot page without button
--->
+    Foot page without button
+    -->
     <string name="informations">2024 IUT de Rodez. Tous droits d\'auteur, tous copyleft</string>
 
     <!--
@@ -103,7 +103,7 @@ Foot page without button
     <string name="list_clients_to_add">Choisir des clients</string>
     <string name="itinerary_number">Itinéraire n°</string>
     <string name="itinerary_coordinates">"Départ : "</string>
-    <string name="itinerary_total_stops">"Nombre d'étapes: "</string>
+    <string name="itinerary_total_stops">"Nombre d'étapes : "</string>
     <string name="error_title">Attention</string>
     <string name="error_max_clients_per_itinerary">Vous ne pouvez pas ajouter plus de 8 clients à un itinéraire</string>
     <string name="select_client_to_create_itinerary">Sélectionner des clients</string>
@@ -130,6 +130,4 @@ Foot page without button
     <string name="client_contact">Contact</string>
     <string name="delete_client">Supprimer le client</string>*
     <string name="header_clients_list">Clients</string>
-
-    <string name="newClientHeader">Nouveau client</string>
 </resources>

@@ -130,5 +130,6 @@
     <string name="previous_page">Previous page</string>
 
 
-    <string name="newClientHeader">New client</string>
+    <string name="content_description_pathpilot_icon" translatable="false">PathPilot icon</string>
+    <string name="content_description_plus_icon" translatable="false">Plus icon</string>
 </resources>
