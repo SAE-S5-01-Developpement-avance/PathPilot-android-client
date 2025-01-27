@@ -68,7 +68,7 @@ public class ParserTest {
 
     @Test
     public void testGetItinerariesPageable() throws JSONException {
-        String ItineraryResponseJson = """
+        String itineraryResponseJson = """
                 {
                     "_embedded": {
                         "routeList": [
@@ -113,7 +113,7 @@ public class ParserTest {
                 }
                 """;
 
-        JSONObject response = new JSONObject(ItineraryResponseJson);
+        JSONObject response = new JSONObject(itineraryResponseJson);
 
         List<Itinerary> itineraries = Parser.getItinerariesPageable(response);
 

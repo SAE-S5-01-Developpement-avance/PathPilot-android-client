@@ -77,4 +77,9 @@ public class Parser {
 
         return listItineraries;
     }
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private Parser() {}
 }
