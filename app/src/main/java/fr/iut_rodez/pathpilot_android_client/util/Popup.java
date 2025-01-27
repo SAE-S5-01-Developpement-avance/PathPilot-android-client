@@ -87,4 +87,12 @@ public class Popup {
      */
     public record Button(String text, DialogInterface.OnClickListener onClickListener) {
     }
+
+    public static void showAlertDialog(Context context, String title, String message) {
+        new Popup(context).showAlertDialog(title, message);
+    }
+
+    public static void showAlertDialog(Context context, String title, String message, Button positiveButton, Button neutralButton, Button negativeButton) {
+        new Popup(context).showAlertDialog(title, message, positiveButton, neutralButton, negativeButton);
+    }
 }
