@@ -12,7 +12,7 @@
         android:id="@+id/logo"
         android:layout_width="@dimen/normal_logo"
         android:layout_height="@dimen/normal_logo"
-        android:contentDescription="@string/icon"
+        android:contentDescription="@string/content_description_pathpilot_icon"
         android:src="@drawable/icon_logo_pathpilot"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,14 +23,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingTop="25dp"
-        android:text="@string/newClientHeader"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="@dimen/header_text"
         app:layout_constraintStart_toEndOf="@id/logo"
         app:layout_constraintEnd_toStartOf="@id/button_add"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Header"/>
 
     <ImageButton
         android:id="@+id/button_add"
@@ -38,6 +38,7 @@
         android:layout_height="50dp"
         android:background="@drawable/icon_add"
         android:layout_marginEnd="@dimen/small_gap"
+        android:contentDescription="@string/content_description_plus_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
