@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
@@ -20,9 +19,10 @@ import org.osmdroid.views.MapView;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
-public class PlayerItinerary extends AppCompatActivity {
+public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private static final String TAG = PlayerItinerary.class.getSimpleName();
 
@@ -41,7 +41,8 @@ public class PlayerItinerary extends AppCompatActivity {
     private boolean itineraryIsPause = false; // TODO read this data from a Route
 
     private final Popup popup = new Popup(this);
-    private final CurrentPosition currentPosition = new CurrentPosition(this);
+    private CurrentPosition currentPosition;
+    private IMapController mapController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +68,9 @@ public class PlayerItinerary extends AppCompatActivity {
         detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
         findViewById(R.id.back_btn).setOnClickListener(v -> finish());
         stopBtn.setOnClickListener(v -> stop());
-        pauseBtn.setOnClickListener(v -> pause());
+        pauseBtn.setOnClickListener(v -> pauseResume());
         clientVisitedBtn.setOnClickListener(v -> clientVisited());
         listClientsBtn.setOnClickListener(v -> listClients());
-
-        getItineraryFromIntent();
 
         initialiseMap();
     }
@@ -79,7 +78,7 @@ public class PlayerItinerary extends AppCompatActivity {
     private void initialiseMap() {
         Log.d(TAG, "initialiseMap: Initialising the map");
         mapView = findViewById(R.id.mapview);
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
         // Enable zoom buttons and multi-touch zoom
         Log.d(TAG, "initialiseMap: Enable zoom buttons and multi-touch zoom");
@@ -88,33 +87,56 @@ public class PlayerItinerary extends AppCompatActivity {
 
         // Set the map center and zoom level
         Log.d(TAG, "initialiseMap: Set the map center and zoom level");
-        IMapController mapController = mapView.getController();
+        mapController = mapView.getController();
         mapController.setZoom(15.0);
-        // Set the map center to the given point or the default point
-        Runnable setCenterWithCurrentPosition = () -> mapController.setCenter(getCurrentPositionOrDefault());
 
-        currentPosition.requestLocationPermission(setCenterWithCurrentPosition, () -> {
-            Popup.Button no = new Popup.Button(getString(R.string.no_you_can_t_use_this_feature), (dialog, which) -> {
-                dialog.dismiss();
-                Log.d(TAG, "initialiseMap: Said no, so finishing the activity");
-                finish();
-            });
-            Popup.Button yes = new Popup.Button(getString(R.string.yes_give_access), (dialog, which) -> {
-                dialog.dismiss();
-                Log.d(TAG, "initialiseMap: Said yes, so requesting location permission again");
-                currentPosition.requestLocationPermission(setCenterWithCurrentPosition, null);
-            });
-            popup.showAlertDialog(getString(R.string.warning), getString(R.string.need_to_allow_location_permission), yes, null, no);
-        });
+        currentPosition = new CurrentPosition(this);
+        requestPermissionAndCenter();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    private void requestPermissionAndCenter() {
+        // Request location permission
+        currentPosition.requestLocationPermission(
+                // If the permission is granted, set the center with the current position
+                () -> {
+                    setCenter();
+                    setInformationWithIntent();
+                },
+                // If the permission is denied,
+                // show a popup to ask the user to allow the location permission
+                () -> {
+                    Popup.Button no = new Popup.Button(getString(R.string.no_you_can_t_use_this_feature), (dialog, which) -> {
+                        dialog.dismiss();
+                        Log.d(TAG, "initialiseMap: Said no, so finishing the activity");
+                        finish();
+                    });
+                    Popup.Button yes = new Popup.Button(getString(R.string.yes_give_access), (dialog, which) -> {
+                        dialog.dismiss();
+                        Log.d(TAG, "initialiseMap: Said yes, so finishing the activity, so the user can allow the permission");
+                        finish();
+                    });
+                    popup.showAlertDialog(getString(R.string.warning), getString(R.string.need_to_allow_location_permission), yes, null, no);
+                }
+        );
     }
 
-    private void getItineraryFromIntent() {
+    private void setCenter() {
+        currentPosition.runOnFirstFix(() -> runOnUiThread(() -> {
+            GeoPoint currentPoint = currentPosition.getCurrentGeoPoint();
+            mapController.setCenter(currentPoint);
+            mapController.animateTo(currentPoint);
+        }));
+    }
+
+    /**
+     * Retrieve the itinerary from the intent and set the information, like :
+     * <ul>
+     *     <li>The next client</li>
+     *     <li>The distance to the next client</li>
+     *     <li>The address to the next client</li>
+     * </ul>
+     */
+    private void setInformationWithIntent() {
         Intent intent = getIntent();
         itinerary = intent.getParcelableExtra(InfoItinerary.ITINERARY_KEY);
 
@@ -132,16 +154,7 @@ public class PlayerItinerary extends AppCompatActivity {
 
     private double distanceToClient(Client nextClient) {
         // TODO calculate with the roads and not in a straight line
-        return currentPosition.getCurrentGeoPoint(true).distanceToAsDouble(nextClient.getGeoPoint()) / 1000;
-    }
-
-    /**
-     * @return The current position or the first client position if the current position is null.
-     */
-    private GeoPoint getCurrentPositionOrDefault() {
-        var currentPoint = currentPosition.getCurrentGeoPoint(true);
-        Log.d(TAG, "getCurrentPositionOrDefault: Current position: " + currentPoint);
-        return currentPoint != null ? currentPoint : itinerary.getClients().get(0).getGeoPoint();
+        return currentPosition.getCurrentGeoPoint().distanceToAsDouble(nextClient.getGeoPoint()) / 1000;
     }
 
     private void listClients() {
@@ -152,7 +165,7 @@ public class PlayerItinerary extends AppCompatActivity {
         Log.d(TAG, "clientVisited: ");
     }
 
-    private void pause() {
+    private void pauseResume() {
         Log.d(TAG, "pause: ");
         // Toggle the icon
         Drawable icon = AppCompatResources.getDrawable(this, itineraryIsPause ? ICON_PLAY : ICON_PAUSE);
@@ -164,4 +177,15 @@ public class PlayerItinerary extends AppCompatActivity {
         Log.d(TAG, "stop: ");
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public MapView getMapView() {
+        return mapView;
+    }
 }

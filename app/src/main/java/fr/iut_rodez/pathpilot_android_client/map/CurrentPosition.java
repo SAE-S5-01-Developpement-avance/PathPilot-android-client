@@ -10,22 +10,42 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class CurrentPosition {
 
     private static final String TAG = CurrentPosition.class.getSimpleName();
     public static final int REQUEST_POSITION_CODE = 1;
-    private final Activity activity;
+    private final ActivityWithCurrentPosition activity;
     private Location currentLocation;
     private Runnable permissionGrantedCallback;
     private Runnable permissionDeniedCallback;
+    private MyLocationNewOverlay myLocationOverlay;
 
-    public CurrentPosition(Activity activity) {
+    /**
+     * Create a new CurrentPosition object
+     *
+     * @param activity The activity
+     * @see ActivityWithCurrentPosition
+     */
+    public CurrentPosition(ActivityWithCurrentPosition activity) {
         this.activity = activity;
+
+        this.myLocationOverlay = new MyLocationNewOverlay(
+                new GpsMyLocationProvider(activity),
+                activity.getMapView()
+        );
+        myLocationOverlay.enableMyLocation();
+        myLocationOverlay.enableFollowLocation();
     }
 
-    private boolean isLocationPermissionGranted() {
+    public boolean isLocationPermissionGranted() {
         final String accessCoarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION;
         final String accessFineLocation = Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -44,7 +64,7 @@ public class CurrentPosition {
         this.permissionDeniedCallback = deniedCallback;
         final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         Log.d(TAG, "requestLocationPermission: Requesting GPS Location permission");
-        activity.requestPermissions(permissions, REQUEST_POSITION_CODE);
+        ((Activity) activity).requestPermissions(permissions, REQUEST_POSITION_CODE);
     }
 
     public void requestLocationPermission() {
@@ -66,8 +86,8 @@ public class CurrentPosition {
      * </pre>
      * </p>
      *
-     * @param requestCode The code of the request
-     * @param permissions The permissions requested
+     * @param requestCode  The code of the request
+     * @param permissions  The permissions requested
      * @param grantResults The result of the request
      * @see Activity#onRequestPermissionsResult(int, String[], int[])
      * @see CurrentPosition#requestLocationPermission(Runnable, Runnable)
@@ -86,6 +106,8 @@ public class CurrentPosition {
                     // Reset callback to avoid multiple executions
                     permissionGrantedCallback = null;
                 }
+                myLocationOverlay.enableMyLocation();
+                myLocationOverlay.enableFollowLocation();
             } else {
                 // Permission denied
                 Log.d(TAG, "Location permission denied");
@@ -100,47 +122,66 @@ public class CurrentPosition {
         }
     }
 
-    @SuppressLint("MissingPermission") // Permission is checked in isLocationPermissionGranted
-    private void updatePosition() {
+    /**
+     * @return The current position
+     */
+    public GeoPoint getCurrentGeoPoint() {
+        GeoPoint myLocation = myLocationOverlay.getMyLocation();
+        Log.d(TAG, "getCurrentGeoPoint: " + myLocation);
+        if (myLocation == null) {
+            myLocation = positionFromManager();
+        }
+        return myLocation;
+    }
+
+    @SuppressLint("MissingPermission") // We check the permission with isLocationPermissionGranted
+    private GeoPoint positionFromManager() {
+        GeoPoint myLocation = null;
         if (isLocationPermissionGranted()) {
             LocationManager locationManager = (LocationManager) activity.getSystemService(Activity.LOCATION_SERVICE);
             if (locationManager != null) {
-                currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    myLocation = getGeoPoint(location);
+                }
             }
-        } else {
-            Log.e(TAG, "GPS Permission isn't granted");
         }
+        return myLocation;
+    }
+
+    @NonNull
+    private static GeoPoint getGeoPoint(Location location) {
+        return new GeoPoint(location.getLatitude(), location.getLongitude());
     }
 
     /**
-     * Get the current position
+     * As soon as we can get the user location, execute the runnable.
      * <p>
-     *     If the parameter is true, the position will be updated
-     * </p>
-     * @param updatePosition If true, update the position
-     * @return The current position
+     * If the user location is already available, the runnable will be executed immediately.<br>
+     * Otherwise, the runnable will be executed as soon as the user location is available.
+     * </p
+     *
+     * @param runnable The runnable
+     * @see MyLocationNewOverlay#runOnFirstFix(Runnable)
      */
-    public Location getCurrentPosition(boolean updatePosition) {
-        updatePosition();
-        return currentLocation;
+    public void runOnFirstFix(Runnable runnable) {
+        Runnable locationFixRunnable = () -> {
+            runnable.run();
+            activity.runOnUiThread(() -> {
+                GeoPoint currentPoint = getCurrentGeoPoint();
+                activity.getMapView().getController().setCenter(currentPoint);
+                activity.getMapView().getController().animateTo(currentPoint);
+                activity.getMapView().getOverlays().add(myLocationOverlay);
+            });
+        };
+        myLocationOverlay.runOnFirstFix(locationFixRunnable);
     }
 
-    /**
-     * Get the current position
-     * <p>
-     *     If the parameter is true, the position will be updated
-     * </p>
-     * @param updatePosition If true, update the position
-     * @return The current position
-     */
-    public GeoPoint getCurrentGeoPoint(boolean updatePosition) {
-        if (updatePosition) {
-            updatePosition();
+    public abstract static class ActivityWithCurrentPosition extends AppCompatActivity {
+        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        if (currentLocation != null) {
-            return new GeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude());
-        }
-        return null;
-    }
 
+        abstract public MapView getMapView();
+    }
 }

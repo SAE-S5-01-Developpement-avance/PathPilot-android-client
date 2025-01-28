@@ -24,9 +24,10 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
-public class MapSelection extends AppCompatActivity implements MapEventsReceiver {
+public class MapSelection extends ActivityWithCurrentPosition implements MapEventsReceiver {
 
     private static final String TAG = MapSelection.class.getSimpleName();
     public static final String KEY_LATITUDE = "latitude";
@@ -47,7 +48,6 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         popup = new Popup(this);
-        currentPosition = new CurrentPosition(this);
 
         // Important! Initialise the osmdroid configuration
         Configuration.getInstance().setUserAgentValue(getPackageName());
@@ -64,6 +64,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         // Initialise the map
         map = findViewById(R.id.mapview);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        currentPosition = new CurrentPosition(this);
 
         // Enable zoom buttons and multi-touch zoom
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
@@ -71,7 +72,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
         // Set the map center and zoom level
         IMapController mapController = map.getController();
-        mapController.setZoom(10.0);
+        mapController.setZoom(13.0);
         // Set the map center to the given point or the default point
         mapController.setCenter(getGivenSelectedPointOrDefault());
         currentPosition.requestLocationPermission(() -> {
@@ -94,6 +95,11 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    public MapView getMapView() {
+        return map;
+    }
+
     /**
      * Get the selected point from the intent or return the default point
      * <p>
@@ -105,7 +111,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     private GeoPoint getGivenSelectedPointOrDefault() {
         var point = getGivenSelectedPoint();
         if (point == null) {
-            point = currentPosition.getCurrentGeoPoint(true);
+            point = currentPosition.getCurrentGeoPoint();
         }
         return point != null ? point : PARIS_POINT;
     }
