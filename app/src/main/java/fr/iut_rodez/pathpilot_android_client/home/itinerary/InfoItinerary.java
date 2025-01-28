@@ -31,7 +31,7 @@ public class InfoItinerary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.view_info_itineray);
-        findViewById(R.id.button_start_itinerary).setOnClickListener(v -> startItinerary());
+        findViewById(R.id.button_start_itinerary).setOnClickListener(v -> createAndStartRoute());
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
         popup = new Popup(this);
@@ -68,8 +68,7 @@ public class InfoItinerary extends AppCompatActivity {
         ((TextView) findViewById(R.id.header_text)).setText(itinerary.getDisplayName());
     }
 
-    private void startItinerary() {
-        Log.d(TAG, "startItinerary: Start the itinerary");
+    private void createAndStartRoute() {
         Intent intent = new Intent(this, PlayerItinerary.class);
         intent.putExtra(ITINERARY_KEY, itinerary);
         startActivity(intent);
