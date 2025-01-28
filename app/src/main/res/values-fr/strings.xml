@@ -146,8 +146,8 @@ String for Login activity
     <!--
     Itinerary Player
     -->
-    <string name="need_to_allow_location_permission">You need to allow the location permission to use the map.</string>
-    <string name="no_you_can_t_use_this_feature">No (You can\'t use this feature)</string>
-    <string name="yes_give_access">Yes give access</string>
+    <string name="need_to_allow_location_permission">Vous devez autoriser l\'accés à la localisation pour utiliser la carte.</string>
+    <string name="no_you_can_t_use_this_feature">Non (vous ne pourrez pas utiliser cette fonctionnalité)</string>
+    <string name="yes_give_access">Oui donner accès</string>
     <string name="distance_in_km">%.2f km</string>
 </resources>
