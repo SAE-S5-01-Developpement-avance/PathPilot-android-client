@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class InfoItinerary extends AppCompatActivity {
@@ -21,6 +23,7 @@ public class InfoItinerary extends AppCompatActivity {
     private static final String TAG = InfoItinerary.class.getSimpleName();
     public static final String ITINERARY_KEY = "itinerary";
 
+    private final IRouteService routeService = ServiceFactory.getRouteService();
     private ClientArrayAdapter clientsAddedAdapter;
     private Itinerary itinerary;
     private Popup popup;
