@@ -60,7 +60,6 @@ public class FragmentItineraries extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_itineraries, container, false);
         homeActivity = (Home) getActivity();
 
@@ -94,6 +93,7 @@ public class FragmentItineraries extends Fragment {
 
         registerForContextMenu(listItinerariesView);
         view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateItinerary());
+
         listItinerariesView.setOnItemClickListener((parent, view1, position, id) -> {
             Itinerary itinerary = (Itinerary) parent.getItemAtPosition(position);
             Log.d(TAG, "onItemClick: Itinerary: " + itinerary);
