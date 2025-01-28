@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
@@ -52,13 +53,15 @@ public class AddItinerary extends AppCompatActivity {
 
         listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
 
-        listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY));
+        Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
+        ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
+        listClientsToAdd.addAll(clients);
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(android.R.id.text1);
                 textView.setText(getItem(position).getCompanyName());
                 return view;
             }
@@ -114,7 +117,7 @@ public class AddItinerary extends AppCompatActivity {
 
     /**
      * Create an itinerary with the clients selected.
-     * The itinerary can be create if it has one or more clients attached.
+     * The itinerary can be created if it has one or more clients attached.
      */
     public void createItinerary() {
         if (listClientsAdded.isEmpty()) {

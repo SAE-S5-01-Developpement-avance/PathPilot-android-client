@@ -94,15 +94,12 @@ public class FragmentItineraries extends Fragment {
 
         registerForContextMenu(listItinerariesView);
         view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateItinerary());
-        listItinerariesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Itinerary itinerary = (Itinerary) parent.getItemAtPosition(position);
-                Log.d(TAG, "onItemClick: Itinerary: " + itinerary);
-                Intent intent = new Intent(getActivity(), InfoItinerary.class);
-                intent.putExtra(ITINERARY_KEY, itinerary);
-                startActivity(intent);
-            }
+        listItinerariesView.setOnItemClickListener((parent, view1, position, id) -> {
+            Itinerary itinerary = (Itinerary) parent.getItemAtPosition(position);
+            Log.d(TAG, "onItemClick: Itinerary: " + itinerary);
+            Intent intent = new Intent(getActivity(), InfoItinerary.class);
+            intent.putExtra(ITINERARY_KEY, itinerary);
+            startActivity(intent);
         });
 
         return view;
