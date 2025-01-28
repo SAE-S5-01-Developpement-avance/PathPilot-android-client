@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- TODO write the name of the selected itinerary in the title -->
     <!-- Header fixe -->
     <include layout="@layout/component_header_back_icon" />
 
@@ -41,13 +40,13 @@
 
         <Button
             android:id="@+id/button_start_itinerary"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/normal_gap"
             android:layout_marginBottom="@dimen/normal_gap"
             android:backgroundTint="@color/blue_0"
-            android:drawableLeft="@drawable/icon_start"
-            android:text="@string/button_start_itinerary"
+            app:icon="@drawable/icon_start"
+            android:text="@string/button_create_and_start_itinerary"
             android:textSize="@dimen/normal_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

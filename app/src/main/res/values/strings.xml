@@ -121,10 +121,11 @@
     <string name="select_client_to_create_itinerary">Select clients</string>
     <string name="client_address_not_found">Address not found</string>
     <string name="delete_itinerary">Delete</string>
+
     <!--
     Itinerary info
     -->
-    <string name="button_start_itinerary">Start</string>
+    <string name="button_create_and_start_itinerary">Create and start a new route</string>
 
     <!--
     Map selection
