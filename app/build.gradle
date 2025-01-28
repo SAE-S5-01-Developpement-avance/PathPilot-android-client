@@ -62,8 +62,12 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.volley
     testImplementation libs.junit
+    testImplementation libs.junit.jupiter
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     // Dependency for OpenStreetMap
     implementation libs.osmdroid.android
+
+    // Use to mock Android framework in tests
+    testImplementation libs.robolectric
 }

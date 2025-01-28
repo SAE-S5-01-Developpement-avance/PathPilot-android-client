@@ -14,17 +14,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
@@ -57,25 +53,14 @@ public class ClientService {
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
-                    try {
-                        List<Client> clientsArray = new ArrayList<>();
-                        if (response.has("_embedded")) {
-                            JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientList");
-                            Log.d(TAG, "getClients: " + clients);
-                            for (int i = 0; i < clients.length(); i++) {
-                                clientsArray.add(new Client(clients.getJSONObject(i)));
-                            }
-                        }
 
-                        Log.d(TAG, "getClients: " + clientsArray);
+                    List<Client> clientsArray = Parser.getClientsPageable(response);
+                    Log.d(TAG, "getClients: " + clientsArray);
 
-                        ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientsArray);
-                        listClientsView.post(() -> {
-                            listClientsView.setAdapter(adapter);
-                        });
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                    ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientsArray);
+                    listClientsView.post(() -> {
+                        listClientsView.setAdapter(adapter);
+                    });
                 },
                 error -> {
                     progressDialog.dismiss();
