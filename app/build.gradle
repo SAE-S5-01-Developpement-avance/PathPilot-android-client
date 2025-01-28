@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "fr.iut_rodez.pathpilot_android_client"
-        minSdk 25
+        minSdk 30
         targetSdk 34
         versionCode 1
         versionName "1.0"
