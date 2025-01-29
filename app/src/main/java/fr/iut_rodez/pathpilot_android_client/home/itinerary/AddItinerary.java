@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,9 @@ import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
@@ -165,5 +169,30 @@ public class AddItinerary extends AppCompatActivity {
             listClientsToAdd.add(clientSelected);
         }
         return (super.onContextItemSelected(item));
+    }
+
+    /**
+     * Algorithm that do a path by every vertex from one to the next.
+     * TODO Move to the API
+     * @param vertex
+     * @param graph
+     * @param finalItinerary
+     * @param itineraryLength
+     */
+    public void navigation(ArrayList<Double> vertex, ArrayList<ArrayList<Double>> graph,
+                           ArrayList<Integer> finalItinerary, double itineraryLength) {
+        if (finalItinerary.size() != graph.size()+1) {
+            int rangMinimum = 0;
+            double minimum = Double.MAX_VALUE;
+            for (int i = 0; i < vertex.size(); i++) {
+                if (!finalItinerary.contains(i) && minimum > vertex.get(i)) {
+                    minimum = vertex.get(i);
+                    rangMinimum = i;
+                }
+            }
+            finalItinerary.add(rangMinimum);
+            itineraryLength += vertex.get(rangMinimum);
+            navigation(graph.get(rangMinimum),graph,finalItinerary,itineraryLength);
+        }
     }
 }

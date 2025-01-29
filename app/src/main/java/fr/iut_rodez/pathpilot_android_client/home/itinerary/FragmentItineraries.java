@@ -175,4 +175,17 @@ public class FragmentItineraries extends Fragment {
         Log.d(TAG, "getListItineraries: List of itineraries: " + listItineraries);
         return listItineraries;
     }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.create_route) {
+
+        } else {
+            Log.e(TAG, "onContextItemSelected: Unknown option selected");
+        }
+        return (super.onContextItemSelected(item));
+    }
 }

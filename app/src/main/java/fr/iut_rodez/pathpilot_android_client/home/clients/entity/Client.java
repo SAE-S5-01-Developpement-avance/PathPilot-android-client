@@ -45,7 +45,6 @@ public class Client implements Parcelable {
         this.contactLastName = contactLastName;
         this.contactFirstName = contactFirstName;
         this.phoneNumber = phoneNumber;
-        this.salesman = salesman;
     }
 
     public Client(JSONObject clientJson) throws JSONException {
