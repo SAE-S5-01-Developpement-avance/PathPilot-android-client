@@ -63,15 +63,15 @@
 
         <TextView
             android:id="@+id/client_address"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/back_btn"
             app:layout_constraintStart_toEndOf="@id/separator"
+            app:layout_constraintEnd_toStartOf="@id/back_btn"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Client Address (12 rue du bal 12000 Rodez)" />
+            tools:text="Client Address (Rodez Intermarche Gineste, 94 Av. de la Gineste, 12000 Rodez, France)" />
 
         <ImageButton
             android:id="@+id/back_btn"
