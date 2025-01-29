@@ -150,6 +150,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         clientName.setText(nextClient.getCompanyName());
         clientAddress.setText(nextClient.getAddressDisplayName());
         clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(nextClient)));
+        counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, itinerary.getClients().size()));
     }
 
     private double distanceToClient(Client nextClient) {

@@ -150,6 +150,7 @@
     <string name="no_you_can_t_use_this_feature">No (You can\'t use this feature)</string>
     <string name="yes_give_access">Yes give access</string>
     <string name="distance_in_km">%.2f km</string>
+    <string name="counter_visited_clients">Visited clients: %d/%d</string>
 
 
     <string name="content_description_pathpilot_icon" translatable="false">PathPilot icon</string>

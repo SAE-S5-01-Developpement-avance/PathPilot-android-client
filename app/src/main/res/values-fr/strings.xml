@@ -150,4 +150,5 @@ String for Login activity
     <string name="no_you_can_t_use_this_feature">Non (vous ne pourrez pas utiliser cette fonctionnalité)</string>
     <string name="yes_give_access">Oui donner accès</string>
     <string name="distance_in_km">%.2f km</string>
+    <string name="counter_visited_clients">Clients visités : %d/%d</string>
 </resources>
