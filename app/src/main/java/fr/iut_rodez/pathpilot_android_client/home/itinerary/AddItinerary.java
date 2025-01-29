@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -126,7 +128,40 @@ public class AddItinerary extends AppCompatActivity {
             popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_min_clients_per_itinerary));
         } else {
             try {
-                ItineraryService.addItinerary(this,listClientsAdded);
+                if (listClientsAdded.size() > 2) {
+                    ArrayList<ArrayList<Double>> locations = new ArrayList<>();
+                    // TODO Move to the API
+                    //////////////////////////////
+                    // TODO get the real location of the salesman
+                    locations.add(new ArrayList<>(Arrays.asList(44.35385797, 2.4817177)));
+
+                    // This is steeling here
+                    for (Client client : listClientsAdded) {
+                        locations.add(new ArrayList<>(Arrays.asList(client.getLatHomeAddress(), client.getLongHomeAddress())));
+                    }
+                    ItineraryService.getAllDurationsFromClientsOfItinerary(this,locations);
+
+                    // TODO add this part to the function called by AddItinerary in the API
+                    ArrayList<Integer> finalItinerary = new ArrayList<>();
+                    double itineraryLength = 0;
+                    finalItinerary.add(0);
+                    navigation(locations.get(0),locations,finalItinerary,itineraryLength);
+                    ArrayList<Client> orderedClientList = new ArrayList<>();
+
+                    // Remove the salesman from the list
+                    finalItinerary.remove(0);
+                    finalItinerary.remove(finalItinerary.size()-1);
+                    for (int i : finalItinerary) {
+                        orderedClientList.add(listClientsAdded.get(i));
+                    }
+                    //////////////////////////////
+
+                    // TODO change ordered for listClientsAdded
+                    ItineraryService.addItinerary(this,orderedClientList);
+                } else {
+                    ItineraryService.addItinerary(this,listClientsAdded);
+                }
+
             } catch (JSONException e) {
                 popup.showAlertDialog(getString(R.string.error_title),getString(R.string.internal_server_error));
             }
@@ -155,5 +190,30 @@ public class AddItinerary extends AppCompatActivity {
             listClientsToAdd.add(clientSelected);
         }
         return (super.onContextItemSelected(item));
+    }
+
+    /**
+     * Algorithm that do a path by every vertex from one to the next.
+     * TODO Move to the API
+     * @param vertex
+     * @param graph
+     * @param finalItinerary
+     * @param itineraryLength
+     */
+    public void navigation(ArrayList<Double> vertex, ArrayList<ArrayList<Double>> graph,
+                           ArrayList<Integer> finalItinerary, double itineraryLength) {
+        if (finalItinerary.size() != graph.size()+1) {
+            int rangMinimum = 0;
+            double minimum = Double.MAX_VALUE;
+            for (int i = 0; i < vertex.size(); i++) {
+                if (!finalItinerary.contains(i) && minimum > vertex.get(i)) {
+                    minimum = vertex.get(i);
+                    rangMinimum = i;
+                }
+            }
+            finalItinerary.add(rangMinimum);
+            itineraryLength += vertex.get(rangMinimum);
+            navigation(graph.get(rangMinimum),graph,finalItinerary,itineraryLength);
+        }
     }
 }

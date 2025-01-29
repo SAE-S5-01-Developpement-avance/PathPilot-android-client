@@ -32,7 +32,7 @@ import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
  */
 public class ClientService {
 
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/clients";
+    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "clients";
     private static final String TAG = ClientService.class.getSimpleName();
 
     /**
@@ -60,7 +60,7 @@ public class ClientService {
                     try {
                         List<Client> clientsArray = new ArrayList<>();
                         if (response.has("_embedded")) {
-                            JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientList");
+                            JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientResponseModelList");
                             Log.d(TAG, "getClients: " + clients);
                             for (int i = 0; i < clients.length(); i++) {
                                 clientsArray.add(new Client(clients.getJSONObject(i)));

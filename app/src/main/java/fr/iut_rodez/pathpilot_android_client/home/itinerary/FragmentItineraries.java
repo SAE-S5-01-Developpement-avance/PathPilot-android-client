@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -96,5 +98,18 @@ public class FragmentItineraries extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.create_route) {
+
+        } else {
+            Log.e(TAG, "onContextItemSelected: Unknown option selected");
+        }
+        return (super.onContextItemSelected(item));
     }
 }

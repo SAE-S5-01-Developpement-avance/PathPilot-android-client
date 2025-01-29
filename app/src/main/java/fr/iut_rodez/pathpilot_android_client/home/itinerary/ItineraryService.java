@@ -33,7 +33,8 @@ import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 public class ItineraryService {
 
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/routes";
+    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "routes";
+    public static final String API_ORS_MATRIX_URL = "https://api.openrouteservice.org/v2/matrix/driving-car?profile=driving-car";
     private static final String TAG = ItineraryService.class.getSimpleName();
     /**
      * Request to the API to add an itinerary.
@@ -131,6 +132,66 @@ public class ItineraryService {
             }
         };
 
+        requestQueue.add(request);
+    }
+
+    /**
+     * Ask to the ORS Matrix API the durations enter the sent locations.
+     * @param context Context of the application.
+     * @param locations The list of locations.
+     */
+    public static void getAllDurationsFromClientsOfItinerary(Context context, ArrayList<ArrayList<Double>> locations) {
+        Log.d(TAG, "API URL: " + API_ORS_MATRIX_URL);
+
+        // TODO Get out the API_KEY
+        String API_KEY = "5b3ce3597851110001cf6248a7c14d937e0a4c0d850c723cff110a2b";
+
+        RequestQueue requestQueue = getRequestQueue(context);
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JSONObject requestBody = new JSONObject();
+        try {
+            JSONArray locationsJson = new JSONArray();
+            for (ArrayList<Double> location : locations){
+                locationsJson.put(new JSONArray(location));
+            }
+            requestBody.put("locations", locationsJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_ORS_MATRIX_URL,requestBody,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+                    try {
+                        locations.clear();
+                        if (response.has("durations")) {
+                            JSONArray clientsDurations = response.getJSONArray("durations");
+                            for (int i = 0; i < clientsDurations.length(); i++) {
+                                locations.add(new ArrayList<>());
+                                JSONArray row = (JSONArray)clientsDurations.get(i);
+                                for (int y = 0; y < row.length();y++) {
+                                    locations.get(i).add(row.getDouble(y));
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + API_KEY);
+                return headers;
+            }
+        };
         requestQueue.add(request);
     }
 }

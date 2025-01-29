@@ -43,7 +43,6 @@ public class Client implements Parcelable {
         this.contactLastName = contactLastName;
         this.contactFirstName = contactFirstName;
         this.phoneNumber = phoneNumber;
-        this.salesman = salesman;
     }
 
     public Client(JSONObject clientJson) throws JSONException {
@@ -56,7 +55,6 @@ public class Client implements Parcelable {
         this.contactLastName = clientJson.getString("contactLastName");
         this.contactFirstName = clientJson.getString("contactFirstName");
         this.phoneNumber = clientJson.getString("phoneNumber");
-        this.salesman = clientJson.getString("salesman");
     }
 
     protected Client(Parcel in) {
