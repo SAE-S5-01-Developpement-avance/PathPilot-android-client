@@ -27,6 +27,7 @@ public class CurrentPosition {
     private Runnable permissionGrantedCallback;
     private Runnable permissionDeniedCallback;
     private MyLocationNewOverlay myLocationOverlay;
+    private boolean centerOnLocation;
 
     /**
      * Create a new CurrentPosition object
@@ -64,7 +65,7 @@ public class CurrentPosition {
         this.permissionDeniedCallback = deniedCallback;
         final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         Log.d(TAG, "requestLocationPermission: Requesting GPS Location permission");
-        ((Activity) activity).requestPermissions(permissions, REQUEST_POSITION_CODE);
+        activity.requestPermissions(permissions, REQUEST_POSITION_CODE);
     }
 
     public void requestLocationPermission() {
@@ -106,8 +107,6 @@ public class CurrentPosition {
                     // Reset callback to avoid multiple executions
                     permissionGrantedCallback = null;
                 }
-                myLocationOverlay.enableMyLocation();
-                myLocationOverlay.enableFollowLocation();
             } else {
                 // Permission denied
                 Log.d(TAG, "Location permission denied");
@@ -167,12 +166,14 @@ public class CurrentPosition {
     public void runOnFirstFix(Runnable runnable) {
         Runnable locationFixRunnable = () -> {
             runnable.run();
-            activity.runOnUiThread(() -> {
-                GeoPoint currentPoint = getCurrentGeoPoint();
-                activity.getMapView().getController().setCenter(currentPoint);
-                activity.getMapView().getController().animateTo(currentPoint);
-                activity.getMapView().getOverlays().add(myLocationOverlay);
-            });
+            if (centerOnLocation) {
+                activity.runOnUiThread(() -> {
+                    GeoPoint currentPoint = getCurrentGeoPoint();
+                    activity.getMapView().getController().setCenter(currentPoint);
+                    activity.getMapView().getController().animateTo(currentPoint);
+                    activity.getMapView().getOverlays().add(myLocationOverlay);
+                });
+            }
         };
         myLocationOverlay.runOnFirstFix(locationFixRunnable);
     }
@@ -183,5 +184,22 @@ public class CurrentPosition {
         }
 
         abstract public MapView getMapView();
+    }
+
+    /**
+     * Disable the center on location
+     * <p>
+     *     The map will not center automatically on the user location
+     * </p>
+     */
+    public void disableCenterOnLocation() {
+        centerOnLocation = false;
+        myLocationOverlay.disableFollowLocation();
+    }
+
+    public void enableCenterOnLocation() {
+        centerOnLocation = true;
+        myLocationOverlay.enableMyLocation();
+        myLocationOverlay.enableFollowLocation();
     }
 }

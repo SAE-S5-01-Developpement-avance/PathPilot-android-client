@@ -125,7 +125,7 @@ String for Login activity
     Map selection
     -->
     <string name="address_unknown">Adresse inconnu</string>
-    <string name="validate_selected_position">Valider la position sélectionnée</string>
+    <string name="validate">Valider</string>
     <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
     <string name="search">Rechercher</string>
 

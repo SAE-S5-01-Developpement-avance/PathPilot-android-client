@@ -8,8 +8,6 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -77,6 +75,7 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
         mapController.setCenter(getGivenSelectedPointOrDefault());
         currentPosition.requestLocationPermission(() -> {
             mapController.setCenter(getGivenSelectedPointOrDefault());
+            currentPosition.disableCenterOnLocation();
         }, null);
 
         GeoPoint givenSelectedPoint = getGivenSelectedPoint();
@@ -160,7 +159,6 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
 
                     // Set the selected point to the address
                     setSelectedPoint(new GeoPoint(address.getLatitude(), address.getLongitude()));
-
                     centerToSelected();
                 } else {
                     popup.showToastLong(getString(R.string.adress_not_found)); // TODO: i18n
@@ -233,6 +231,7 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
         selectedMarker = new Marker(map);
         selectedMarker.setPosition(pointSelected);
         selectedMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        selectedMarker.setDraggable(true);
         map.getOverlays().add(selectedMarker);
         map.invalidate();
 

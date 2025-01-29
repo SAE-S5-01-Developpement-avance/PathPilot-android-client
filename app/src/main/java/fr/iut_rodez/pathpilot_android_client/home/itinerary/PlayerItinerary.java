@@ -121,6 +121,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     private void setCenter() {
+        currentPosition.enableCenterOnLocation();
         currentPosition.runOnFirstFix(() -> runOnUiThread(() -> {
             GeoPoint currentPoint = currentPosition.getCurrentGeoPoint();
             mapController.setCenter(currentPoint);
