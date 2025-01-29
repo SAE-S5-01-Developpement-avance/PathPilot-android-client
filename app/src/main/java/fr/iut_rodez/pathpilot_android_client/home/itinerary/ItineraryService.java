@@ -36,6 +36,7 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 public class ItineraryService implements IItineraryService {
 
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
+    public static final String API_ORS_MATRIX_URL = "https://api.openrouteservice.org/v2/matrix/driving-car?profile=driving-car";
     private static final String TAG = ItineraryService.class.getSimpleName();
 
     /**
