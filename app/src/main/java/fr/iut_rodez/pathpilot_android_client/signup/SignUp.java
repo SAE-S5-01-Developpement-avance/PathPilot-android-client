@@ -45,8 +45,6 @@ public class SignUp extends AppCompatActivity {
     private TextView labelAddress;
     private TextView labelFirstName;
     private TextView labelLastName;
-    private TextView labelLatitude;
-    private TextView labelLongitude;
     private TextView labelMail;
     private TextView labelPassword;
     private TextView labelConfirmPassword;
@@ -192,7 +190,7 @@ public class SignUp extends AppCompatActivity {
         String errorMessage = "";
 
         if (!isLatitudeValid(latitude)) {
-            labelLatitude.setTextColor(getColor(R.color.red));
+            labelAddress.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.address_missing);
         }
 
@@ -209,7 +207,7 @@ public class SignUp extends AppCompatActivity {
         String errorMessage = "";
 
         if (!isLongitudeValid(longitude)) {
-            labelLongitude.setTextColor(getColor(R.color.red));
+            labelAddress.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.address_missing);
         }
 
@@ -281,8 +279,7 @@ public class SignUp extends AppCompatActivity {
     public void resetFieldStyle() {
         labelFirstName.setTextColor(getColor(R.color.black));
         labelLastName.setTextColor(getColor(R.color.black));
-        labelLatitude.setTextColor(getColor(R.color.black));
-        labelLongitude.setTextColor(getColor(R.color.black));
+        labelAddress.setTextColor(getColor(R.color.black));
         labelMail.setTextColor(getColor(R.color.black));
         labelPassword.setTextColor(getColor(R.color.black));
     }
