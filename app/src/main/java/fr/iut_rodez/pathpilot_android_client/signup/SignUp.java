@@ -22,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -123,7 +124,7 @@ public class SignUp extends AppCompatActivity {
      * Creates an account or notifies the user of input errors.
      */
     public void createAccount() {
-        StringBuilder errorMessage = new StringBuilder();
+        ArrayList<String> errorMessage = new ArrayList<>();
         // reset the style of the text field
         resetFieldStyle();
 
@@ -133,16 +134,22 @@ public class SignUp extends AppCompatActivity {
         String passwordText = password.getText().toString();
         String confirmPasswordText = confirmPassord.getText().toString();
 
-        errorMessage.append(checkFirstName(firstNameText));
-        errorMessage.append(checkLastName(lastNameText));
-        errorMessage.append(checkLatitude(latitude));
-        errorMessage.append(checkLongitude(longitude));
-        errorMessage.append(checkMail(mailText));
-        errorMessage.append(checkPassword(passwordText));
-        errorMessage.append(checkConfirmPassword(passwordText, confirmPasswordText));
+        errorMessage.add(checkFirstName(firstNameText));
+        errorMessage.add(checkLastName(lastNameText));
+        errorMessage.add(checkAddress(latitude, longitude));
+        errorMessage.add(checkMail(mailText));
+        errorMessage.add(checkPassword(passwordText));
+        errorMessage.add(checkConfirmPassword(passwordText, confirmPasswordText));
 
-        if (errorMessage.length() != 0) {
-            popup.showToastLong(errorMessage.toString());
+        errorMessage.removeIf(String::isEmpty);
+
+        if (!errorMessage.isEmpty()) {
+            popup.showAlertDialog(
+                    getString(R.string.please_fix_the_following_errors),
+                    // Concatenate all error messages into one string.
+                    // Each message is separated by a newline character.
+                    errorMessage.stream().reduce("", (acc, s) -> acc + "\n" + s)
+            );
         } else {
             sendInformationToSignInUser(firstNameText, lastNameText, latitude, longitude, mailText, passwordText);
         }
@@ -186,27 +193,10 @@ public class SignUp extends AppCompatActivity {
      * @param latitude
      * @return errorMessage
      */
-    public String checkLatitude(double latitude) {
+    public String checkAddress(double latitude, double longitude) {
         String errorMessage = "";
 
-        if (!isLatitudeValid(latitude)) {
-            labelAddress.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.address_missing);
-        }
-
-        return errorMessage;
-    }
-
-    /**
-     * Check the longitude field.
-     *
-     * @param longitude
-     * @return errorMessage
-     */
-    public String checkLongitude(double longitude) {
-        String errorMessage = "";
-
-        if (!isLongitudeValid(longitude)) {
+        if (!isLatitudeValid(latitude) || !isLongitudeValid(longitude)) {
             labelAddress.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.address_missing);
         }
