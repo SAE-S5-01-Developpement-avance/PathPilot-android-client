@@ -68,6 +68,7 @@ public class ClientService {
                     handleError(context, error);
                 }
         );
+        
         requestQueue.add(request);
     }
 
