@@ -30,7 +30,7 @@ String for Login activity
     <string name="sign_up">Créer mon compte</string>
     <string name="already_account">Vous avez déjà un compte?</string>
     <string name="link_sign_in">Se connecter</string>
-    <string name="label_address"><u>Addresse postale</u></string>
+    <string name="label_address"><u>Adresse postale</u></string>
 
     <!--
     Creation of a client
