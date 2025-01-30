@@ -27,8 +27,8 @@ public class Parser {
     /**
      * Parse the JSON response of the GET clients request and return a list of clients
      * <p>
-     *     Request URL example:
-     *     <a href="http://localhost:8080/api/clients">/api/clients</a>
+     * Request URL example:
+     * <a href="http://localhost:8080/api/clients">/api/clients</a>
      *
      * @param response JSON response of the GET clients request
      * @return List of clients parsed from the JSON response. If an error occurs, an empty list is returned
@@ -60,8 +60,9 @@ public class Parser {
     /**
      * Parse the JSON response of the GET itineraries request and return a list of itineraries
      * <p>
-     *     Request URL example:
-     *     <a href="http://localhost:8080/api/routes">/api/routes</a>
+     * Request URL example:
+     * <a href="http://localhost:8080/api/routes">/api/routes</a>
+     *
      * @param response JSON response of the GET itineraries request
      * @return List of itineraries parsed from the JSON response. If an error occurs, an empty list is returned
      */
@@ -101,13 +102,12 @@ public class Parser {
      * @param jsonObject JSON object containing the x and y coordinates
      * @return The GeoPoint parsed from the JSON object. If an error occurs, null is returned
      */
-    public static GeoPoint getGeoPoint(JSONObject jsonObject) {
-        try {
-            return new GeoPoint(jsonObject.getDouble("x"), jsonObject.getDouble("y"));
-        } catch (JSONException e) {
-            Log.e(TAG, "Error while parsing the JSON response", e);
-            return null;
-        }
+    @NonNull
+    public static GeoPoint getGeoPointFromGeoJSONPoint(JSONObject geoJsonPoint) throws JSONException {
+        return new GeoPoint(
+                geoJsonPoint.getDouble("x"),
+                geoJsonPoint.getDouble("y")
+        );
     }
 
     /**
@@ -135,5 +135,6 @@ public class Parser {
     /**
      * Private constructor to prevent instantiation
      */
-    private Parser() {}
+    private Parser() {
+    }
 }

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
 
 /**
  * Class representing an itinerary.
@@ -30,52 +32,40 @@ public class Itinerary implements Parcelable {
     private String displayName;
     private String id;
     private ArrayList<Client> clients;
-    private double salesmanLatitude;
-    private double salesmanLongitude;
+    private final GeoPoint salesmanHome;
 
     public Itinerary(ArrayList<Client> clients, double salesmanLatitude, double salesmanLongitude) {
         this.clients = clients;
-        this.salesmanLatitude = salesmanLatitude;
-        this.salesmanLongitude = salesmanLongitude;
+        this.salesmanHome = new GeoPoint(salesmanLatitude, salesmanLongitude);
     }
 
     public Itinerary() {
         this.clients = new ArrayList<>();
-        this.salesmanLatitude = 0;
-        this.salesmanLongitude = 0;
+        this.salesmanHome = new GeoPoint(0.0, 0.0);
     }
 
     public Itinerary(JSONObject itineraryJson) throws JSONException {
         this.id = itineraryJson.getString("id");
         this.clients = new ArrayList<>();
-
-        JSONObject coordinates = itineraryJson.getJSONObject("salesman_home");
-        this.salesmanLongitude = coordinates.getDouble("x");
-        this.salesmanLatitude = coordinates.getDouble("y");
+        this.salesmanHome = Parser.getGeoPointFromGeoJSONPoint(itineraryJson.getJSONObject("salesman_home"));
 
         JSONArray clientsSchedule = itineraryJson.getJSONArray("clients_schedule");
+        List<Client> clientsParsed = new ArrayList<>();
         for (int i = 0; i < clientsSchedule.length(); i++) {
             JSONObject clientJson = clientsSchedule.getJSONObject(i);
-            JSONObject companyLocation = clientJson.getJSONObject("companyLocation");
-            Client client = new Client(
-                    clientJson.getInt("id"),
-                    clientJson.getString("companyName"),
-                    clientCoordinates.getDouble("x"),
-                    clientCoordinates.getDouble("y")
-            );
-            this.clients.add(client);
+            clientsParsed.add(Client.createClientFromShortJson(clientJson));
         }
+        this.clients.addAll(clientsParsed);
     }
 
     protected Itinerary(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         clients = in.createTypedArrayList(Client.CREATOR);
-        salesmanLatitude = in.readDouble();
-        salesmanLongitude = in.readDouble();
+        salesmanHome = in.readParcelable(GeoPoint.class.getClassLoader());
         displayName = in.readString();
     }
 
-    public static final Creator<Itinerary> CREATOR = new Creator<Itinerary>() {
+    public static final Creator<Itinerary> CREATOR = new Creator<>() {
         @Override
         public Itinerary createFromParcel(Parcel in) {
             return new Itinerary(in);
@@ -96,11 +86,11 @@ public class Itinerary implements Parcelable {
     }
 
     public void setSalesmanLongitude(double salesmanLongitude) {
-        this.salesmanLongitude = salesmanLongitude;
+        this.salesmanHome.setLongitude(salesmanLongitude);
     }
 
     public void setSalesmanLatitude(double salesmanLatitude) {
-        this.salesmanLatitude = salesmanLatitude;
+        this.salesmanHome.setLatitude(salesmanLatitude);
     }
 
     public ArrayList<Client> getClients() {
@@ -108,11 +98,15 @@ public class Itinerary implements Parcelable {
     }
 
     public double getSalesmanLongitude() {
-        return salesmanLongitude;
+        return salesmanHome.getLongitude();
     }
 
     public double getSalesmanLatitude() {
-        return salesmanLatitude;
+        return salesmanHome.getLatitude();
+    }
+
+    public GeoPoint getSalesmanHome() {
+        return salesmanHome;
     }
 
     public String getDisplayName() {
@@ -140,10 +134,9 @@ public class Itinerary implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeTypedList(clients);
-        dest.writeDouble(salesmanLatitude);
-        dest.writeDouble(salesmanLongitude);
+        dest.writeParcelable(salesmanHome, flags);
         dest.writeString(displayName);
     }
 

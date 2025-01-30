@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
 
 /**
  * Class representing a client.
@@ -289,5 +290,30 @@ public class Client implements Parcelable {
 
     public GeoPoint getGeoPoint() {
         return new GeoPoint(latHomeAddress, longHomeAddress);
+    }
+
+    /**
+     * Create a client from a short JSON object
+     * <p>
+     * When we retrieve an itinerary, the list of clients is also given.
+     * But we dont need and dont have all the information of the client.<br>
+     * So, this method is used to create a client from a short JSON object. With only the:
+     *     <ul>
+     *         <li>id</li>
+     *         <li>companyName</li>
+     *         <li>companyLocation</li>
+     * </p>
+     *
+     * @param clientJson the short JSON object
+     * @return the client created from the short JSON object
+     */
+    public static Client createClientFromShortJson(JSONObject clientJson) throws JSONException {
+        GeoPoint companyLocation = Parser.getGeoPointFromGeoJSONPoint(clientJson.getJSONObject("companyLocation"));
+        return new Client(
+                clientJson.getInt("id"),
+                clientJson.getString("companyName"),
+                companyLocation.getLatitude(),
+                companyLocation.getLongitude()
+        );
     }
 }
