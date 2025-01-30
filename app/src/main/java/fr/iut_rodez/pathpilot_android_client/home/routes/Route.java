@@ -90,4 +90,27 @@ public class Route implements Parcelable {
         dest.writeTypedArray(visitedClients, flags);
         dest.writeParcelable(currentSalesmanPosition, flags);
     }
+
+    public Client getCurrentClient() {
+        Client currentClient = null;
+        if (indexCurrentClient < expectedClients.length) {
+            currentClient = expectedClients[indexCurrentClient];
+        }
+        return currentClient;
+    }
+
+    /**
+     * Update the route to represent that the current client has been visited
+     * <p>
+     *     The current client is added to the list of visited clients and the index of the current client is incremented.
+     * </p>
+     */
+    public void clientHasBeenVisited() {
+        visitedClients[indexCurrentClient] = expectedClients[indexCurrentClient];
+        indexCurrentClient++;
+    }
+
+    public boolean hasClientToVisit() {
+        return indexCurrentClient < expectedClients.length;
+    }
 }
