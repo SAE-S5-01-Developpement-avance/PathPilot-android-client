@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -17,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 public class ItineraryService {
 
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/routes";
+    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
     private static final String TAG = ItineraryService.class.getSimpleName();
 
     /**

@@ -83,11 +83,11 @@ public class Client implements Parcelable {
         }
     };
 
-    public Client(String companyName, double latitudeValue, double longitude, String descriptionText, boolean isClient, String firstNameText, String lastNameText, String phoneNumber) {
+    public Client(String companyName, double latitudeValue, double longitude, String descriptionText, Boolean isClient, String firstNameText, String lastNameText, String phoneNumber) {
         this.companyName = companyName;
         this.latHomeAddress = latitudeValue;
         this.longHomeAddress = longitude;
-        this.clientCategory = isClient ? "Client" : "Prospect";
+        this.clientCategory = isClient == null || isClient ? "CLIENT" : "PROSPECT";
         this.description = descriptionText;
         this.contactLastName = lastNameText;
         this.contactFirstName = firstNameText;
@@ -220,7 +220,7 @@ public class Client implements Parcelable {
             clientJson.put("companyName", companyName);
             clientJson.put("latHomeAddress", latHomeAddress);
             clientJson.put("longHomeAddress", longHomeAddress);
-            clientJson.put("clientCategory", clientCategory);
+            clientJson.put("clientCategory", clientCategory.isBlank() ? "CLIENT" : clientCategory);
             clientJson.put("description", description);
             clientJson.put("contactLastName", contactLastName);
             clientJson.put("contactFirstName", contactFirstName);

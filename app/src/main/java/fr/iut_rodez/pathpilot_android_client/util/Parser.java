@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Parser {
         try {
             JSONArray embeddedListClients = response
                     .getJSONObject("_embedded")
-                    .getJSONArray("clientList");
+                    .getJSONArray("clientResponseModelList");
 
             for (int i = 0; i < embeddedListClients.length(); i++) {
                 JSONObject clientJson = embeddedListClients.getJSONObject(i);
@@ -65,7 +66,7 @@ public class Parser {
         try {
             JSONArray embeddedListItineraries = response
                     .getJSONObject("_embedded")
-                    .getJSONArray("routeList");
+                    .getJSONArray("itineraryResponseModelList");
 
             for (int i = 0; i < embeddedListItineraries.length(); i++) {
                 JSONObject itineraryJson = embeddedListItineraries.getJSONObject(i);
@@ -76,6 +77,15 @@ public class Parser {
         }
 
         return listItineraries;
+    }
+
+    public static GeoPoint getGeoPoint(JSONObject jsonObject) {
+        try {
+            return new GeoPoint(jsonObject.getDouble("x"), jsonObject.getDouble("y"));
+        } catch (JSONException e) {
+            Log.e(TAG, "Error while parsing the JSON response", e);
+            return null;
+        }
     }
 
     /**

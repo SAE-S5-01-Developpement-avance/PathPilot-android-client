@@ -25,7 +25,7 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
  * Class representing an itinerary.
  */
 public class Itinerary {
-    private int id;
+    private String id;
     private ArrayList<Client> clients;
     private double salesmanLatitude;
     private double salesmanLongitude;
@@ -43,32 +43,32 @@ public class Itinerary {
     }
 
     public Itinerary(JSONObject itineraryJson) throws JSONException {
-        this.id = itineraryJson.getInt("_id");
+        this.id = itineraryJson.getString("id");
         this.clients = new ArrayList<>();
         JSONArray clientsSchedule = itineraryJson.getJSONArray("clients_schedule");
 
-        JSONObject coordinates = itineraryJson.getJSONObject("salesmanHome");
-        this.salesmanLatitude = coordinates.getDouble("latitude");
-        this.salesmanLongitude = coordinates.getDouble("longitude");
+        JSONObject coordinates = itineraryJson.getJSONObject("salesman_home");
+        this.salesmanLongitude = coordinates.getDouble("x");
+        this.salesmanLatitude = coordinates.getDouble("y");
 
         for (int i = 0; i < clientsSchedule.length(); i++) {
             JSONObject clientJson = clientsSchedule.getJSONObject(i);
             JSONObject clientCoordinates = clientJson.getJSONObject("companyLocation");
             Client client = new Client(
-                    clientJson.getInt("client"),
+                    clientJson.getInt("id"),
                     clientJson.getString("companyName"),
-                    clientCoordinates.getDouble("latitude"),
-                    clientCoordinates.getDouble("longitude")
+                    clientCoordinates.getDouble("x"),
+                    clientCoordinates.getDouble("y")
             );
             this.clients.add(client);
         }
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

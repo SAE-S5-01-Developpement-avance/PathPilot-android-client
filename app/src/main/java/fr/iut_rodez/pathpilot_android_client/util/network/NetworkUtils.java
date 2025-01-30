@@ -122,7 +122,7 @@ public class NetworkUtils {
 
         return new JsonObjectRequest(method, url, body, onResponse, onErrorResponse) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + jwtToken);
                 return headers;

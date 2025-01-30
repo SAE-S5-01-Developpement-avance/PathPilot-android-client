@@ -14,6 +14,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
  */
 public class ClientService {
 
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "api/clients";
+    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "clients";
     private static final String TAG = ClientService.class.getSimpleName();
 
     /**
@@ -49,7 +51,8 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL, null,
+        // TODO Update URL to use the pagination
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL + "/all", null,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -96,7 +99,11 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_BASE_URL, client.toJson(),
+        JSONObject body = client.toJson();
+
+        Log.d(TAG, "addClient: " + body);
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, body, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -112,14 +119,7 @@ public class ClientService {
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
+        );
 
         requestQueue.add(request);
     }

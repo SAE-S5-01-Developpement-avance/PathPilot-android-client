@@ -143,7 +143,7 @@ public class AddClient extends AppCompatActivity {
 
         String companyNameText = companyName.getText().toString();
         String descriptionText = description.getText().toString().trim().isEmpty() ? "" : description.getText().toString();
-        boolean isClient = clientType.getCheckedRadioButtonId() == R.id.radio_client;
+        Boolean isClient = getClientGategory();
         String firstNameText = firstName.getText().toString();
         String lastNameText = lastName.getText().toString();
         String phoneNumberText = phoneNumber.getText().toString();
@@ -187,6 +187,19 @@ public class AddClient extends AppCompatActivity {
         } else {
             sendInformationToCreateClient(companyNameText, latitude, longitude, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText);
         }
+    }
+
+    /**
+     * Get the client category.
+     * <p>
+     *     If the client radio button is checked, return true.
+     *     If the prospect radio button is checked, return false.
+     *     If neither radio button is checked, return null.
+     * </p>
+     * @return the client category or null if no radio button is checked
+     */
+    private Boolean getClientGategory() {
+        return clientType.getCheckedRadioButtonId() == -1 ? null : clientType.getCheckedRadioButtonId() == R.id.radio_client;
     }
 
     /**
@@ -295,7 +308,7 @@ public class AddClient extends AppCompatActivity {
     /**
      * Send information to the API for sign in the user with the entered informations.
      */
-    public void sendInformationToCreateClient(String companyNameText, double latitudeValue, double longitudeValue, String descriptionText, boolean isClient, String firstNameText, String lastNameText, String phoneNumberText) {
+    public void sendInformationToCreateClient(String companyNameText, double latitudeValue, double longitudeValue, String descriptionText, Boolean isClient, String firstNameText, String lastNameText, String phoneNumberText) {
         ClientService.addClient(this, new Client(companyNameText, latitudeValue, longitudeValue, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText));
     }
 
