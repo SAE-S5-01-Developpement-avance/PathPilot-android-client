@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -136,7 +137,7 @@ public class AddClient extends AppCompatActivity {
      * Creates an account or notifies the user of input errors.
      */
     public void createAccount() {
-        StringBuilder errorMessage = new StringBuilder();
+        ArrayList<String> errorMessage = new ArrayList<>();
         // reset the style of the text field
         resetFieldStyle();
 
@@ -147,37 +148,42 @@ public class AddClient extends AppCompatActivity {
         String lastNameText = lastName.getText().toString();
         String phoneNumberText = phoneNumber.getText().toString();
 
-        errorMessage.append(checkCompanyName(companyNameText));
-        errorMessage.append(checkLatitude(latitude));
-        errorMessage.append(checkLongitude(longitude));
+        errorMessage.add(checkCompanyName(companyNameText));
+        errorMessage.add(checkAddress(latitude, longitude));
 
         // If the optional description field is not empty, check it
         if (!descriptionText.isEmpty()) {
             descriptionText = description.getText().toString();
-            errorMessage.append(checkDescription(descriptionText));
+            errorMessage.add(checkDescription(descriptionText));
         }
 
         // If the optional first name field is not empty, check it
         if (!firstNameText.isEmpty()) {
             firstNameText = firstName.getText().toString();
-            errorMessage.append(checkFirstName(firstNameText));
+            errorMessage.add(checkFirstName(firstNameText));
         }
 
         // If the optional last name field is not empty, check it
         if (!lastNameText.isEmpty()) {
             lastNameText = lastName.getText().toString();
-            errorMessage.append(checkLastName(lastNameText));
+            errorMessage.add(checkLastName(lastNameText));
         }
 
         // If the optional phone number field is not empty, check it
         if (!phoneNumberText.isEmpty()) {
             phoneNumberText = phoneNumber.getText().toString();
-            errorMessage.append(checkPhoneNumber(phoneNumberText));
+            errorMessage.add(checkPhoneNumber(phoneNumberText));
         }
 
+        errorMessage.removeIf(String::isEmpty);
 
-        if (errorMessage.length() != 0) {
-            popup.showToastLong(errorMessage.toString());
+        if (!errorMessage.isEmpty()) {
+            popup.showAlertDialog(
+                    getString(R.string.please_fix_the_following_errors),
+                    // Concatenate all error messages into one string.
+                    // Each message is separated by a newline character.
+                    errorMessage.stream().reduce("", (acc, s) -> acc + "\n" + s)
+            );
         } else {
             sendInformationToCreateClient(companyNameText, latitude, longitude, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText);
         }
@@ -263,26 +269,10 @@ public class AddClient extends AppCompatActivity {
      *
      * @return errorMessage
      */
-    public String checkLatitude(double latitudeValue) {
+    public String checkAddress(double latitudeValue, double longitudeValue) {
         String errorMessage = "";
 
-        if (!isLatitudeValid(latitudeValue)) {
-            labelAddress.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.address_missing);
-        }
-
-        return errorMessage;
-    }
-
-    /**
-     * Check the longitude field.
-     *
-     * @return errorMessage
-     */
-    public String checkLongitude(double longitudeText) {
-        String errorMessage = "";
-
-        if (!isLongitudeValid(longitudeText)) {
+        if (!isLatitudeValid(latitudeValue) || !isLongitudeValid(longitudeValue)) {
             labelAddress.setTextColor(getColor(R.color.red));
             errorMessage = getString(R.string.address_missing);
         }

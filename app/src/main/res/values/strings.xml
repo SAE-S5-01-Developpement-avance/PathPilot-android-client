@@ -51,6 +51,7 @@
     <!--
     Error messages for forms
     -->
+    <string name="please_fix_the_following_errors">Please fix the following errors:</string>
     <string name="first_name_blank">Enter a first name</string>
     <string name="last_name_blank">Enter a last name</string>
     <string name="latitude_not_float">Latitude must be a number</string>
