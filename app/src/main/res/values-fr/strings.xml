@@ -52,6 +52,7 @@ String for Login activity
     <!--
     Error messages for forms
     -->
+    <string name="please_fix_the_following_errors">Veuillez corriger les erreurs suivantes:</string>
     <string name="first_name_blank">Entrer un prénom</string>
     <string name="last_name_blank">Entrer un nom</string>
     <string name="latitude_not_float">La latitude doit être un nombre</string>
