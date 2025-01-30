@@ -8,9 +8,10 @@ import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLongitud
 import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isPhoneNumberValid;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,6 +21,10 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -36,10 +41,8 @@ public class AddClient extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> launcherMapSelection;
 
-    private Button selectButton;
     private EditText companyName;
-    private TextView latitude;
-    private TextView longitude;
+    private TextView address;
     private EditText description;
     private RadioGroup clientType;
     private EditText firstName;
@@ -47,12 +50,14 @@ public class AddClient extends AppCompatActivity {
     private EditText phoneNumber;
 
     private TextView labelCompanyName;
-    private TextView labelLatitude;
-    private TextView labelLongitude;
+    private TextView labelAddress;
     private TextView labelDescription;
     private TextView labelFirstName;
     private TextView labelLastName;
     private TextView labelPhoneNumber;
+
+    private double latitude = Double.NaN;
+    private double longitude = Double.NaN;
 
     private Popup popup;
     private JWTToken jwtToken;
@@ -64,8 +69,7 @@ public class AddClient extends AppCompatActivity {
         setContentView(R.layout.view_create_client);
 
         companyName = findViewById(R.id.company_name);
-        latitude = findViewById(R.id.latitude);
-        longitude = findViewById(R.id.longitude);
+        address = findViewById(R.id.address);
         description = findViewById(R.id.description);
         clientType = findViewById(R.id.groupradio);
         firstName = findViewById(R.id.first_name);
@@ -73,8 +77,7 @@ public class AddClient extends AppCompatActivity {
         phoneNumber = findViewById(R.id.phone_number);
 
         labelCompanyName = findViewById(R.id.label_company_name);
-        labelLatitude = findViewById(R.id.label_latitude);
-        labelLongitude = findViewById(R.id.label_longitude);
+        labelAddress = findViewById(R.id.label_address);
         labelDescription = findViewById(R.id.label_description);
         labelFirstName = findViewById(R.id.label_first_name);
         labelLastName = findViewById(R.id.label_last_name);
@@ -94,15 +97,10 @@ public class AddClient extends AppCompatActivity {
 
     private void gotoMapSelection() {
         Intent intent = new Intent(this, MapSelection.class);
-        if (!latitude.getText().toString().isEmpty() && !longitude.getText().toString().isEmpty()) {
-            try {
-                double latitudeValue = Double.parseDouble(latitude.getText().toString());
-                double longitudeValue = Double.parseDouble(longitude.getText().toString());
-                intent.putExtra(MapSelection.KEY_LATITUDE, latitudeValue);
-                intent.putExtra(MapSelection.KEY_LONGITUDE, longitudeValue);
-            } catch (NumberFormatException e) {
-                Log.i(TAG, "gotoSelectionMap: Latitude or longitude is not a number. No value will be sent to the MapSelection activity", e);
-            }
+
+        if (!Double.isNaN(latitude) && Double.isNaN(longitude)) {
+            intent.putExtra(MapSelection.KEY_LATITUDE, latitude);
+            intent.putExtra(MapSelection.KEY_LONGITUDE, longitude);
         }
 
         launcherMapSelection.launch(intent);
@@ -112,17 +110,23 @@ public class AddClient extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             Intent data = result.getData();
             if (data != null) {
-                double latitudeSelected = data.getDoubleExtra(MapSelection.KEY_LATITUDE, Double.NaN);
-                double longitudeSelected = data.getDoubleExtra(MapSelection.KEY_LONGITUDE, Double.NaN);
+                latitude = data.getDoubleExtra(MapSelection.KEY_LATITUDE, Double.NaN);
+                longitude = data.getDoubleExtra(MapSelection.KEY_LONGITUDE, Double.NaN);
 
-                if (!Double.isNaN(latitudeSelected) && !Double.isNaN(longitudeSelected)) {
-                    latitude.setText(String.valueOf(latitudeSelected));
-                    longitude.setText(String.valueOf(longitudeSelected));
-                } else {
-                    Log.e(TAG, "handleReturnedMapSelection: Latitude or longitude is NaN");
-                    latitude.setText("-");
-                    longitude.setText("-");
+                String placeName = "";
+                Geocoder geocoderAddress = new Geocoder(this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoderAddress.getFromLocation(latitude, longitude, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        placeName = address.getAddressLine(0);
+                    } else {
+                        placeName += getString(R.string.client_address_not_found);
+                    }
+                } catch (IOException e) {
+                    placeName = getString(R.string.client_address_not_found);
                 }
+                address.setText(placeName);
             }
         }
     }
@@ -137,8 +141,6 @@ public class AddClient extends AppCompatActivity {
         resetFieldStyle();
 
         String companyNameText = companyName.getText().toString();
-        String latitudeText = latitude.getText().toString();
-        String longitudeText = longitude.getText().toString();
         String descriptionText = description.getText().toString().trim().isEmpty() ? "" : description.getText().toString();
         boolean isClient = clientType.getCheckedRadioButtonId() == R.id.radio_client;
         String firstNameText = firstName.getText().toString();
@@ -146,8 +148,8 @@ public class AddClient extends AppCompatActivity {
         String phoneNumberText = phoneNumber.getText().toString();
 
         errorMessage.append(checkCompanyName(companyNameText));
-        errorMessage.append(checkLatitude(latitudeText));
-        errorMessage.append(checkLongitude(longitudeText));
+        errorMessage.append(checkLatitude(latitude));
+        errorMessage.append(checkLongitude(longitude));
 
         // If the optional description field is not empty, check it
         if (!descriptionText.isEmpty()) {
@@ -177,9 +179,7 @@ public class AddClient extends AppCompatActivity {
         if (errorMessage.length() != 0) {
             popup.showToastLong(errorMessage.toString());
         } else {
-            double latitudeValue = Double.parseDouble(latitudeText);
-            double longitudeValue = Double.parseDouble(longitudeText);
-            sendInformationToCreateClient(companyNameText, latitudeValue, longitudeValue, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText);
+            sendInformationToCreateClient(companyNameText, latitude, longitude, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText);
         }
     }
 
@@ -263,20 +263,12 @@ public class AddClient extends AppCompatActivity {
      *
      * @return errorMessage
      */
-    public String checkLatitude(String latitudeText) {
-        double latitudeValue = Double.NaN;
+    public String checkLatitude(double latitudeValue) {
         String errorMessage = "";
 
-        try {
-            latitudeValue = Double.parseDouble(latitudeText);
-        } catch (Exception e) {
-            labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.latitude_not_float);
-        }
-
         if (!isLatitudeValid(latitudeValue)) {
-            labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.latitude_not_included);
+            labelAddress.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.address_missing);
         }
 
         return errorMessage;
@@ -287,32 +279,23 @@ public class AddClient extends AppCompatActivity {
      *
      * @return errorMessage
      */
-    public String checkLongitude(String longitudeText) {
-        double longitudeValue = Double.NaN;
+    public String checkLongitude(double longitudeText) {
         String errorMessage = "";
 
-        try {
-            longitudeValue = Double.parseDouble(longitudeText);
-        } catch (Exception e) {
-            labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.longitude_not_float);
-        }
-
-        if (!isLongitudeValid(longitudeValue)) {
-            labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.longitude_not_included);
+        if (!isLongitudeValid(longitudeText)) {
+            labelAddress.setTextColor(getColor(R.color.red));
+            errorMessage = getString(R.string.address_missing);
         }
 
         return errorMessage;
     }
 
     /**
-     * Reset the style of sign up interface.
+     * Reset the style of add client interface.
      */
     public void resetFieldStyle() {
         labelCompanyName.setTextColor(getColor(R.color.black));
-        labelLatitude.setTextColor(getColor(R.color.black));
-        labelLongitude.setTextColor(getColor(R.color.black));
+        labelAddress.setTextColor(getColor(R.color.black));
         labelDescription.setTextColor(getColor(R.color.black));
         labelFirstName.setTextColor(getColor(R.color.black));
         labelLastName.setTextColor(getColor(R.color.black));

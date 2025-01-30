@@ -30,6 +30,7 @@ String for Login activity
     <string name="sign_up">Créer mon compte</string>
     <string name="already_account">Vous avez déjà un compte?</string>
     <string name="link_sign_in">Se connecter</string>
+    <string name="label_address"><u>Adresse postale</u></string>
 
     <!--
     Creation of a client
@@ -69,6 +70,7 @@ String for Login activity
     <string name="description_blank">Entrer une description</string>
     <string name="confirm_password_blank">Confirmer mot de passe</string>
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
+    <string name="address_missing">Selectionnez votre position</string>
 
     <!--
     Foot page without button

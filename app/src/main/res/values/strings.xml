@@ -29,6 +29,7 @@
     <string name="sign_up">Create account</string>
     <string name="already_account">Already have an account ?</string>
     <string name="link_sign_in"><u>Sign in now</u></string>
+    <string name="label_address"><u>Postal address</u></string>
 
     <!--
     Creation of a client
@@ -68,6 +69,8 @@
     <string name="description_blank">Enter a description</string>
     <string name="confirm_password_blank">Confirm your password</string>
     <string name="confirm_password_not_same">Write a second time your password to confirm it</string>
+    <string name="address_missing">Select your position</string>
+
 
     <!--
     Foot page without button
