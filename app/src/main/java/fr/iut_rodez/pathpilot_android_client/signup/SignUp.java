@@ -8,6 +8,8 @@ import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isLongitud
 import static fr.iut_rodez.pathpilot_android_client.util.ValidateForm.isPasswordValid;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -18,6 +20,10 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
@@ -35,8 +41,8 @@ public class SignUp extends AppCompatActivity {
     private EditText mail;
     private EditText password;
     private EditText confirmPassord;
-    private TextView latitude;
-    private TextView longitude;
+    private TextView address;
+    private TextView labelAddress;
     private TextView labelFirstName;
     private TextView labelLastName;
     private TextView labelLatitude;
@@ -44,6 +50,8 @@ public class SignUp extends AppCompatActivity {
     private TextView labelMail;
     private TextView labelPassword;
     private TextView labelConfirmPassword;
+    private double latitude = Double.NaN;
+    private double longitude = Double.NaN;
 
     private Popup popup;
 
@@ -57,16 +65,14 @@ public class SignUp extends AppCompatActivity {
 
         firstName = findViewById(R.id.first_name);
         lastName = findViewById(R.id.last_name);
-        latitude = findViewById(R.id.latitude);
-        longitude = findViewById(R.id.longitude);
+        address = findViewById(R.id.address);
         mail = findViewById(R.id.mail);
         password = findViewById(R.id.password);
         confirmPassord = findViewById(R.id.confirm_password);
 
         labelFirstName = findViewById(R.id.label_first_name);
         labelLastName = findViewById(R.id.label_last_name);
-        labelLatitude = findViewById(R.id.label_position_lat);
-        labelLongitude = findViewById(R.id.label_position_long);
+        labelAddress = findViewById(R.id.label_address);
         labelMail = findViewById(R.id.label_mail);
         labelPassword = findViewById(R.id.label_password);
         labelConfirmPassword = findViewById(R.id.label_confirm_password);
@@ -84,32 +90,32 @@ public class SignUp extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             Intent data = result.getData();
             if (data != null) {
-                double latitudeSelected = data.getDoubleExtra(MapSelection.KEY_LATITUDE, Double.NaN);
-                double longitudeSelected = data.getDoubleExtra(MapSelection.KEY_LONGITUDE, Double.NaN);
+                latitude = data.getDoubleExtra(MapSelection.KEY_LATITUDE, Double.NaN);
+                longitude = data.getDoubleExtra(MapSelection.KEY_LONGITUDE, Double.NaN);
 
-                if (!Double.isNaN(latitudeSelected) && !Double.isNaN(longitudeSelected)) {
-                    latitude.setText(String.valueOf(latitudeSelected));
-                    longitude.setText(String.valueOf(longitudeSelected));
-                } else {
-                    Log.e(TAG, "handleReturnedMapSelection: Latitude or longitude is NaN");
-                    latitude.setText("-");
-                    longitude.setText("-");
+                String placeName = "";
+                Geocoder geocoderAddress = new Geocoder(this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoderAddress.getFromLocation(latitude, longitude, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        placeName = address.getAddressLine(0);
+                    } else {
+                        placeName += getString(R.string.client_address_not_found);
+                    }
+                } catch (IOException e) {
+                    placeName = getString(R.string.client_address_not_found);
                 }
+                address.setText(placeName);
             }
         }
     }
 
     private void gotoSelectionMap() {
         Intent intent = new Intent(this, MapSelection.class);
-        if (!latitude.getText().toString().isEmpty() && !longitude.getText().toString().isEmpty()) {
-            try {
-                double latitudeValue = Double.parseDouble(latitude.getText().toString());
-                double longitudeValue = Double.parseDouble(longitude.getText().toString());
-                intent.putExtra(MapSelection.KEY_LATITUDE, latitudeValue);
-                intent.putExtra(MapSelection.KEY_LONGITUDE, longitudeValue);
-            } catch (NumberFormatException e) {
-                Log.i(TAG, "gotoSelectionMap: Latitude or longitude is not a number. No value will be sent to the MapSelection activity", e);
-            }
+        if (!Double.isNaN(latitude) && !Double.isNaN(longitude)) {
+            intent.putExtra(MapSelection.KEY_LATITUDE, latitude);
+            intent.putExtra(MapSelection.KEY_LONGITUDE, longitude);
         }
         launcherMapSelection.launch(intent);
     }
@@ -125,16 +131,14 @@ public class SignUp extends AppCompatActivity {
 
         String firstNameText = firstName.getText().toString();
         String lastNameText = lastName.getText().toString();
-        String latitudeText = latitude.getText().toString();
-        String longitudeText = longitude.getText().toString();
         String mailText = mail.getText().toString();
         String passwordText = password.getText().toString();
         String confirmPasswordText = confirmPassord.getText().toString();
 
         errorMessage.append(checkFirstName(firstNameText));
         errorMessage.append(checkLastName(lastNameText));
-        errorMessage.append(checkLatitude(latitudeText));
-        errorMessage.append(checkLongitude(longitudeText));
+        errorMessage.append(checkLatitude(latitude));
+        errorMessage.append(checkLongitude(longitude));
         errorMessage.append(checkMail(mailText));
         errorMessage.append(checkPassword(passwordText));
         errorMessage.append(checkConfirmPassword(passwordText, confirmPasswordText));
@@ -142,9 +146,7 @@ public class SignUp extends AppCompatActivity {
         if (errorMessage.length() != 0) {
             popup.showToastLong(errorMessage.toString());
         } else {
-            double latitudeValue = Double.parseDouble(latitudeText);
-            double longitudeValue = Double.parseDouble(longitudeText);
-            sendInformationToSignInUser(firstNameText, lastNameText, latitudeValue, longitudeValue, mailText, passwordText);
+            sendInformationToSignInUser(firstNameText, lastNameText, latitude, longitude, mailText, passwordText);
         }
     }
 
@@ -183,23 +185,15 @@ public class SignUp extends AppCompatActivity {
     /**
      * Check the latitude field.
      *
-     * @param latitudeText
+     * @param latitude
      * @return errorMessage
      */
-    public String checkLatitude(String latitudeText) {
-        double latitudeValue = Double.NaN;
+    public String checkLatitude(double latitude) {
         String errorMessage = "";
 
-        try {
-            latitudeValue = Double.parseDouble(latitudeText);
-        } catch (Exception e) {
+        if (!isLatitudeValid(latitude)) {
             labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.latitude_not_float);
-        }
-
-        if (!isLatitudeValid(latitudeValue)) {
-            labelLatitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.latitude_not_included);
+            errorMessage = getString(R.string.address_missing);
         }
 
         return errorMessage;
@@ -208,23 +202,15 @@ public class SignUp extends AppCompatActivity {
     /**
      * Check the longitude field.
      *
-     * @param longitudeText
+     * @param longitude
      * @return errorMessage
      */
-    public String checkLongitude(String longitudeText) {
-        double longitudeValue = Double.NaN;
+    public String checkLongitude(double longitude) {
         String errorMessage = "";
 
-        try {
-            longitudeValue = Double.parseDouble(longitudeText);
-        } catch (Exception e) {
+        if (!isLongitudeValid(longitude)) {
             labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.longitude_not_float);
-        }
-
-        if (!isLongitudeValid(longitudeValue)) {
-            labelLongitude.setTextColor(getColor(R.color.red));
-            errorMessage = getString(R.string.longitude_not_included);
+            errorMessage = getString(R.string.address_missing);
         }
 
         return errorMessage;
@@ -305,14 +291,14 @@ public class SignUp extends AppCompatActivity {
      * Send information to the API for sign in the user with the entered informations.
      */
     public void sendInformationToSignInUser(String firstNameText, String lastNameText,
-                                            double latitudeText, double longitudeText,
+                                            double latitudeValue, double longitudeValue,
                                             String mailText, String passwordText) {
 
         SignUpInput signUpInput = new SignUpInput(
                 firstNameText,
                 lastNameText,
-                latitudeText,
-                longitudeText,
+                latitudeValue,
+                longitudeValue,
                 mailText,
                 passwordText
         );
