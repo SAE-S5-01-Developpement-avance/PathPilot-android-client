@@ -109,8 +109,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         requestPermissionAndCenter();
 
         setRoutePolyline(route.getExpectedClients(), route.getSalesmanHome());
-        setExpectedClientMarker(route.getExpectedClients());
-        addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
         mapView.invalidate(); // Refresh the map
     }
 
@@ -192,6 +190,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         new Thread(() -> {
             Road road = roadManager.getRoad(waypoints);
+            popup.dismissProgressDialog();
+
+            // if the road build process failed, show an error dialog
+            if (road.mStatus != Road.STATUS_OK) {
+                Log.e(TAG, "setRoutePolyline: Error while drawing the road");
+                popup.showAlertDialogOK("Error", "Error while drawing the road", DialogButton.OKdismiss()); // TODO i18n
+            }
 
             // Draw the road on the map
             Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
@@ -199,11 +204,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             outlinePaint.setStrokeWidth(10);
             outlinePaint.setColor(getColor(R.color.blue_1));
             mapView.getOverlays().add(roadOverlay);
-            popup.dismissProgressDialog();
-            if (road.mStatus != Road.STATUS_OK) {
-                Log.e(TAG, "setRoutePolyline: Error while drawing the road");
-                popup.showAlertDialogOK("Error", "Error while drawing the road", DialogButton.OKdismiss()); // TODO i18n
-            }
+
+            setExpectedClientMarker(route.getExpectedClients());
+            addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
         }).start();
     }
 
