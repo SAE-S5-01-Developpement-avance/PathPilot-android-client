@@ -29,14 +29,14 @@ public class Client implements Parcelable {
     private double latHomeAddress;
     private double longHomeAddress;
     private String addressDisplayName;
-    private String clientCategory;
+    private ClientCategory clientCategory = ClientCategory.CLIENT;
     private String description;
     private String contactLastName;
     private String contactFirstName;
     private String phoneNumber;
     private String salesman;
 
-    public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, String clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
+    public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, ClientCategory clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
         this.id = id;
         this.companyName = companyName;
         this.latHomeAddress = latHomeAddress;
@@ -54,7 +54,7 @@ public class Client implements Parcelable {
         this.companyName = clientJson.getString("companyName");
         this.latHomeAddress = clientJson.getDouble("latHomeAddress");
         this.longHomeAddress = clientJson.getDouble("longHomeAddress");
-        this.clientCategory = clientJson.getJSONObject("clientCategory").getString("name");
+        this.clientCategory = ClientCategory.fromJSON(clientJson.getJSONObject("clientCategory"));
         this.description = clientJson.getString("description");
         this.contactLastName = clientJson.getString("contactLastName");
         this.contactFirstName = clientJson.getString("contactFirstName");
@@ -67,7 +67,7 @@ public class Client implements Parcelable {
         latHomeAddress = in.readDouble();
         longHomeAddress = in.readDouble();
         addressDisplayName = in.readString();
-        clientCategory = in.readString();
+        clientCategory = ClientCategory.fromString(in.readString());
         description = in.readString();
         contactLastName = in.readString();
         contactFirstName = in.readString();
@@ -91,7 +91,7 @@ public class Client implements Parcelable {
         this.companyName = companyName;
         this.latHomeAddress = latitudeValue;
         this.longHomeAddress = longitude;
-        this.clientCategory = isClient == null || isClient ? "CLIENT" : "PROSPECT";
+        this.clientCategory = isClient == null || isClient ? ClientCategory.CLIENT : ClientCategory.PROSPECT;
         this.description = descriptionText;
         this.contactLastName = lastNameText;
         this.contactFirstName = firstNameText;
@@ -146,11 +146,11 @@ public class Client implements Parcelable {
     }
 
     public String getClientCategory() {
-        return clientCategory;
+        return clientCategory.category();
     }
 
     public void setClientCategory(String clientCategory) {
-        this.clientCategory = clientCategory;
+        this.clientCategory = ClientCategory.fromString(clientCategory);
     }
 
     public String getDescription() {
@@ -239,7 +239,7 @@ public class Client implements Parcelable {
             clientJson.put("companyName", companyName);
             clientJson.put("latHomeAddress", latHomeAddress);
             clientJson.put("longHomeAddress", longHomeAddress);
-            clientJson.put("clientCategory", clientCategory.isBlank() ? "CLIENT" : clientCategory);
+            clientJson.put("clientCategory", clientCategory.category());
             clientJson.put("description", description);
             clientJson.put("contactLastName", contactLastName);
             clientJson.put("contactFirstName", contactFirstName);
@@ -263,7 +263,7 @@ public class Client implements Parcelable {
         dest.writeDouble(this.latHomeAddress);
         dest.writeDouble(this.longHomeAddress);
         dest.writeString(this.addressDisplayName);
-        dest.writeString(this.clientCategory);
+        dest.writeString(this.clientCategory.category());
         dest.writeString(this.description);
         dest.writeString(this.contactLastName);
         dest.writeString(this.contactFirstName);
