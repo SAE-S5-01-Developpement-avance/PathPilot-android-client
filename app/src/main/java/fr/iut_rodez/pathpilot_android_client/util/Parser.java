@@ -160,7 +160,6 @@ public class Parser {
         try {
             route = new Route(response);
         } catch (JSONException e) {
-            e.printStackTrace();
             Log.e(TAG, "Error while parsing the JSON response", e);
         }
         return route;
@@ -183,6 +182,7 @@ public class Parser {
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(date);
             parsedDateTime = offsetDateTime.toLocalDateTime();
         } catch (Exception ignored) {
+            // If the date is not in the correct format, the method will return null
         }
         return parsedDateTime;
     }

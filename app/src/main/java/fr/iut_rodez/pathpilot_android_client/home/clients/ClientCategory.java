@@ -36,6 +36,7 @@ public enum ClientCategory {
             String categoryStringFound = category.getString("name");
             categoryParsed = fromString(categoryStringFound);
         } catch (JSONException ignored) {
+            // If the category is not found, the default value is CLIENT
         }
         return categoryParsed;
     }

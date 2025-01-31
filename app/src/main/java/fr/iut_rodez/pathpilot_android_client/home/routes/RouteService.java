@@ -61,6 +61,7 @@ public class RouteService implements IRouteService {
             try {
                 json.put("itineraryId", itineraryId);
             } catch (Exception ignored) {
+                // This should never happen, has the valu isn't a Number
             }
             return json;
         }
