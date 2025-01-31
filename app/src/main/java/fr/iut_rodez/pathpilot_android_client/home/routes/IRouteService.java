@@ -1,26 +1,33 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
-import android.widget.ListView;
+import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 
 public interface IRouteService {
-    String BASE_API_URL = "/api/routes";
+    String ROUTES_API_ENDPOINT = BuildConfig.API_BASE_URL + "routes";
+    static final String TAG = IRouteService.class.getSimpleName();
 
     /**
-     * Retrieve the list of routes from the server.
+     * Create a route from an itinerary.
      * <p>
-     *     Send a request to the server to retrieve the list of routes.<br>
-     *     If the request is successful, it displays the list of routes in the view.
+     * Send a request to the server to create a route from an itinerary.<br>
+     * If the request is successful, it redirects the user to the player activity with the new route.
+     * If the request fails, it shows an error message.
      * </p>
-     * @param listRoutesView The view where the routes will be displayed
+     *
+     * @param activity The activity that calls the service
+     * @param itinerary The itinerary to create the route from
      */
-    void createRoute();
+    void createRoute(InfoItinerary activity, Itinerary itinerary);
 
     /**
      * Tell the server that the client has been visited.
      * <p>
-     *     Send a request to the server to tell that the client has been visited.<br>
-     *     If the request is successful, it updates the route with the new client visited.
+     * Send a request to the server to tell that the client has been visited.<br>
+     * If the request is successful, it updates the route with the new client visited.
      * </p>
+     *
      * @param route The route to update
      */
     void clientVisited(Route route);
