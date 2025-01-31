@@ -20,13 +20,12 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class CurrentPosition {
 
-    private static final String TAG = CurrentPosition.class.getSimpleName();
     public static final int REQUEST_POSITION_CODE = 1;
+    private static final String TAG = CurrentPosition.class.getSimpleName();
     private final ActivityWithCurrentPosition activity;
-    private Location currentLocation;
     private Runnable permissionGrantedCallback;
     private Runnable permissionDeniedCallback;
-    private MyLocationNewOverlay myLocationOverlay;
+    private final MyLocationNewOverlay myLocationOverlay;
     private boolean centerOnLocation;
 
     /**
@@ -44,6 +43,11 @@ public class CurrentPosition {
         );
         myLocationOverlay.enableMyLocation();
         myLocationOverlay.enableFollowLocation();
+    }
+
+    @NonNull
+    private static GeoPoint getGeoPoint(Location location) {
+        return new GeoPoint(location.getLatitude(), location.getLongitude());
     }
 
     public boolean isLocationPermissionGranted() {
@@ -94,11 +98,11 @@ public class CurrentPosition {
      * @see CurrentPosition#requestLocationPermission(Runnable, Runnable)
      */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult: " + requestCode);
+        Log.d(TAG, "" + requestCode);
         if (requestCode == REQUEST_POSITION_CODE) {
-            Log.d(TAG, "onRequestPermissionsResult: " + grantResults);
+            Log.d(TAG, "" + grantResults);
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: " + grantResults[0]);
+                Log.d(TAG, "" + grantResults[0]);
                 Log.d(TAG, "GPS Location permission granted");
 
                 // Execute callback if provided
@@ -148,11 +152,6 @@ public class CurrentPosition {
         return myLocation;
     }
 
-    @NonNull
-    private static GeoPoint getGeoPoint(Location location) {
-        return new GeoPoint(location.getLatitude(), location.getLongitude());
-    }
-
     /**
      * As soon as we can get the user location, execute the runnable.
      * <p>
@@ -178,18 +177,10 @@ public class CurrentPosition {
         myLocationOverlay.runOnFirstFix(locationFixRunnable);
     }
 
-    public abstract static class ActivityWithCurrentPosition extends AppCompatActivity {
-        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        abstract public MapView getMapView();
-    }
-
     /**
      * Disable the center on location
      * <p>
-     *     The map will not center automatically on the user location
+     * The map will not center automatically on the user location
      * </p>
      */
     public void disableCenterOnLocation() {
@@ -201,5 +192,13 @@ public class CurrentPosition {
         centerOnLocation = true;
         myLocationOverlay.enableMyLocation();
         myLocationOverlay.enableFollowLocation();
+    }
+
+    public abstract static class ActivityWithCurrentPosition extends AppCompatActivity {
+        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        abstract public MapView getMapView();
     }
 }

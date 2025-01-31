@@ -20,15 +20,4 @@ public interface IRouteService {
      * @param itinerary The itinerary to create the route from
      */
     void createRoute(InfoItinerary activity, Itinerary itinerary);
-
-    /**
-     * Tell the server that the client has been visited.
-     * <p>
-     * Send a request to the server to tell that the client has been visited.<br>
-     * If the request is successful, it updates the route with the new client visited.
-     * </p>
-     *
-     * @param route The route to update
-     */
-    void clientVisited(Route route);
 }

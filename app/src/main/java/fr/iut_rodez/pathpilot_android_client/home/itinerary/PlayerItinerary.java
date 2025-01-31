@@ -48,8 +48,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private ImageButton pauseBtn;
 
     private Route route;
-    private Client nextClient; // TODO read this data from a Route
-    private boolean routeIsPause = false; // TODO read this data from a Route
 
     private final Popup popup = new Popup(this);
     private CurrentPosition currentPosition;
@@ -178,7 +176,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * @param salesmanHome    The home of the salesman
      */
     private void setRoutePolyline(ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
-        // TODO draw the route with the roads
         ArrayList<GeoPoint> waypoints = new ArrayList<>();
         waypoints.add(salesmanHome);
         expectedClients.forEach(client -> waypoints.add(client.getGeoPoint()));
@@ -202,7 +199,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             outlinePaint.setStrokeWidth(10);
             outlinePaint.setColor(getColor(R.color.blue_1));
             mapView.getOverlays().add(roadOverlay);
-            
+
             setExpectedClientMarker(route.getExpectedClients());
             addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
         }).start();
@@ -288,9 +285,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void pauseResume() {
         Log.d(TAG, "pause: ");
         // Toggle the icon
-        Drawable icon = AppCompatResources.getDrawable(this, routeIsPause ? ICON_PLAY : ICON_PAUSE);
+        Drawable icon = AppCompatResources.getDrawable(this, route.isPaused() ? ICON_PLAY : ICON_PAUSE);
         pauseBtn.setBackground(icon);
-        routeIsPause = !routeIsPause;
+        route.setPaused(!route.isPaused());
     }
 
     private void stop() {

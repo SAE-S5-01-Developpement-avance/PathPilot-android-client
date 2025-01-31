@@ -139,6 +139,10 @@ public class Route implements Parcelable {
         return isPaused;
     }
 
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
     public GeoPoint getCurrentSalesmanPosition() {
         return currentSalesmanPosition;
     }

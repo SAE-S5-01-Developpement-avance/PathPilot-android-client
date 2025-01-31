@@ -10,7 +10,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -54,18 +53,6 @@ public class RouteService implements IRouteService {
 
         popup.showProgressDialog();
         requestQueue.add(request);
-    }
-
-    @Override
-    public void clientVisited(Route route) {
-        Client clientVisited = route.getCurrentClient();
-        if (clientVisited != null) {
-            final String url = ROUTES_API_ENDPOINT + "/" + clientVisited.getId();
-
-            //TODO Send Request to the server
-            //Update the route with the new client visited
-            route.clientHasBeenVisited();
-        }
     }
 
     record RouteRequestModel(@NonNull String itineraryId) {
