@@ -158,7 +158,15 @@ public class Route implements Parcelable {
         indexCurrentClient++;
     }
 
-    public boolean hasClientToVisit() {
-        return indexCurrentClient < expectedClients.size();
+    public Client getNextClient() {
+        return expectedClients.get(indexCurrentClient);
+    }
+
+    public int getNumberOfClientsExpected() {
+        return expectedClients.size();
+    }
+
+    public int getNumberOfClientsVisited() {
+        return visitedClients.size();
     }
 }

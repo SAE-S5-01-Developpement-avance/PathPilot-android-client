@@ -10,17 +10,25 @@ import android.widget.TextView;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
+
+import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
@@ -40,11 +48,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private Route route;
     private Client nextClient; // TODO read this data from a Route
-    private boolean itineraryIsPause = false; // TODO read this data from a Route
+    private boolean routeIsPause = false; // TODO read this data from a Route
 
     private final Popup popup = new Popup(this);
     private CurrentPosition currentPosition;
     private IMapController mapController;
+    RoadManager roadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,54 +83,60 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         clientVisitedBtn.setOnClickListener(v -> clientVisited());
         listClientsBtn.setOnClickListener(v -> listClients());
 
+        setRouteInformation();
         initialiseMap();
+
+        setNextClientInfo(route.getNextClient());
+        setExpectedClientMarker(route.getExpectedClients());
+        addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
+        setRoutePolyline(route.getExpectedClients(), route.getSalesmanHome());
+        mapView.invalidate(); // Refresh the map
     }
+
 
     private void initialiseMap() {
         Log.d(TAG, "initialiseMap: Initialising the map");
         mapView = findViewById(R.id.mapview);
-        mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+        mapController = mapView.getController();
+        roadManager = new OSRMRoadManager(this, getString(R.string.app_name));
 
-        // Enable zoom buttons and multi-touch zoom
-        Log.d(TAG, "initialiseMap: Enable zoom buttons and multi-touch zoom");
+        mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         mapView.setMultiTouchControls(true);
-
-        // Set the map center and zoom level
-        Log.d(TAG, "initialiseMap: Set the map center and zoom level");
-        mapController = mapView.getController();
         mapController.setZoom(15.0);
+        mapController.setCenter(route.getSalesmanHome());
 
         currentPosition = new CurrentPosition(this);
         requestPermissionAndCenter();
     }
 
+    /**
+     * Request the location permission and center the map
+     * <p>
+     * If the location permission is granted, the map is centered on the current position
+     * If the location permission is denied, a popup is shown to ask the user to allow the location permission
+     */
     private void requestPermissionAndCenter() {
         // Request location permission
         currentPosition.requestLocationPermission(
                 // If the permission is granted, set the center with the current position
                 () -> {
                     setCenter();
-                    setInformationWithIntent();
                 },
                 // If the permission is denied,
                 // show a popup to ask the user to allow the location permission
                 () -> {
-                    DialogButton no = new DialogButton(getString(R.string.no_you_can_t_use_this_feature), (dialog, which) -> {
-                        dialog.dismiss();
-                        Log.d(TAG, "initialiseMap: Said no, so finishing the activity");
-                        finish();
-                    });
-                    DialogButton yes = new DialogButton(getString(R.string.yes_give_access), (dialog, which) -> {
-                        dialog.dismiss();
-                        Log.d(TAG, "initialiseMap: Said yes, so finishing the activity, so the user can allow the permission");
-                        finish();
-                    });
+                    DialogButton no = new DialogButton(getString(R.string.no_you_can_t_use_this_feature), DialogButton.getFinishListener(this));
+                    DialogButton yes = new DialogButton(getString(R.string.yes_give_access), DialogButton.getFinishListener(this));
                     popup.showAlertDialog(getString(R.string.warning), getString(R.string.need_to_allow_location_permission), yes, null, no);
                 }
         );
     }
 
+    /**
+     * Set the center of the map to the current position
+     * Every time the position is updated, the map is centered on the current position
+     */
     private void setCenter() {
         currentPosition.enableCenterOnLocation();
         currentPosition.runOnFirstFix(() -> runOnUiThread(() -> {
@@ -132,14 +147,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     /**
-     * Retrieve the itinerary from the intent and set the information, like :
+     * Retrieve the route from the intent and set the information, like :
      * <ul>
      *     <li>The next client</li>
      *     <li>The distance to the next client</li>
      *     <li>The address to the next client</li>
      * </ul>
      */
-    private void setInformationWithIntent() {
+    private void setRouteInformation() {
         Intent intent = getIntent();
         route = intent.getParcelableExtra(InfoItinerary.ROUTE_KEY);
 
@@ -147,17 +162,102 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
             popup.showAlertDialogOK("Error", "No itinerary found in the intent", DialogButton.OKFinish(this)); // TODO i18n
         }
-
-        nextClient = route.getExpectedClients().get(0);
-        clientName.setText(nextClient.getCompanyName());
-        clientAddress.setText(nextClient.getAddressDisplayName());
-        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(nextClient)));
-        counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getExpectedClients().size()));
+        route.getExpectedClients().forEach(client -> client.setAddressDisplayName(this));
     }
 
-    private double distanceToClient(Client nextClient) {
+    /**
+     * Draw a line that follows the road and link all the clients.
+     * <p>
+     * The line is drawn between the salesman home and the first client, then between each client.
+     * The last line is drawn between the last client and the salesman home.
+     * </p>
+     *
+     * @param expectedClients The list of expected clients
+     * @param salesmanHome    The home of the salesman
+     */
+    private void setRoutePolyline(ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
+        // TODO draw the route with the roads
+        ArrayList<GeoPoint> waypoints = new ArrayList<>();
+        waypoints.add(salesmanHome);
+        expectedClients.forEach(client -> waypoints.add(client.getGeoPoint()));
+        waypoints.add(salesmanHome);
+
+        // Get the road between the waypoints
+        roadManager.addRequestOption("overview=full");
+        roadManager.addRequestOption("geometries=polyline");
+
+        new Thread(() -> {
+            Road road = roadManager.getRoad(waypoints);
+
+            // Draw the road on the map
+            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+            mapView.getOverlays().add(roadOverlay);
+        }).start();
+    }
+
+    /**
+     * Add a marker for each client in the list of expected clients
+     *
+     * @param expectedClients The list of expected clients
+     */
+    private void setExpectedClientMarker(ArrayList<Client> expectedClients) {
+        expectedClients.forEach(this::addClientMarker);
+    }
+
+    private void addClientMarker(Client client) {
+        addMarker(client.getGeoPoint(), client.getCompanyName(), client.getAddressDisplayName());
+    }
+
+    /**
+     * Add a marker on the map
+     * <p>
+     * The marker is added with the given position, title and description
+     * <br>
+     * The title and description are displayed when the user click on the marker
+     * </p>
+     *
+     * @param position    The position of the marker
+     * @param title       The title of the marker
+     * @param description The description of the marker
+     */
+    private void addMarker(GeoPoint position, String title, String description) {
+        Marker marker = new Marker(mapView);
+        marker.setPosition(position);
+        marker.setTitle(title);
+        marker.setSnippet(description);
+        mapView.getOverlays().add(marker);
+    }
+
+    /**
+     * Set the information of the next client, like :
+     * <ul>
+     *     <li>The company name</li>
+     *     <li>The address</li>
+     *     <li>The distance to the client</li>
+     *     <li>The number of visited clients</li>
+     * </ul>
+     * Each of this information is set in the corresponding TextView
+     *
+     * @param client The next client
+     */
+    private void setNextClientInfo(Client client) {
+        Log.d(TAG, client.toString());
+        client.setAddressDisplayName(this);
+        clientName.setText(client.getCompanyName());
+        clientAddress.setText(client.getAddressDisplayName());
+        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client)));
+        counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getNumberOfClientsExpected()));
+    }
+
+    /**
+     * Calculate the distance between the current position and the client
+     *
+     * @param client The client to calculate the distance
+     * @return The distance in kilometers
+     */
+    private double distanceToClient(Client client) {
         // TODO calculate with the roads and not in a straight line
-        return currentPosition.getCurrentGeoPoint().distanceToAsDouble(nextClient.getGeoPoint()) / 1000;
+        return currentPosition.getCurrentGeoPoint().distanceToAsDouble(client.getGeoPoint()) / 1000;
     }
 
     private void listClients() {
@@ -171,9 +271,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void pauseResume() {
         Log.d(TAG, "pause: ");
         // Toggle the icon
-        Drawable icon = AppCompatResources.getDrawable(this, itineraryIsPause ? ICON_PLAY : ICON_PAUSE);
+        Drawable icon = AppCompatResources.getDrawable(this, routeIsPause ? ICON_PLAY : ICON_PAUSE);
         pauseBtn.setBackground(icon);
-        itineraryIsPause = !itineraryIsPause;
+        routeIsPause = !routeIsPause;
     }
 
     private void stop() {
