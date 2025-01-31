@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -55,6 +57,49 @@ public class Parser {
         }
 
         return new ClientPage(listClients, listLinks);
+    }
+
+    /**
+     * Parse an JSON array of clients and return a list of clients
+     * <p>
+     * This method while search the value to create a "short" client. That mean that only the id, the company name and the company location will be parsed.
+     * This kind of format is found inside the itinerary and the route object.
+     * </p><p>
+     * Here an example of the JSON object:
+     * <pre>
+     * {@code
+     * {
+     *     "id": 1,
+     *     "companyLocation": {
+     *         "x": 0.0, // Latitude
+     *         "y": 10.0, // Longitude
+     *         "type": "Point",
+     *         "coordinates": [
+     *             2.673797607421875,
+     *             49.135002605812176
+     *         ]
+     *     },
+     *     "companyName": "Compagny name"
+     * }
+     * }
+     * </pre>
+     * </p>
+     *
+     * @param jsonArray the JSON array to parse
+     * @return the list of clients parsed from the JSON array
+     * @see Client#createClientFromShortJson(JSONObject)
+     */
+    public static ArrayList<Client> getShortClients(JSONArray jsonArray) {
+        ArrayList<Client> listClients = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject clientJson = jsonArray.getJSONObject(i);
+                listClients.add(Client.createClientFromShortJson(clientJson));
+            } catch (JSONException e) {
+                Log.e(TAG, "Error while parsing the JSON response", e);
+            }
+        }
+        return listClients;
     }
 
     /**
@@ -108,6 +153,38 @@ public class Parser {
                 geoJsonPoint.getDouble("x"),
                 geoJsonPoint.getDouble("y")
         );
+    }
+
+    public static Route getRoute(JSONObject response) {
+        Route route = null;
+        try {
+            route = new Route(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error while parsing the JSON response", e);
+        }
+        return route;
+    }
+
+    /**
+     * Parse a string to a LocalDateTime
+     * <p>
+     * For exemple <pre>2025-01-31T08:17:18.392+00:00</pre> while be parsed as the 31th of January 2025 at 8:17:18.392 in the UTC timezone (GMT+0)
+     * <br>
+     * If the string is not in the correct format, the method will return null
+     * </p>
+     *
+     * @param date the string to parse
+     * @return the LocalDateTime parsed from the string
+     */
+    public static LocalDateTime getLocalDateTimeFromString(String date) {
+        LocalDateTime parsedDateTime = null;
+        try {
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(date);
+            parsedDateTime = offsetDateTime.toLocalDateTime();
+        } catch (Exception ignored) {
+        }
+        return parsedDateTime;
     }
 
     /**
