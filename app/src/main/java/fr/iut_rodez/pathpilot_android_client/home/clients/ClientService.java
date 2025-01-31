@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,9 +62,11 @@ public class ClientService implements IClientService {
                                 clientsArray.add(new Client(clients.getJSONObject(i)));
                             }
                         }
-
-                    ClientPage clientPage = Parser.getClientsPageable(response);
-                    Log.d(TAG, "getClients: " + clientPage);
+                    }catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    List<Client> clientsArray = Parser.getClientsPageable(response);
+                    Log.d(TAG, "getClients: " + clientsArray);
 
                     ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientPage.clients());
                     listClientsView.post(() -> {
