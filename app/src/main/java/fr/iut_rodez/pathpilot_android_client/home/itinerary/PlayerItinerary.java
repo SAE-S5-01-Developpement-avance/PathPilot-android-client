@@ -30,7 +30,7 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.LocationNameProvider;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
 public class PlayerItinerary extends ActivityWithCurrentPosition {

@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -30,7 +29,7 @@ import java.util.Locale;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Handle the sign up Activity

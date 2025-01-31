@@ -24,7 +24,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
     public static final String CLE_ITINERARY_ADDED = "itineraryAdded";

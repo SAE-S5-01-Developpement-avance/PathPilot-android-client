@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.util;
+package fr.iut_rodez.pathpilot_android_client.util.popup;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
 /**
  * Instanceable class to display popups.

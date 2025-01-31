@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
