@@ -26,6 +26,7 @@ import java.util.Map;
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
@@ -120,6 +121,46 @@ public class ItineraryService {
             }
         };
 
+        requestQueue.add(request);
+    }
+
+    /**
+     * Request to the API to delete an itinerary.
+     * If the request is successful, it removed the itinerary from the adapter
+     *
+     * @param homeActivity    Context of the application
+     * @param itinerarySelected  The itinerary to delete
+     * @param listItinerariesView The view where the itineraries will be displayed
+     */
+    public static void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView) {
+
+        String apiURLDelete = API_BASE_URL + "/" + itinerarySelected.getId();
+
+        RequestQueue requestQueue = getRequestQueue(homeActivity);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(homeActivity);
+        progressDialog.show();
+
+        Log.d(TAG, "deleteItinerary: " + itinerarySelected.getId());
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+                    listItinerariesView.post(() -> {
+                        Itinerary.ItineraryArrayAdapter itineraryArrayAdapter = (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter();
+                        itineraryArrayAdapter.remove(itinerarySelected);
+                        itineraryArrayAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "deleteClient: Itinerary" + itinerarySelected.getId() + "removed");
+                    });
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(homeActivity, error);
+                }
+        );
         requestQueue.add(request);
     }
 }
