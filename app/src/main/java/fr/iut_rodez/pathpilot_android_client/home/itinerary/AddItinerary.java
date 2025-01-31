@@ -170,29 +170,4 @@ public class AddItinerary extends AppCompatActivity {
         }
         return (super.onContextItemSelected(item));
     }
-
-    /**
-     * Algorithm that do a path by every vertex from one to the next.
-     * TODO Move to the API
-     * @param vertex
-     * @param graph
-     * @param finalItinerary
-     * @param itineraryLength
-     */
-    public void navigation(ArrayList<Double> vertex, ArrayList<ArrayList<Double>> graph,
-                           ArrayList<Integer> finalItinerary, double itineraryLength) {
-        if (finalItinerary.size() != graph.size()+1) {
-            int rangMinimum = 0;
-            double minimum = Double.MAX_VALUE;
-            for (int i = 0; i < vertex.size(); i++) {
-                if (!finalItinerary.contains(i) && minimum > vertex.get(i)) {
-                    minimum = vertex.get(i);
-                    rangMinimum = i;
-                }
-            }
-            finalItinerary.add(rangMinimum);
-            itineraryLength += vertex.get(rangMinimum);
-            navigation(graph.get(rangMinimum),graph,finalItinerary,itineraryLength);
-        }
-    }
 }
