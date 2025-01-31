@@ -16,6 +16,7 @@ import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 
 public class InfoItinerary extends AppCompatActivity {
@@ -28,6 +29,7 @@ public class InfoItinerary extends AppCompatActivity {
     private Itinerary itinerary;
     private Popup popup;
     private ListView listItemsClientsAdded;
+    private JWTToken jwtToken;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class InfoItinerary extends AppCompatActivity {
         popup = new Popup(this);
 
         setUpListClient();
+        setUpToken();
     }
 
     /**
@@ -71,9 +74,32 @@ public class InfoItinerary extends AppCompatActivity {
         ((TextView) findViewById(R.id.header_text)).setText(itinerary.getDisplayName());
     }
 
+    /**
+     * Set up the token of the user.
+     * <p>
+     *     Retrieve the token from the intent and set it in the route service.
+     * </p>
+     */
+    private void setUpToken() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(FragmentItineraries.CLE_TOKEN)) {
+            jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
+        } else {
+            // This should never happen
+            Log.e(TAG, "setUpToken: No token found in the intent");
+            popup.showAlertDialog("Error", "No token found in the intent", new Popup.Button("Ok", (dialog, which) -> finish()),null, null); // TODO i18n
+        }
+    }
+
+    public JWTToken getJwtToken() {
+        return jwtToken;
+    }
+
     private void createAndStartRoute() {
-        Intent intent = new Intent(this, PlayerItinerary.class);
-        intent.putExtra(ITINERARY_KEY, itinerary);
-        startActivity(intent);
+        routeService.createRoute(this, itinerary);
+    }
+
+    public Popup getPopup() {
+        return popup;
     }
 }

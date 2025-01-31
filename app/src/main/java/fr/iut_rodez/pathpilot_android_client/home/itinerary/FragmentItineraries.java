@@ -99,6 +99,7 @@ public class FragmentItineraries extends Fragment {
             Log.d(TAG, "onItemClick: Itinerary: " + itinerary);
             Intent intent = new Intent(getActivity(), InfoItinerary.class);
             intent.putExtra(ITINERARY_KEY, itinerary);
+            intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
             startActivity(intent);
         });
 
