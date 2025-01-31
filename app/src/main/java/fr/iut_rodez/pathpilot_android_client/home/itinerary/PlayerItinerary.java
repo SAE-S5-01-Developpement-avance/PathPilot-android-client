@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -83,14 +84,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         clientVisitedBtn.setOnClickListener(v -> clientVisited());
         listClientsBtn.setOnClickListener(v -> listClients());
 
+        // Show a loading popup. The dialog is dismissed when the route is drawn
+        popup.showProgressDialog();
+
         setRouteInformation();
         initialiseMap();
-
         setNextClientInfo(route.getNextClient());
-        setExpectedClientMarker(route.getExpectedClients());
-        addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
-        setRoutePolyline(route.getExpectedClients(), route.getSalesmanHome());
-        mapView.invalidate(); // Refresh the map
     }
 
 
@@ -108,6 +107,11 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         currentPosition = new CurrentPosition(this);
         requestPermissionAndCenter();
+
+        setRoutePolyline(route.getExpectedClients(), route.getSalesmanHome());
+        setExpectedClientMarker(route.getExpectedClients());
+        addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
+        mapView.invalidate(); // Refresh the map
     }
 
     /**
@@ -191,7 +195,15 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
             // Draw the road on the map
             Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
+            Paint outlinePaint = roadOverlay.getOutlinePaint();
+            outlinePaint.setStrokeWidth(10);
+            outlinePaint.setColor(getColor(R.color.blue_1));
             mapView.getOverlays().add(roadOverlay);
+            popup.dismissProgressDialog();
+            if (road.mStatus != Road.STATUS_OK) {
+                Log.e(TAG, "setRoutePolyline: Error while drawing the road");
+                popup.showAlertDialogOK("Error", "Error while drawing the road", DialogButton.OKdismiss()); // TODO i18n
+            }
         }).start();
     }
 
@@ -201,11 +213,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * @param expectedClients The list of expected clients
      */
     private void setExpectedClientMarker(ArrayList<Client> expectedClients) {
-        expectedClients.forEach(this::addClientMarker);
+        for (int i = 0; i < expectedClients.size(); i++) {
+            addClientMarker(expectedClients.get(i), i + 1);
+        }
     }
 
-    private void addClientMarker(Client client) {
-        addMarker(client.getGeoPoint(), client.getCompanyName(), client.getAddressDisplayName());
+    private void addClientMarker(Client client, int index) {
+        addMarker(client.getGeoPoint(), String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName());
     }
 
     /**
@@ -237,6 +251,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      *     <li>The number of visited clients</li>
      * </ul>
      * Each of this information is set in the corresponding TextView
+     * <p>
+     *     This method needs the current position to calculate the distance to the client
      *
      * @param client The next client
      */
