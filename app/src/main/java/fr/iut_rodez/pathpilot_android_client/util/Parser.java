@@ -150,8 +150,8 @@ public class Parser {
     @NonNull
     public static GeoPoint getGeoPointFromGeoJSONPoint(JSONObject geoJsonPoint) throws JSONException {
         return new GeoPoint(
-                geoJsonPoint.getDouble("x"),
-                geoJsonPoint.getDouble("y")
+                geoJsonPoint.getDouble("y"),
+                geoJsonPoint.getDouble("x")
         );
     }
 
