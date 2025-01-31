@@ -3,10 +3,10 @@ package fr.iut_rodez.pathpilot_android_client.util;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.widget.Toast;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
 /**
  * Instanceable class to display popups.
@@ -59,8 +59,8 @@ public class Popup {
      * @param message the message of the dialog
      */
     public void showAlertDialog(String title, String message) {
-        Button okButton = new Button("OK", (dialog, which) -> dialog.dismiss());
-        showAlertDialog(title, message, okButton, null, null);
+        DialogButton okDialogButton = new DialogButton("OK", (dialog, which) -> dialog.dismiss());
+        showAlertDialog(title, message, okDialogButton, null, null);
     }
 
 
@@ -70,59 +70,43 @@ public class Popup {
      *
      * @param title          the title of the dialog
      * @param message        the message of the dialog
-     * @param positiveButton the button to display
+     * @param positiveDialogButton the button to display
      *                       with the text and the onClickListener
-     * @param neutralButton  the button to display
+     * @param neutralDialogButton  the button to display
      *                       with the text and the onClickListener
-     * @param negativeButton the button to display
+     * @param negativeDialogButton the button to display
      *                       with the text and the onClickListener
      */
-    public void showAlertDialog(String title, String message, Button positiveButton, Button neutralButton, Button negativeButton) {
+    public void showAlertDialog(String title, String message, DialogButton positiveDialogButton, DialogButton neutralDialogButton, DialogButton negativeDialogButton) {
         AlertDialog.Builder dialog =
                 new AlertDialog.Builder(context)
                         .setTitle(title)
                         .setMessage(message);
 
-        if (positiveButton != null) {
-            dialog.setPositiveButton(positiveButton.text(), positiveButton.onClickListener());
+        if (positiveDialogButton != null) {
+            dialog.setPositiveButton(positiveDialogButton.text(), positiveDialogButton.onClickListener());
         }
-        if (neutralButton != null) {
-            dialog.setNeutralButton(neutralButton.text(), neutralButton.onClickListener());
+        if (neutralDialogButton != null) {
+            dialog.setNeutralButton(neutralDialogButton.text(), neutralDialogButton.onClickListener());
         }
-        if (negativeButton != null) {
-            dialog.setNegativeButton(negativeButton.text(), negativeButton.onClickListener());
+        if (negativeDialogButton != null) {
+            dialog.setNegativeButton(negativeDialogButton.text(), negativeDialogButton.onClickListener());
         }
 
         // If no button is provided, add an OK button that dismisses the dialog
-        if (positiveButton == null && neutralButton == null && negativeButton == null) {
-            dialog.setPositiveButton("OK", (dialog1, which) -> dialog1.dismiss());
+        if (positiveDialogButton == null && neutralDialogButton == null && negativeDialogButton == null) {
+            DialogButton okButton = DialogButton.OKdismiss();
+            dialog.setPositiveButton(okButton.text(), okButton.onClickListener());
         }
 
         dialog.show();
     }
 
-    /**
-     * Describe a button with a text and an onClickListener.
-     *
-     * @param text            the text of the button
-     * @param onClickListener the onClickListener of the button
-     */
-    public record Button(String text, DialogInterface.OnClickListener onClickListener) {
-    }
-
-    public static void showAlertDialog(Context context, String title, String message) {
-        new Popup(context).showAlertDialog(title, message);
-    }
-
-    public static void showAlertDialog(Context context, String title, String message, Button positiveButton, Button neutralButton, Button negativeButton) {
-        new Popup(context).showAlertDialog(title, message, positiveButton, neutralButton, negativeButton);
-    }
-
-    public void showAlertDialog(String title, String message, Button positiveButton) {
-        showAlertDialog(title, message, positiveButton, null, null);
-    }
-
     public void showErrorDialog(String message) {
         showAlertDialog(context.getString(R.string.error), message);
+    }
+
+    public void showAlertDialogOK(String title, String message, DialogButton positiveDialogButton) {
+        showAlertDialog(title, message, positiveDialogButton, null, null);
     }
 }

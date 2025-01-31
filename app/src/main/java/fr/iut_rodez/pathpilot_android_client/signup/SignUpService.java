@@ -18,6 +18,7 @@ import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
 public class SignUpService {
 
@@ -59,7 +60,7 @@ public class SignUpService {
                     progressDialog.dismiss();
 
                     // Button to go to login page
-                    Popup.Button btnLogin = new Popup.Button("Login", (dialog, which) -> {
+                    DialogButton btnLogin = new DialogButton("Login", (dialog, which) -> {
                         dialog.dismiss();
 
                         Intent intent = new Intent(context, Login.class);
@@ -68,7 +69,7 @@ public class SignUpService {
                         context.startActivity(intent);
                     });
                     // Button to dismiss the dialog
-                    Popup.Button btnOk = new Popup.Button("OK", (dialog, which) -> dialog.dismiss());
+                    DialogButton btnOk = new DialogButton("OK", (dialog, which) -> dialog.dismiss());
 
                     // Show success dialog with the two buttons
                     popup.showAlertDialog("Success", "Account created successfully", btnLogin, btnOk, null);
