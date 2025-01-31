@@ -160,7 +160,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         if (route == null) {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
-            popup.showAlertDialogOK("Error", "No itinerary found in the intent", DialogButton.OKFinish(this)); // TODO i18n
+            popup.showAlertDialogOK("Error", "No itinerary found in the intent", DialogButton.okFinish(this)); // TODO i18n
         }
         route.getExpectedClients().forEach(client -> client.setAddressDisplayName(this));
     }
@@ -190,7 +190,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             // if the road build process failed, show an error dialog
             if (road.mStatus != Road.STATUS_OK) {
                 Log.e(TAG, "setRoutePolyline: Error while drawing the road");
-                popup.showAlertDialogOK("Error", "Error while drawing the road", DialogButton.OKdismiss()); // TODO i18n
+                popup.showAlertDialogOK("Error", "Error while drawing the road", DialogButton.okDismiss()); // TODO i18n
             }
 
             // Draw the road on the map

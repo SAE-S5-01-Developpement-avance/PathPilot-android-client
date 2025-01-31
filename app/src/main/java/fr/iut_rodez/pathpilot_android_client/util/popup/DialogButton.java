@@ -16,7 +16,7 @@ public record DialogButton(String text, DialogInterface.OnClickListener onClickL
      *
      * @return the button
      */
-    public static DialogButton OKdismiss() {
+    public static DialogButton okDismiss() {
         return new DialogButton("OK", getDismissListener());
     }
 
@@ -27,7 +27,7 @@ public record DialogButton(String text, DialogInterface.OnClickListener onClickL
      * @param activity the activity to finish
      * @return the button
      */
-    public static DialogButton OKFinish(Activity activity) {
+    public static DialogButton okFinish(Activity activity) {
         return new DialogButton("OK", getFinishListener(activity));
     }
 

@@ -94,7 +94,7 @@ public class Popup {
 
         // If no button is provided, add an OK button that dismisses the dialog
         if (positiveDialogButton == null && neutralDialogButton == null && negativeDialogButton == null) {
-            DialogButton okButton = DialogButton.OKdismiss();
+            DialogButton okButton = DialogButton.okDismiss();
             dialog.setPositiveButton(okButton.text(), okButton.onClickListener());
         }
 
