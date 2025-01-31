@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
+import static fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
+
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -51,7 +53,7 @@ public class Client implements Parcelable {
 
     public Client(JSONObject clientJson) throws JSONException {
         this.id = clientJson.getInt("id");
-        this.companyName = clientJson.getString("companyName");
+        this.companyName = clientJson.getString(COMPANY_NAME_JSON_KEY);
         this.latHomeAddress = clientJson.getDouble("latHomeAddress");
         this.longHomeAddress = clientJson.getDouble("longHomeAddress");
         this.clientCategory = ClientCategory.fromJSON(clientJson.getJSONObject("clientCategory"));
@@ -236,7 +238,7 @@ public class Client implements Parcelable {
     public JSONObject toJson() {
         JSONObject clientJson = new JSONObject();
         try {
-            clientJson.put("companyName", companyName);
+            clientJson.put(COMPANY_NAME_JSON_KEY, companyName);
             clientJson.put("latHomeAddress", latHomeAddress);
             clientJson.put("longHomeAddress", longHomeAddress);
             clientJson.put("clientCategory", clientCategory.category());
@@ -311,9 +313,13 @@ public class Client implements Parcelable {
         GeoPoint companyLocation = Parser.getGeoPointFromGeoJSONPoint(clientJson.getJSONObject("companyLocation"));
         return new Client(
                 clientJson.getInt("id"),
-                clientJson.getString("companyName"),
+                clientJson.getString(COMPANY_NAME_JSON_KEY),
                 companyLocation.getLatitude(),
                 companyLocation.getLongitude()
         );
+    }
+
+    private static class ClientConstant {
+        public static final String COMPANY_NAME_JSON_KEY = "companyName";
     }
 }
