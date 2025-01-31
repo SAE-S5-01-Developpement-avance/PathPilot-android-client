@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +21,8 @@ import androidx.fragment.app.Fragment;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 
 /**
  * Display all itineraries
@@ -72,6 +78,26 @@ public class FragmentItineraries extends Fragment {
         addItineraryButton.setOnClickListener(v -> gotoCreateItinerary());
 
         return view;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(getActivity()).inflate(R.menu.itineray_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.delete_itinerary) {
+            Log.d(TAG, "onContextItemSelected: Delete itinerary");
+            ItineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
+        } else {
+            Log.e(TAG, "onContextItemSelected: Unknown option selected");
+        }
+        return (super.onContextItemSelected(item));
     }
 
     public void loadItineraries() {

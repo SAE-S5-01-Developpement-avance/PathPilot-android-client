@@ -118,6 +118,7 @@
     <string name="itinerary_total_stops">"Total stops: "</string>
     <string name="select_client_to_create_itinerary">Select clients</string>
     <string name="client_address_not_found">Address not found</string>
+    <string name="delete_itinerary">Delete the itinerary</string>
 
     <!--
     Map selection

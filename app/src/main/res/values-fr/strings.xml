@@ -112,6 +112,7 @@ String for Login activity
     <string name="select_client_to_create_itinerary">Sélectionner des clients</string>
     <string name="select_position">Sélectionner une position</string>
     <string name="client_address_not_found">Adresse introuvable</string>
+    <string name="delete_itinerary">Suppimer l\'itinéraire</string>
 
     <!--
     Map selection
