@@ -184,11 +184,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         expectedClients.forEach(client -> waypoints.add(client.getGeoPoint()));
         waypoints.add(salesmanHome);
 
-        // Get the road between the waypoints
-        roadManager.addRequestOption("overview=full");
-        roadManager.addRequestOption("geometries=polyline");
 
         new Thread(() -> {
+            // Get the road between the waypoints
             Road road = roadManager.getRoad(waypoints);
             popup.dismissProgressDialog();
 
@@ -204,7 +202,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             outlinePaint.setStrokeWidth(10);
             outlinePaint.setColor(getColor(R.color.blue_1));
             mapView.getOverlays().add(roadOverlay);
-
+            
             setExpectedClientMarker(route.getExpectedClients());
             addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
         }).start();
