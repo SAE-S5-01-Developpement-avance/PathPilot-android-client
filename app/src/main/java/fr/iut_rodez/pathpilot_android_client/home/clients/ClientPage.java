@@ -15,7 +15,7 @@ public record ClientPage(@NonNull ArrayList<Client> clients, @NonNull ArrayList<
      *
      * @return The link to the next page of clients, or null if there is no next page
      */
-    public Link getNext () {
+    public Link getNext() {
         for (Link link : links) {
             if (link.rel().equals("next")) {
                 return link;

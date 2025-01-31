@@ -50,7 +50,6 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        // TODO Update URL to use the pagination
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL, null,
                 response -> {
                     progressDialog.dismiss();

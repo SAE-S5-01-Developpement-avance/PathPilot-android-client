@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
-import com.android.volley.NetworkResponse;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -18,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +25,13 @@ import java.util.Map;
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
+/**
+ * Service to handle all itinerary related requests
+ */
 public class ItineraryService {
 
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
@@ -99,13 +101,17 @@ public class ItineraryService {
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
-                    List<Itinerary> itineraryArray = Parser.getItinerariesPageable(response);
-                    Log.d(TAG, "getItineraries: " + itineraryArray);
 
-                    Itinerary.ItineraryArrayAdapter adapter = new Itinerary.ItineraryArrayAdapter(homeActivity, itineraryArray);
+                    ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
+                    Log.d(TAG, "getItineraries: " + itineraryPage.itineraries());
+
+                    ItineraryArrayAdapter adapter = new ItineraryArrayAdapter(homeActivity, itineraryPage.itineraries());
                     listItinerariesView.post(() -> {
                         listItinerariesView.setAdapter(adapter);
                     });
+
+                    // Save the client page to the activity
+                    ((Home) context).setItineraryPage(itineraryPage);
                 },
                 error -> {
                     progressDialog.dismiss();
@@ -115,6 +121,57 @@ public class ItineraryService {
         ) {
             @Override
             public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwtToken);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+    }
+
+    /**
+     * Request to the API to fetch the next page of clients.
+     * If the request is successful, it adds clients to the adapter and link it to the view
+     * If not it displays the error encounter.
+     *
+     * @param context         Context of the application
+     * @param listItinerariesView The view where the clients will be displayed
+     * @param nextPageUrl     The URL of the next page
+     * @param adapter         The adapter to add the clients to
+     */
+    public static void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter) {
+        Log.d(TAG, "Next Page URL: " + nextPageUrl);
+
+        Home homeActivity = (Home) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, nextPageUrl, null,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
+                    Log.d(TAG, "getNextItineraryPageable: " + itineraryPage);
+
+                    adapter.addAll(itineraryPage.itineraries());
+                    adapter.notifyDataSetChanged();
+
+                    // Save the client page to the activity
+                    ((Home) context).setItineraryPage(itineraryPage);
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + jwtToken);
                 return headers;
@@ -149,7 +206,7 @@ public class ItineraryService {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
                     listItinerariesView.post(() -> {
-                        Itinerary.ItineraryArrayAdapter itineraryArrayAdapter = (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter();
+                        ItineraryArrayAdapter itineraryArrayAdapter = (ItineraryArrayAdapter) listItinerariesView.getAdapter();
                         itineraryArrayAdapter.remove(itinerarySelected);
                         itineraryArrayAdapter.notifyDataSetChanged();
                         Log.d(TAG, "deleteClient: Itinerary" + itinerarySelected.getId() + "removed");
