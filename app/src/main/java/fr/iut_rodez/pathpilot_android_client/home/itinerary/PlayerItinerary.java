@@ -18,9 +18,11 @@ import org.osmdroid.views.MapView;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
 public class PlayerItinerary extends ActivityWithCurrentPosition {
 
@@ -36,7 +38,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private MapView mapView;
     private ImageButton pauseBtn;
 
-    private Itinerary itinerary;
+    private Route route;
     private Client nextClient; // TODO read this data from a Route
     private boolean itineraryIsPause = false; // TODO read this data from a Route
 
@@ -105,12 +107,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 // If the permission is denied,
                 // show a popup to ask the user to allow the location permission
                 () -> {
-                    Popup.Button no = new Popup.Button(getString(R.string.no_you_can_t_use_this_feature), (dialog, which) -> {
+                    DialogButton no = new DialogButton(getString(R.string.no_you_can_t_use_this_feature), (dialog, which) -> {
                         dialog.dismiss();
                         Log.d(TAG, "initialiseMap: Said no, so finishing the activity");
                         finish();
                     });
-                    Popup.Button yes = new Popup.Button(getString(R.string.yes_give_access), (dialog, which) -> {
+                    DialogButton yes = new DialogButton(getString(R.string.yes_give_access), (dialog, which) -> {
                         dialog.dismiss();
                         Log.d(TAG, "initialiseMap: Said yes, so finishing the activity, so the user can allow the permission");
                         finish();
@@ -139,19 +141,18 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private void setInformationWithIntent() {
         Intent intent = getIntent();
-        itinerary = intent.getParcelableExtra(InfoItinerary.ITINERARY_KEY);
+        route = intent.getParcelableExtra(InfoItinerary.ROUTE_KEY);
 
-        if (itinerary == null) {
+        if (route == null) {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
-            popup.showAlertDialog("Error", "No itinerary found in the intent"); // TODO i18n
-            finish();
+            popup.showAlertDialogOK("Error", "No itinerary found in the intent", DialogButton.OKFinish(this)); // TODO i18n
         }
 
-        nextClient = itinerary.getClients().get(0);
+        nextClient = route.getExpectedClients().get(0);
         clientName.setText(nextClient.getCompanyName());
         clientAddress.setText(nextClient.getAddressDisplayName());
         clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(nextClient)));
-        counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, itinerary.getClients().size()));
+        counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getExpectedClients().size()));
     }
 
     private double distanceToClient(Client nextClient) {

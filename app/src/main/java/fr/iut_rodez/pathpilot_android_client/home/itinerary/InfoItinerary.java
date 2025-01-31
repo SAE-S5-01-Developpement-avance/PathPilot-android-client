@@ -16,16 +16,19 @@ import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
+import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 
 public class InfoItinerary extends AppCompatActivity {
 
     private static final String TAG = InfoItinerary.class.getSimpleName();
     public static final String ITINERARY_KEY = "itinerary";
+    public static final String ROUTE_KEY = "route";
+    public static final String JWT_TOKEN_KEY = "jwtToken";
 
     private final IRouteService routeService = ServiceFactory.getRouteService();
-    private ClientArrayAdapter clientsAddedAdapter;
     private Itinerary itinerary;
     private Popup popup;
     private ListView listItemsClientsAdded;
@@ -39,6 +42,8 @@ public class InfoItinerary extends AppCompatActivity {
         findViewById(R.id.button_start_itinerary).setOnClickListener(v -> createAndStartRoute());
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
+        listItemsClientsAdded = findViewById(R.id.list_items_clients_added);
+
         popup = new Popup(this);
 
         setUpListClient();
@@ -48,12 +53,11 @@ public class InfoItinerary extends AppCompatActivity {
     /**
      * Set up the list of clients of the itinerary.
      * <p>
-     *     Retrieve the itinerary from the intent and the list of clients from the itinerary.
-     *     Set the adapter of the list view with the list of clients.
+     * Retrieve the itinerary from the intent and the list of clients from the itinerary.
+     * Set the adapter of the list view with the list of clients.
      * </p>
      */
     private void setUpListClient() {
-        listItemsClientsAdded = findViewById(R.id.list_items_clients_added);
         Intent intent = getIntent();
         itinerary = intent.getParcelableExtra(FragmentItineraries.ITINERARY_KEY);
 
@@ -69,7 +73,7 @@ public class InfoItinerary extends AppCompatActivity {
             Log.d(TAG, "setUpListClient: Client: " + client);
         }
 
-        clientsAddedAdapter = new ClientArrayAdapter(this, clients);
+        ClientArrayAdapter clientsAddedAdapter = new ClientArrayAdapter(this, clients);
         listItemsClientsAdded.setAdapter(clientsAddedAdapter);
         ((TextView) findViewById(R.id.header_text)).setText(itinerary.getDisplayName());
     }
@@ -77,7 +81,7 @@ public class InfoItinerary extends AppCompatActivity {
     /**
      * Set up the token of the user.
      * <p>
-     *     Retrieve the token from the intent and set it in the route service.
+     * Retrieve the token from the intent and set it in the route service.
      * </p>
      */
     private void setUpToken() {
@@ -87,7 +91,7 @@ public class InfoItinerary extends AppCompatActivity {
         } else {
             // This should never happen
             Log.e(TAG, "setUpToken: No token found in the intent");
-            popup.showAlertDialog("Error", "No token found in the intent", new Popup.Button("Ok", (dialog, which) -> finish()),null, null); // TODO i18n
+            popup.showAlertDialog("Error", "No token found in the intent", new DialogButton("Ok", (dialog, which) -> finish()), null, null); // TODO i18n
         }
     }
 
@@ -101,5 +105,12 @@ public class InfoItinerary extends AppCompatActivity {
 
     public Popup getPopup() {
         return popup;
+    }
+
+    public void redirectToPlayerActivity(Route route) {
+        Intent intent = new Intent(this, PlayerItinerary.class);
+        intent.putExtra(InfoItinerary.ROUTE_KEY, route);
+        intent.putExtra(InfoItinerary.JWT_TOKEN_KEY, jwtToken);
+        startActivity(intent);
     }
 }
