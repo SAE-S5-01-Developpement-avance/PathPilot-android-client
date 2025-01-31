@@ -10,9 +10,11 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 
 /**
@@ -32,8 +34,9 @@ public class Parser {
      * @return List of clients parsed from the JSON response. If an error occurs, an empty list is returned
      */
     @NonNull
-    public static List<Client> getClientsPageable(JSONObject response) {
+    public static ClientPage getClientsPageable(JSONObject response) {
         ArrayList<Client> listClients = new ArrayList<>();
+        ArrayList<Link> listLinks = new ArrayList<>();
 
         // Parse the JSON response and create a list of clients
         try {
@@ -45,11 +48,24 @@ public class Parser {
                 JSONObject clientJson = embeddedListClients.getJSONObject(i);
                 listClients.add(new Client(clientJson));
             }
+
+
+            // Retrieve pagination links
+            JSONObject links = response.getJSONObject("_links");
+            if (links.has("next")) {
+                listLinks.add(new Link( "next", links.getJSONObject("next").getString("href")));
+            }
+            if (links.has("prev")) {
+                listLinks.add(new Link( "prev", links.getJSONObject("prev").getString("href")));
+            }
+
+            Log.d(TAG, "Page links: " + Arrays.toString(listLinks.toArray()));
+
         } catch (JSONException e) {
             Log.e(TAG, "Error while parsing the JSON response", e);
         }
 
-        return listClients;
+        return new ClientPage(listClients, listLinks);
     }
 
     /**

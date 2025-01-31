@@ -24,9 +24,11 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
-import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.AddClient;
+import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.FragmentClientsActions;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries.AddItinerary;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 
@@ -34,7 +36,7 @@ import fr.iut_rodez.pathpilot_android_client.login.LoginService;
  * Handle the different fragments of the application and the JWT token.
  * The JWT token is passed from the login activity to the home activity.
  */
-public class Home extends AppCompatActivity implements AddClient, FragmentItineraries.AddItinerary {
+public class Home extends AppCompatActivity implements FragmentClientsActions, AddItinerary {
 
     private static final String TAG = Home.class.getSimpleName();
     public static final int INDEX_FRAGMENT_CLIENT = 0;
@@ -47,6 +49,8 @@ public class Home extends AppCompatActivity implements AddClient, FragmentItiner
 
     private ActivityResultLauncher<Intent> addClientLauncher;
     private ActivityResultLauncher<Intent> addItineraryLauncher;
+
+    private ClientPage clientPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +136,21 @@ public class Home extends AppCompatActivity implements AddClient, FragmentItiner
     public ActivityResultLauncher<Intent> getAddClientLauncher() {
         return addClientLauncher;
     }
+
+    /**
+     * Set the client page
+     *
+     * @param clientPage The client page
+     */
+    public void setClientPage(ClientPage clientPage) {
+        this.clientPage = clientPage;
+    }
+
+    @Override
+    public ClientPage getClientPage() {
+        return clientPage;
+    }
+
     public ActivityResultLauncher<Intent> getAddItineraryLauncher() {
         return addItineraryLauncher;
     }

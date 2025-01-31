@@ -54,6 +54,10 @@ public class Login extends AppCompatActivity {
         if (intent != null && intent.hasExtra(CLE_MAIL)) {
             emailInput.setText(intent.getStringExtra(CLE_MAIL));
         }
+
+        // TODO remove this
+        emailInput.setText("t@t.tt");
+        passwordInput.setText("123456789");
     }
 
     /**
