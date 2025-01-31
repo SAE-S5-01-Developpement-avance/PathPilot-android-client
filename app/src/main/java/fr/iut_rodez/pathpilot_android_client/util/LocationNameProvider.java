@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.map;
+package fr.iut_rodez.pathpilot_android_client.util;
 
 import android.content.Context;
 import android.location.Address;
@@ -43,4 +43,6 @@ public class LocationNameProvider {
         }
         return placeName;
     }
+
+    private LocationNameProvider() {}
 }
