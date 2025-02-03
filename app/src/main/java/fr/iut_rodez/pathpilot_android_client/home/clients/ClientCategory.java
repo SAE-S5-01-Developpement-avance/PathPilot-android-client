@@ -25,9 +25,17 @@ public enum ClientCategory {
      * If the category is not found, the default value is CLIENT
      * The category is searched in the "name" field
      * </p>
+     * The JSON should look like:
+     * <pre>
+     * {@code
+     * {
+     *     "name": "CLIENT"
+     * }
+     * }
+     * </pre>
      *
-     * @param category
-     * @return
+     * @param category the JSON object to parse
+     * @return the parsed category
      */
     @NonNull
     public static ClientCategory fromJSON(JSONObject category) {
