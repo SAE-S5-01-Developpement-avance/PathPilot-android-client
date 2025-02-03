@@ -87,7 +87,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         setRouteInformation();
         initialiseMap();
-        setNextClientInfo(route.getNextClient());
     }
 
 
@@ -122,6 +121,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 // If the permission is granted, set the center with the current position
                 () -> {
                     setCenter();
+                    setNextClientInfo(route.getNextClient());
                 },
                 // If the permission is denied,
                 // show a popup to ask the user to allow the location permission
