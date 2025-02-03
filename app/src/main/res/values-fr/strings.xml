@@ -151,4 +151,8 @@ String for Login activity
     <string name="yes_give_access">Oui donner accès</string>
     <string name="distance_in_km">%.2f km</string>
     <string name="counter_visited_clients">Clients visités : %d/%d</string>
+    <string name="error_while_drawing_the_road">Erreur lors du dessin de la route</string>
+    <string name="error_while_searching">Erreur lors de la recherche: </string>
+    <string name="no_itinerary_retrieve">Aucun itinéraire reçu</string>
+    <string name="no_token_retrieve">Aucun jeton reçu</string>
 </resources>

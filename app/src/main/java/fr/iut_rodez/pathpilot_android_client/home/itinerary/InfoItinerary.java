@@ -63,7 +63,7 @@ public class InfoItinerary extends AppCompatActivity {
 
         if (itinerary == null) {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
-            popup.showAlertDialog("Error", "No itinerary found in the intent"); // TODO i18n
+            popup.showAlertDialog(getString(R.string.error), getString(R.string.no_itinerary_retrieve));
             finish();
         }
         List<Client> clients = itinerary.getClients();
@@ -91,7 +91,7 @@ public class InfoItinerary extends AppCompatActivity {
         } else {
             // This should never happen
             Log.e(TAG, "setUpToken: No token found in the intent");
-            popup.showAlertDialog("Error", "No token found in the intent", new DialogButton("Ok", (dialog, which) -> finish()), null, null); // TODO i18n
+            popup.showAlertDialog(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this), null, null);
         }
     }
 

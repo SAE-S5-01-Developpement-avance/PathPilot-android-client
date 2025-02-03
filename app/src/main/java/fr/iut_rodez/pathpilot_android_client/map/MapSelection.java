@@ -161,12 +161,11 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
                     setSelectedPoint(new GeoPoint(address.getLatitude(), address.getLongitude()));
                     centerToSelected();
                 } else {
-                    popup.showToastLong(getString(R.string.adress_not_found)); // TODO: i18n
+                    popup.showToastLong(getString(R.string.adress_not_found));
                 }
 
             } catch (Exception e) {
-                // TODO: i18n
-                popup.showAlertDialog("Erreur", "Erreur lors de la recherche: " + e.getMessage());
+                popup.showAlertDialog(getString(R.string.error), getString(R.string.error_while_searching) + e.getMessage());
             }
         }
     }
