@@ -16,9 +16,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,16 +59,23 @@ public class ItineraryService implements IItineraryService {
         String jwtToken = addItineraryActivity.getJWTToken().getToken();
         JSONArray listIdClient = new JSONArray();
         JSONObject itinerariesInput = new JSONObject();
-
+        JSONArray clientsLocationsJson = new JSONArray();
         for (Client client : listClients) {
             listIdClient.put(client.getId());
         }
+
+        for (int i = 0; i < clientsLocations.size(); i++) {
+            clientsLocationsJson.put(new JSONArray(clientsLocations.get(i)));
+        }
+
         itinerariesInput.put("clients_schedule", listIdClient);
+        itinerariesInput.put("locations", clientsLocationsJson);
+        itinerariesInput.put("metrics", "distance");
 
         Popup popup = new Popup(context);
         popup.showProgressDialog(context.getString(R.string.progress_creating_itinerary));
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, itinerariesInput, jwtToken,
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL+ "?profile=driving-car", itinerariesInput, jwtToken,
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
