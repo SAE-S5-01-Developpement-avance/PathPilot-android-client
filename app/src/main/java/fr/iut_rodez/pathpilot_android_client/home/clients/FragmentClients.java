@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
+import static fr.iut_rodez.pathpilot_android_client.home.clients.ClientService.getNextPageClients;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.util.Link;
 
 /**
  * Display all the clients
@@ -42,6 +46,8 @@ public class FragmentClients extends Fragment {
     private ListView listClientsView;
     private Home homeActivity;
     private TextView textHeader;
+
+
 
     public static FragmentClients newInstance() {
         return new FragmentClients();
@@ -68,6 +74,25 @@ public class FragmentClients extends Fragment {
         textHeader.setText(R.string.header_clients_list);
 
         listClientsView = view.findViewById(R.id.clients_list);
+
+        // Set OnScrollListener to load more clients when reaching the bottom
+        listClientsView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // No action needed here
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0) {
+                    // Check if there is a next page link
+                    Link nextLink = homeActivity.getClientPage().getNext();
+                    if (nextLink != null) {
+                        getNextPageClients(homeActivity, listClientsView, nextLink.href(), (ClientArrayAdapter) listClientsView.getAdapter());
+                    }
+                }
+            }
+        });
 
         // Get the clients from the API
         loadClients();
@@ -105,14 +130,15 @@ public class FragmentClients extends Fragment {
 
     private void gotoCreateClient() {
         Log.d(TAG, "gotoCreateClient: Goto create client");
-        Intent intent = new Intent(getActivity(), fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.class);
+        Intent intent = new Intent(getActivity(), AddClient.class);
         intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
 
         homeActivity.getAddClientLauncher().launch(intent);
     }
 
-    public interface AddClient {
+    public interface FragmentClientsActions {
         ActivityResultLauncher<Intent> getAddClientLauncher();
+        ClientPage getClientPage();
     }
 
     public ArrayList<Client> getListClients(){

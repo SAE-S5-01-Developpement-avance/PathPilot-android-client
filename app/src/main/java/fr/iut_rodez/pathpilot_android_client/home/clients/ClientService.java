@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
@@ -9,21 +10,15 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
-import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
  * Service to handle all client related requests
@@ -35,7 +30,7 @@ public class ClientService {
 
     /**
      * Request to the API the clients.
-     * If the request is successful, it adds the client to the adapter and links it to the view
+     * If the request is successful, it adds clients to the adapter and link it to the view
      * If not it displays the error encounter.
      *
      * @param context         Context of the application
@@ -51,33 +46,71 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        // TODO Update URL to use the pagination
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL + "/all", null,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
 
-                    List<Client> clientsArray = Parser.getClientsPageable(response);
-                    Log.d(TAG, "getClients: " + clientsArray);
+                    ClientPage clientPage = Parser.getClientsPageable(response);
+                    Log.d(TAG, "getClients: " + clientPage);
 
-                    ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientsArray);
+                    ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientPage.clients());
                     listClientsView.post(() -> {
                         listClientsView.setAdapter(adapter);
                     });
+
+                    // Save the client page to the activity
+                    ((Home) context).setClientPage(clientPage);
                 },
                 error -> {
                     progressDialog.dismiss();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
+        );
+        requestQueue.add(request);
+    }
+
+    /**
+     * Request to the API to fetch the next page of clients.
+     * If the request is successful, it adds clients to the adapter and link it to the view
+     * If not it displays the error encounter.
+     *
+     * @param context         Context of the application
+     * @param listClientsView The view where the clients will be displayed
+     * @param nextPageUrl     The URL of the next page
+     * @param adapter         The adapter to add the clients to
+     */
+    public static void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter) {
+        Log.d(TAG, "Next Page URL: " + nextPageUrl);
+
+        Home homeActivity = (Home) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    ClientPage clientPage = Parser.getClientsPageable(response);
+                    Log.d(TAG, "getNextPageClients: " + clientPage);
+
+                    adapter.addAll(clientPage.clients());
+                    adapter.notifyDataSetChanged();
+
+                    // Save the client page to the activity
+                    ((Home) context).setClientPage(clientPage);
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        );
 
         requestQueue.add(request);
     }
@@ -103,7 +136,7 @@ public class ClientService {
 
         Log.d(TAG, "addClient: " + body);
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, body, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, body, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -144,7 +177,7 @@ public class ClientService {
 
         Log.d(TAG, "deleteClient: " + clientSelected.getId());
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);

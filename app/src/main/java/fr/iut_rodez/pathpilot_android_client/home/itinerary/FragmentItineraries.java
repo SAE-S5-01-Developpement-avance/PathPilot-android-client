@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
+import static fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryService.getNextPageItineraries;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -21,8 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
+import fr.iut_rodez.pathpilot_android_client.util.Link;
 
 /**
  * Display all itineraries
@@ -70,6 +72,25 @@ public class FragmentItineraries extends Fragment {
         textHeader.setText(R.string.header_itineraries_list);
         listItinerariesView = view.findViewById(R.id.itineraries_list);
 
+        // Set OnScrollListener to load more itineraries when reaching the bottom
+        listItinerariesView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // No action needed here
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0) {
+                    // Check if there is a next page link
+                    Link nextLink = homeActivity.getItineraryPage().getNext();
+                    if (nextLink != null) {
+                        getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(), (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter());
+                    }
+                }
+            }
+        });
+
         // Get all itineraries from the API
         loadItineraries();
 
@@ -113,7 +134,8 @@ public class FragmentItineraries extends Fragment {
         homeActivity.getAddItineraryLauncher().launch(intent);
     }
 
-    public interface AddItinerary{
+    public interface FragmentItineraryActions {
         ActivityResultLauncher<Intent> getAddItineraryLauncher();
+        ItineraryPage getItineraryPage();
     }
 }
