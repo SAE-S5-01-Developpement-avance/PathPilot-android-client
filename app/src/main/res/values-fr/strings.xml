@@ -73,7 +73,7 @@ String for Login activity
     <string name="description_blank">Entrer une description</string>
     <string name="confirm_password_blank">Confirmer mot de passe</string>
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
-    <string name="address_missing">Selectionnez votre position</string>
+    <string name="address_missing">Sélectionnez votre position</string>
 
 
     <!--
@@ -152,7 +152,7 @@ String for Login activity
     -->
     <string name="need_to_allow_location_permission">Vous devez autoriser l\'accès à la localisation pour utiliser la carte.</string>
     <string name="no_you_can_t_use_this_feature">Non (vous ne pourrez pas utiliser cette fonctionnalité)</string>
-    <string name="yes_give_access">Oui donner accès</string>
+    <string name="yes_give_access">Oui, donner accès</string>
     <string name="distance_in_km">%.2f km</string>
     <string name="counter_visited_clients">Clients visités : %d/%d</string>
     <string name="error_while_drawing_the_road">Erreur lors du dessin de la route</string>
