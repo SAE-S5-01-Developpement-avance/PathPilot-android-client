@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
@@ -9,20 +10,15 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
-import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
 /**
  * Service to handle all client related requests
@@ -50,7 +46,7 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL, null,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -71,15 +67,7 @@ public class ClientService {
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
-
+        );
         requestQueue.add(request);
     }
 
@@ -103,7 +91,7 @@ public class ClientService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, nextPageUrl, null,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -122,14 +110,7 @@ public class ClientService {
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
+        );
 
         requestQueue.add(request);
     }
@@ -155,7 +136,7 @@ public class ClientService {
 
         Log.d(TAG, "addClient: " + body);
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, body, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, body, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -196,7 +177,7 @@ public class ClientService {
 
         Log.d(TAG, "deleteClient: " + clientSelected.getId());
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);

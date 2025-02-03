@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.app.ProgressDialog;
@@ -9,7 +10,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -18,9 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
@@ -97,7 +95,7 @@ public class ItineraryService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, API_BASE_URL, null,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -118,14 +116,7 @@ public class ItineraryService {
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
+        );
 
         requestQueue.add(request);
     }
@@ -150,7 +141,7 @@ public class ItineraryService {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, nextPageUrl, null,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
@@ -169,14 +160,7 @@ public class ItineraryService {
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + jwtToken);
-                return headers;
-            }
-        };
+        );
 
         requestQueue.add(request);
     }
