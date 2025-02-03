@@ -18,6 +18,7 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 
 /**
  * Utility class that abstracts the parsing of Volley responses
