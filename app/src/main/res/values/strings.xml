@@ -72,7 +72,6 @@
     <string name="confirm_password_not_same">Write a second time your password to confirm it</string>
     <string name="address_missing">Select your position</string>
 
-
     <!--
     Foot page without button
     -->
@@ -112,6 +111,7 @@
     <string name="itinerary">Itinerary</string>
     <string name="title_list_clients_added_for_itinerary"><u>Clients added</u></string>
     <string name="button_create_itinerary">Create itinerary</string>
+    <string name="header_create_itinerary">Create itinerary</string>
     <string name="list_clients_to_add">Choosing clients</string>
     <string name="header_itineraries_list">Itineraries</string>
     <string name="header_clients_list">Clients</string>

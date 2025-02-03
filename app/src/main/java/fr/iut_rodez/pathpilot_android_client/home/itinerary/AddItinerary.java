@@ -42,17 +42,22 @@ public class AddItinerary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.view_create_itinerary);
-        Intent intent = getIntent();
-        popup = new Popup(this);
+        ((TextView) findViewById(R.id.header_text)).setText(R.string.header_create_itinerary);
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+
         selectClientToAdd = findViewById(R.id.list_add_clients);
         listClientsAddedView = findViewById(R.id.list_items_clients_added);
         registerForContextMenu(listClientsAddedView);
 
+        popup = new Popup(this);
         listClientsAdded = new ArrayList<>();
         listClientsToAdd = new ArrayList<>();
 
+        // Add a default client to the list of clients to add
+        // This client is used to display a hint in the spinner
         listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
 
+        Intent intent = getIntent();
         Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
         ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
         listClientsToAdd.addAll(clients);
