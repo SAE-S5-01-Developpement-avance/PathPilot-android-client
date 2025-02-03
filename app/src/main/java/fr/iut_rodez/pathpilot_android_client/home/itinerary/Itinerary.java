@@ -171,7 +171,7 @@ public class Itinerary implements Parcelable {
             Itinerary itinerary = itineraries.get(position);
 
             // Définir les valeurs des TextView
-            itineraryNumber.setText(itinerary.getDisplayName());
+            itineraryNumber.setText(MessageFormat.format("{0}° - {1}", position + 1, itinerary.getId()));
 
             String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + itinerary.getCoordinates();
             itineraryCoordinates.setText(itineraryCoordinatesString);
