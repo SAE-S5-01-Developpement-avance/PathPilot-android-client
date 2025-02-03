@@ -3,6 +3,9 @@ package fr.iut_rodez.pathpilot_android_client;
 import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.home.routes.RouteService;
 
+/**
+ * Factory to get services
+ */
 public class ServiceFactory {
 
     static ServiceFactory instance;
