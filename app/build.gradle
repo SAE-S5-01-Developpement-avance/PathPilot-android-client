@@ -67,6 +67,7 @@ dependencies {
     androidTestImplementation libs.espresso.core
     // Dependency for OpenStreetMap
     implementation libs.osmdroid.android
+    implementation libs.osmbonuspack
 
     // Use to mock Android framework in tests
     testImplementation libs.robolectric

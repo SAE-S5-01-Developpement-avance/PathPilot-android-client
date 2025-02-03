@@ -40,12 +40,11 @@ public class FragmentItineraries extends Fragment {
     public static final int ICON = R.drawable.icon_list;
     private static final String TAG = FragmentItineraries.class.getSimpleName();
     public static final String CLE_TOKEN = "token";
-    public static final String CLE_LIST_CLIENT = "listClient";
+    public static final String LIST_CLIENT_KEY = "listClient";
+    public static final String ITINERARY_KEY = "itinerary";
 
-    private ImageButton addItineraryButton;
     private ListView listItinerariesView;
     private Home homeActivity;
-    private TextView textHeader;
 
     public static FragmentItineraries newInstance() {
         return new FragmentItineraries();
@@ -61,15 +60,13 @@ public class FragmentItineraries extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_itineraries, container, false);
         homeActivity = (Home) getActivity();
 
-        addItineraryButton = view.findViewById(R.id.button_add);
 
         //Set header text to itineraries
-        textHeader = view.findViewById(R.id.header_text);
-        textHeader.setText(R.string.header_itineraries_list);
+        ((TextView) view.findViewById(R.id.header_text)).setText(R.string.header_itineraries_list);
+
         listItinerariesView = view.findViewById(R.id.itineraries_list);
 
         // Set OnScrollListener to load more itineraries when reaching the bottom
@@ -95,8 +92,16 @@ public class FragmentItineraries extends Fragment {
         loadItineraries();
 
         registerForContextMenu(listItinerariesView);
+        view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateItinerary());
 
-        addItineraryButton.setOnClickListener(v -> gotoCreateItinerary());
+        listItinerariesView.setOnItemClickListener((parent, view1, position, id) -> {
+            Itinerary itinerary = (Itinerary) parent.getItemAtPosition(position);
+            Log.d(TAG, "onItemClick: Itinerary: " + itinerary);
+            Intent intent = new Intent(getActivity(), InfoItinerary.class);
+            intent.putExtra(ITINERARY_KEY, itinerary);
+            intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+            startActivity(intent);
+        });
 
         return view;
     }
@@ -121,16 +126,24 @@ public class FragmentItineraries extends Fragment {
         return (super.onContextItemSelected(item));
     }
 
+    /**
+     * Call the service to load all the itineraries from the API.
+     */
     public void loadItineraries() {
         ItineraryService.getItineraries(homeActivity, listItinerariesView);
     }
 
+    /**
+     * Go to the {@link fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary} activity.
+     * <p>
+     *     Pass the JWT token and the list of clients to the activity.
+     */
     private void gotoCreateItinerary() {
         Log.d(TAG, "gotoCreateItinerary: Goto create itinerary");
 
         Intent intent = new Intent(getActivity(), fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary.class);
         intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
-        intent.putExtra(CLE_LIST_CLIENT, homeActivity.getClients());
+        intent.putExtra(LIST_CLIENT_KEY, homeActivity.getClients());
         homeActivity.getAddItineraryLauncher().launch(intent);
     }
 

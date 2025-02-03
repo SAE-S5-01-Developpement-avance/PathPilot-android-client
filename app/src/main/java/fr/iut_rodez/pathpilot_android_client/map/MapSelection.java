@@ -8,8 +8,6 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -24,9 +22,10 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
-public class MapSelection extends AppCompatActivity implements MapEventsReceiver {
+public class MapSelection extends ActivityWithCurrentPosition implements MapEventsReceiver {
 
     private static final String TAG = MapSelection.class.getSimpleName();
     public static final String KEY_LATITUDE = "latitude";
@@ -41,6 +40,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
     private Marker selectedMarker = null;
 
     private Popup popup;
+    private CurrentPosition currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         // Initialise the map
         map = findViewById(R.id.mapview);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        currentPosition = new CurrentPosition(this);
 
         // Enable zoom buttons and multi-touch zoom
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
@@ -69,17 +70,33 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
         // Set the map center and zoom level
         IMapController mapController = map.getController();
-        mapController.setZoom(10.0);
+        mapController.setZoom(13.0);
         // Set the map center to the given point or the default point
         mapController.setCenter(getGivenSelectedPointOrDefault());
+        currentPosition.requestLocationPermission(() -> {
+            mapController.setCenter(getGivenSelectedPointOrDefault());
+            currentPosition.disableCenterOnLocation();
+        }, null);
 
-        if (getGivenSelectedPoint() != null) {
-            setSelectedPoint(getGivenSelectedPoint());
+        GeoPoint givenSelectedPoint = getGivenSelectedPoint();
+        if (givenSelectedPoint != null) {
+            setSelectedPoint(givenSelectedPoint);
         }
 
         // Add a map event overlay to handle the long press event
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public MapView getMapView() {
+        return map;
     }
 
     /**
@@ -91,11 +108,11 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
      * @return the selected point or the default point
      */
     private GeoPoint getGivenSelectedPointOrDefault() {
-        GeoPoint point = getGivenSelectedPoint();
+        var point = getGivenSelectedPoint();
         if (point == null) {
-            point = PARIS_POINT;
+            point = currentPosition.getCurrentGeoPoint();
         }
-        return point;
+        return point != null ? point : PARIS_POINT;
     }
 
     private GeoPoint getGivenSelectedPoint() {
@@ -142,15 +159,13 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
 
                     // Set the selected point to the address
                     setSelectedPoint(new GeoPoint(address.getLatitude(), address.getLongitude()));
-
                     centerToSelected();
                 } else {
-                    popup.showToastLong(getString(R.string.adress_not_found)); // TODO: i18n
+                    popup.showToastLong(getString(R.string.adress_not_found));
                 }
 
             } catch (Exception e) {
-                // TODO: i18n
-                popup.showAlertDialog("Erreur", "Erreur lors de la recherche: " + e.getMessage());
+                popup.showAlertDialog(getString(R.string.error), getString(R.string.error_while_searching) + e.getMessage());
             }
         }
     }
@@ -215,6 +230,7 @@ public class MapSelection extends AppCompatActivity implements MapEventsReceiver
         selectedMarker = new Marker(map);
         selectedMarker.setPosition(pointSelected);
         selectedMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        selectedMarker.setDraggable(true);
         map.getOverlays().add(selectedMarker);
         map.invalidate();
 

@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
+import static fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
+
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,12 +12,14 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
 
 /**
  * Class representing a client.
@@ -26,14 +30,15 @@ public class Client implements Parcelable {
     private String companyName;
     private double latHomeAddress;
     private double longHomeAddress;
-    private String clientCategory;
+    private String addressDisplayName;
+    private ClientCategory clientCategory = ClientCategory.CLIENT;
     private String description;
     private String contactLastName;
     private String contactFirstName;
     private String phoneNumber;
     private String salesman;
 
-    public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, String clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
+    public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, ClientCategory clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
         this.id = id;
         this.companyName = companyName;
         this.latHomeAddress = latHomeAddress;
@@ -48,10 +53,10 @@ public class Client implements Parcelable {
 
     public Client(JSONObject clientJson) throws JSONException {
         this.id = clientJson.getInt("id");
-        this.companyName = clientJson.getString("companyName");
+        this.companyName = clientJson.getString(COMPANY_NAME_JSON_KEY);
         this.latHomeAddress = clientJson.getDouble("latHomeAddress");
         this.longHomeAddress = clientJson.getDouble("longHomeAddress");
-        this.clientCategory = clientJson.getJSONObject("clientCategory").getString("name");
+        this.clientCategory = ClientCategory.fromJSON(clientJson.getJSONObject("clientCategory"));
         this.description = clientJson.getString("description");
         this.contactLastName = clientJson.getString("contactLastName");
         this.contactFirstName = clientJson.getString("contactFirstName");
@@ -63,7 +68,8 @@ public class Client implements Parcelable {
         companyName = in.readString();
         latHomeAddress = in.readDouble();
         longHomeAddress = in.readDouble();
-        clientCategory = in.readString();
+        addressDisplayName = in.readString();
+        clientCategory = ClientCategory.fromString(in.readString());
         description = in.readString();
         contactLastName = in.readString();
         contactFirstName = in.readString();
@@ -87,7 +93,7 @@ public class Client implements Parcelable {
         this.companyName = companyName;
         this.latHomeAddress = latitudeValue;
         this.longHomeAddress = longitude;
-        this.clientCategory = isClient == null || isClient ? "CLIENT" : "PROSPECT";
+        this.clientCategory = isClient == null || isClient ? ClientCategory.CLIENT : ClientCategory.PROSPECT;
         this.description = descriptionText;
         this.contactLastName = lastNameText;
         this.contactFirstName = firstNameText;
@@ -142,11 +148,11 @@ public class Client implements Parcelable {
     }
 
     public String getClientCategory() {
-        return clientCategory;
+        return clientCategory.category();
     }
 
     public void setClientCategory(String clientCategory) {
-        this.clientCategory = clientCategory;
+        this.clientCategory = ClientCategory.fromString(clientCategory);
     }
 
     public String getDescription() {
@@ -189,6 +195,20 @@ public class Client implements Parcelable {
         this.salesman = salesman;
     }
 
+    @NonNull
+    public String getAddressDisplayName() {
+        return addressDisplayName != null ? addressDisplayName : "";
+    }
+
+    /**
+     * Set the address name of the client.
+     *
+     * @param context context of the Geocoder.
+     */
+    public void setAddressDisplayName(Context context) {
+        this.addressDisplayName = getAddressDisplayName(context, latHomeAddress, longHomeAddress);
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -202,6 +222,7 @@ public class Client implements Parcelable {
                 ", contactFirstName='" + contactFirstName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", salesman='" + salesman + '\'' +
+                ", addressDisplayName='" + addressDisplayName + '\'' +
                 '}';
     }
 
@@ -217,10 +238,10 @@ public class Client implements Parcelable {
     public JSONObject toJson() {
         JSONObject clientJson = new JSONObject();
         try {
-            clientJson.put("companyName", companyName);
+            clientJson.put(COMPANY_NAME_JSON_KEY, companyName);
             clientJson.put("latHomeAddress", latHomeAddress);
             clientJson.put("longHomeAddress", longHomeAddress);
-            clientJson.put("clientCategory", clientCategory.isBlank() ? "CLIENT" : clientCategory);
+            clientJson.put("clientCategory", clientCategory.category());
             clientJson.put("description", description);
             clientJson.put("contactLastName", contactLastName);
             clientJson.put("contactFirstName", contactFirstName);
@@ -243,7 +264,8 @@ public class Client implements Parcelable {
         dest.writeString(this.companyName);
         dest.writeDouble(this.latHomeAddress);
         dest.writeDouble(this.longHomeAddress);
-        dest.writeString(this.clientCategory);
+        dest.writeString(this.addressDisplayName);
+        dest.writeString(this.clientCategory.category());
         dest.writeString(this.description);
         dest.writeString(this.contactLastName);
         dest.writeString(this.contactFirstName);
@@ -251,13 +273,7 @@ public class Client implements Parcelable {
         dest.writeString(this.salesman);
     }
 
-    /**
-     * Get the Street details by geolocation.
-     *
-     * @param context context of the Geocoder.
-     * @return the full name of the street.
-     */
-    public String getHomeAddress(Context context) {
+    private static String getAddressDisplayName(Context context, double latHomeAddress, double longHomeAddress) {
         String placeName = "";
         Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
         try {
@@ -272,5 +288,38 @@ public class Client implements Parcelable {
             placeName += context.getString(R.string.client_address_not_found);
         }
         return placeName;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return new GeoPoint(latHomeAddress, longHomeAddress);
+    }
+
+    /**
+     * Create a client from a short JSON object
+     * <p>
+     * When we retrieve an itinerary, the list of clients is also given.
+     * But we dont need and dont have all the information of the client.<br>
+     * So, this method is used to create a client from a short JSON object. With only the:
+     *     <ul>
+     *         <li>id</li>
+     *         <li>companyName</li>
+     *         <li>companyLocation</li>
+     * </p>
+     *
+     * @param clientJson the short JSON object
+     * @return the client created from the short JSON object
+     */
+    public static Client createClientFromShortJson(JSONObject clientJson) throws JSONException {
+        GeoPoint companyLocation = Parser.getGeoPointFromGeoJSONPoint(clientJson.getJSONObject("companyLocation"));
+        return new Client(
+                clientJson.getInt("id"),
+                clientJson.getString(COMPANY_NAME_JSON_KEY),
+                companyLocation.getLatitude(),
+                companyLocation.getLongitude()
+        );
+    }
+
+    static class ClientConstant {
+        public static final String COMPANY_NAME_JSON_KEY = "companyName";
     }
 }

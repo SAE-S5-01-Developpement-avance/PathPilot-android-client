@@ -13,6 +13,8 @@
     <!--
     String for Sign up activité
     -->
+    <string name="account_created_successfully">Account created successfully</string>
+    <string name="success">Success</string>
     <string name="first_name">First name</string>
     <string name="placeholder_first_name">John</string>
     <string name="last_name">Last name</string>
@@ -72,7 +74,6 @@
     <string name="confirm_password_not_same">Write a second time your password to confirm it</string>
     <string name="address_missing">Select your position</string>
 
-
     <!--
     Foot page without button
     -->
@@ -88,6 +89,8 @@
     Error messages
     -->
     <string name="error">Error</string>
+    <string name="warning">Warning</string>
+    <string name="ok">OK</string>
     <string name="network_error_unable_to_connect_to_the_server">Network error. Unable to connect to the server.</string>
     <string name="authentication_failed_give_valid_credentials">Authentication failed. Please give valid credentials.</string>
     <string name="unable_to_process_server_response">Unable to process server response.</string>
@@ -108,8 +111,10 @@
     <!--
     Itinerary
     -->
+    <string name="itinerary">Itinerary</string>
     <string name="title_list_clients_added_for_itinerary"><u>Clients added</u></string>
     <string name="button_create_itinerary">Create itinerary</string>
+    <string name="header_create_itinerary">Create itinerary</string>
     <string name="list_clients_to_add">Choosing clients</string>
     <string name="header_itineraries_list">Itineraries</string>
     <string name="header_clients_list">Clients</string>
@@ -121,18 +126,38 @@
     <string name="delete_itinerary">Delete</string>
 
     <!--
+    Itinerary info
+    -->
+    <string name="button_create_and_start_itinerary">Create and start a new route</string>
+
+    <!--
     Map selection
     -->
     <string name="select_position">Select position</string>
-    <string name="validate_selected_position">Validate selected position</string>
+    <string name="validate">Validate</string>
     <string name="adress_not_found">The given address has not been found</string>
     <string name="search">Search</string>
+    <string name="address_unknown">Unknown address</string>
+
 
     <!--
     Pagination
     -->
     <string name="next_page">Next page</string>
     <string name="previous_page">Previous page</string>
+
+    <!--
+    Itinerary Player
+    -->
+    <string name="need_to_allow_location_permission">You need to allow the location permission to use the map.</string>
+    <string name="no_you_can_t_use_this_feature">No (You can\'t use this feature)</string>
+    <string name="yes_give_access">Yes give access</string>
+    <string name="distance_in_km">%.2f km</string>
+    <string name="counter_visited_clients">Visited clients: %d/%d</string>
+    <string name="error_while_drawing_the_road">Error while drawing the road</string>
+    <string name="error_while_searching">Error during research:</string>
+    <string name="no_itinerary_retrieve">No itinerary retrieve</string>
+    <string name="no_token_retrieve">No token retrieve</string>
 
 
     <string name="content_description_pathpilot_icon" translatable="false">PathPilot icon</string>

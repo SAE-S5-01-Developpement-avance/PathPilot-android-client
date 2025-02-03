@@ -1,8 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -15,22 +13,18 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
-import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
-import fr.iut_rodez.pathpilot_android_client.util.Popup;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
     public static final String CLE_ITINERARY_ADDED = "itineraryAdded";
@@ -46,26 +40,33 @@ public class AddItinerary extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.view_create_itinerary);
-        Intent intent = getIntent();
-        popup = new Popup(this);
+        ((TextView) findViewById(R.id.header_text)).setText(R.string.header_create_itinerary);
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+
         selectClientToAdd = findViewById(R.id.list_add_clients);
         listClientsAddedView = findViewById(R.id.list_items_clients_added);
         registerForContextMenu(listClientsAddedView);
 
+        popup = new Popup(this);
         listClientsAdded = new ArrayList<>();
         listClientsToAdd = new ArrayList<>();
 
+        // Add a default client to the list of clients to add
+        // This client is used to display a hint in the spinner
         listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
 
-        listClientsToAdd.addAll((ArrayList<Client>) intent.getSerializableExtra(FragmentItineraries.CLE_LIST_CLIENT));
+        Intent intent = getIntent();
+        Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
+        ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
+        listClientsToAdd.addAll(clients);
 
         clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(android.R.id.text1);
                 textView.setText(getItem(position).getCompanyName());
                 return view;
             }
@@ -73,12 +74,12 @@ public class AddItinerary extends AppCompatActivity {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
-                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(android.R.id.text1);
+                Client client = getItem(position);
                 if (position != 0) {
-                    textView.setText(getItem(position).getCompanyName() + " - "
-                            + getItem(position).getHomeAddress(AddItinerary.this));
+                    textView.setText(client.getCompanyName() + " - " + client.getAddressDisplayName());
                 } else {
-                    textView.setText(getItem(position).getCompanyName());
+                    textView.setText(client.getCompanyName());
                 }
                 return view;
             }
@@ -102,33 +103,35 @@ public class AddItinerary extends AppCompatActivity {
                         }
                     }
                 } else if (position != 0) {
-                    popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_max_clients_per_itinerary));
+                    popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
                     selectClientToAdd.setSelection(0);
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Nothing to do
             }
         });
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+
         jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
     }
 
 
-
     /**
      * Create an itinerary with the clients selected.
-     * The itinerary can be create if it has one or more clients attached.
+     * The itinerary can be created if it has one or more clients attached.
      */
     public void createItinerary() {
         if (listClientsAdded.isEmpty()) {
-            popup.showAlertDialog(getString(R.string.error_title),getString(R.string.error_min_clients_per_itinerary));
+            popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_min_clients_per_itinerary));
         } else {
             try {
-                ItineraryService.addItinerary(this,listClientsAdded);
+                ItineraryService.addItinerary(this, listClientsAdded);
             } catch (JSONException e) {
-                popup.showAlertDialog(getString(R.string.error_title),getString(R.string.internal_server_error));
+                popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
             }
         }
     }

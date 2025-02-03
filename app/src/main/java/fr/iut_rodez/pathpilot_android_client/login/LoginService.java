@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary;
 
 /**
  * Service to handle login requests.

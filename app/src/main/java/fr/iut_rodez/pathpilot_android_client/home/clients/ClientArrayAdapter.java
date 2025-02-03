@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 
 /**
  * Adapter for the list of clients.
@@ -47,10 +46,11 @@ public class ClientArrayAdapter extends ArrayAdapter<Client> {
 
         // Récupérer le client à cette position
         Client client = clients.get(position);
+        client.setAddressDisplayName(context);
 
         // Définir les valeurs des TextView
         clientName.setText(client.getCompanyName());
-        clientAddress.setText(client.getHomeAddress(context));
+        clientAddress.setText(client.getAddressDisplayName());
         clientCategory.setText(client.getClientCategory());
         clientDescription.setText(client.getDescription());
         clientContactFirstName.setText(client.getContactFirstName());

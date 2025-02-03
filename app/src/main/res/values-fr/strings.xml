@@ -14,6 +14,8 @@ String for Login activity
     <!--
     String for Sign up activité
     -->
+    <string name="account_created_successfully">Création du compte réussie</string>
+    <string name="success">Réussite</string>
     <string name="first_name"><b>Prénom</b></string>
     <string name="placeholder_first_name">Martin</string>
     <string name="last_name"><b>Nom</b></string>
@@ -71,7 +73,8 @@ String for Login activity
     <string name="description_blank">Entrer une description</string>
     <string name="confirm_password_blank">Confirmer mot de passe</string>
     <string name="confirm_password_not_same">Écrivez une seconde fois votre mot de passe pour confirmer la saisie</string>
-    <string name="address_missing">Selectionnez votre position</string>
+    <string name="address_missing">Sélectionnez votre position</string>
+
 
     <!--
     Foot page without button
@@ -82,6 +85,8 @@ String for Login activity
     Error messages
     -->
     <string name="error">Erreur</string>
+    <string name="warning">Attention</string>
+    <string name="ok">OK</string>
     <string name="network_error_unable_to_connect_to_the_server">Erreur réseau. Impossible de se connecter au serveur.</string>
     <string name="authentication_failed_give_valid_credentials">Authentification échouée. Veuillez donner des identifiants valides.</string>
     <string name="unable_to_process_server_response">Impossible de traiter la réponse du serveur.</string>
@@ -99,10 +104,12 @@ String for Login activity
     <!--
     Itineraries
      -->
+    <string name="itinerary">Itinéraire</string>
     <string name="header_itineraries_list">Itinéraires</string>
     <string name="error_min_clients_per_itinerary">Vous devez ajouter au moins 1 client dans un itinéraire pour le créer</string>
     <string name="title_list_clients_added_for_itinerary"><u>Clients ajoutés</u></string>
     <string name="button_create_itinerary">Créer</string>
+    <string name="header_create_itinerary">Création d\'itinéraires</string>
     <string name="list_clients_to_add">Choisir des clients</string>
     <string name="itinerary_number">Itinéraire n°</string>
     <string name="itinerary_coordinates">"Départ : "</string>
@@ -113,11 +120,16 @@ String for Login activity
     <string name="select_position">Sélectionner une position</string>
     <string name="client_address_not_found">Adresse introuvable</string>
     <string name="delete_itinerary">Suppimer</string>
+    <!--
+    Itinerary info
+    -->
+    <string name="button_create_and_start_itinerary">Créer et démarrer un nouveau parcours</string>
 
     <!--
     Map selection
     -->
-    <string name="validate_selected_position">Valider la position sélectionnée</string>
+    <string name="address_unknown">Adresse inconnue</string>
+    <string name="validate">Valider</string>
     <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
     <string name="search">Rechercher</string>
 
@@ -134,4 +146,17 @@ String for Login activity
     <string name="client_contact">Contact</string>
     <string name="delete_client">Supprimer le client</string>*
     <string name="header_clients_list">Clients</string>
+
+    <!--
+    Itinerary Player
+    -->
+    <string name="need_to_allow_location_permission">Vous devez autoriser l\'accès à la localisation pour utiliser la carte.</string>
+    <string name="no_you_can_t_use_this_feature">Non (vous ne pourrez pas utiliser cette fonctionnalité)</string>
+    <string name="yes_give_access">Oui, donner accès</string>
+    <string name="distance_in_km">%.2f km</string>
+    <string name="counter_visited_clients">Clients visités : %d/%d</string>
+    <string name="error_while_drawing_the_road">Erreur lors du dessin de la route</string>
+    <string name="error_while_searching">Erreur lors de la recherche: </string>
+    <string name="no_itinerary_retrieve">Aucun itinéraire reçu</string>
+    <string name="no_token_retrieve">Aucun jeton reçu</string>
 </resources>

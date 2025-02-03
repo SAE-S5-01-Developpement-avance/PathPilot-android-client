@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,8 +29,8 @@ public class Parser {
     /**
      * Parse the JSON response of the GET clients request and return a list of clients
      * <p>
-     *     Request URL example:
-     *     <a href="http://localhost:8080/api/clients">/api/clients</a>
+     * Request URL example:
+     * <a href="http://localhost:8080/api/clients">/api/clients</a>
      *
      * @param response JSON response of the GET clients request
      * @return List of clients parsed from the JSON response. If an error occurs, an empty list is returned
@@ -58,10 +60,54 @@ public class Parser {
     }
 
     /**
+     * Parse an JSON array of clients and return a list of clients
+     * <p>
+     * This method while search the value to create a "short" client. That mean that only the id, the company name and the company location will be parsed.
+     * This kind of format is found inside the itinerary and the route object.
+     * </p><p>
+     * Here an example of the JSON object:
+     * <pre>
+     * {@code
+     * {
+     *     "id": 1,
+     *     "companyLocation": {
+     *         "x": 0.0, // Latitude
+     *         "y": 10.0, // Longitude
+     *         "type": "Point",
+     *         "coordinates": [
+     *             2.673797607421875,
+     *             49.135002605812176
+     *         ]
+     *     },
+     *     "companyName": "Compagny name"
+     * }
+     * }
+     * </pre>
+     * </p>
+     *
+     * @param jsonArray the JSON array to parse
+     * @return the list of clients parsed from the JSON array
+     * @see Client#createClientFromShortJson(JSONObject)
+     */
+    public static ArrayList<Client> getShortClients(JSONArray jsonArray) {
+        ArrayList<Client> listClients = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject clientJson = jsonArray.getJSONObject(i);
+                listClients.add(Client.createClientFromShortJson(clientJson));
+            } catch (JSONException e) {
+                Log.e(TAG, "Error while parsing the JSON response", e);
+            }
+        }
+        return listClients;
+    }
+
+    /**
      * Parse the JSON response of the GET itineraries request and return a list of itineraries
      * <p>
-     *     Request URL example:
-     *     <a href="http://localhost:8080/api/routes">/api/routes</a>
+     * Request URL example:
+     * <a href="http://localhost:8080/api/routes">/api/routes</a>
+     *
      * @param response JSON response of the GET itineraries request
      * @return List of itineraries parsed from the JSON response. If an error occurs, an empty list is returned
      */
@@ -101,13 +147,44 @@ public class Parser {
      * @param jsonObject JSON object containing the x and y coordinates
      * @return The GeoPoint parsed from the JSON object. If an error occurs, null is returned
      */
-    public static GeoPoint getGeoPoint(JSONObject jsonObject) {
+    @NonNull
+    public static GeoPoint getGeoPointFromGeoJSONPoint(JSONObject geoJsonPoint) throws JSONException {
+        return new GeoPoint(
+                geoJsonPoint.getDouble("y"),
+                geoJsonPoint.getDouble("x")
+        );
+    }
+
+    public static Route getRoute(JSONObject response) {
+        Route route = null;
         try {
-            return new GeoPoint(jsonObject.getDouble("x"), jsonObject.getDouble("y"));
+            route = new Route(response);
         } catch (JSONException e) {
             Log.e(TAG, "Error while parsing the JSON response", e);
-            return null;
         }
+        return route;
+    }
+
+    /**
+     * Parse a string to a LocalDateTime
+     * <p>
+     * For exemple <pre>2025-01-31T08:17:18.392+00:00</pre> while be parsed as the 31th of January 2025 at 8:17:18.392 in the UTC timezone (GMT+0)
+     * <br>
+     * If the string is not in the correct format, the method will return null
+     * </p>
+     *
+     * @param date the string to parse
+     * @return the LocalDateTime parsed from the string
+     */
+    public static LocalDateTime getLocalDateTimeFromString(String date) {
+        LocalDateTime parsedDateTime = null;
+        try {
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(date);
+            parsedDateTime = offsetDateTime.toLocalDateTime();
+        } catch (Exception ignored) {
+            // If the date is not in the correct format, the method will return null
+        }
+        return parsedDateTime;
     }
 
     /**
@@ -135,5 +212,6 @@ public class Parser {
     /**
      * Private constructor to prevent instantiation
      */
-    private Parser() {}
+    private Parser() {
+    }
 }

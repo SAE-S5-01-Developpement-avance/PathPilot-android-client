@@ -1,0 +1,116 @@
+package fr.iut_rodez.pathpilot_android_client.home.itinerary;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.List;
+
+import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
+import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
+
+public class InfoItinerary extends AppCompatActivity {
+
+    private static final String TAG = InfoItinerary.class.getSimpleName();
+    public static final String ITINERARY_KEY = "itinerary";
+    public static final String ROUTE_KEY = "route";
+    public static final String JWT_TOKEN_KEY = "jwtToken";
+
+    private final IRouteService routeService = ServiceFactory.getRouteService();
+    private Itinerary itinerary;
+    private Popup popup;
+    private ListView listItemsClientsAdded;
+    private JWTToken jwtToken;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.view_info_itineray);
+        findViewById(R.id.button_start_itinerary).setOnClickListener(v -> createAndStartRoute());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+
+        listItemsClientsAdded = findViewById(R.id.list_items_clients_added);
+
+        popup = new Popup(this);
+
+        setUpListClient();
+        setUpToken();
+    }
+
+    /**
+     * Set up the list of clients of the itinerary.
+     * <p>
+     * Retrieve the itinerary from the intent and the list of clients from the itinerary.
+     * Set the adapter of the list view with the list of clients.
+     * </p>
+     */
+    private void setUpListClient() {
+        Intent intent = getIntent();
+        itinerary = intent.getParcelableExtra(FragmentItineraries.ITINERARY_KEY);
+
+        if (itinerary == null) {
+            Log.e(TAG, "onCreate: No itinerary found in the intent");
+            popup.showAlertDialog(getString(R.string.error), getString(R.string.no_itinerary_retrieve));
+            finish();
+        }
+        List<Client> clients = itinerary.getClients();
+
+        for (Client client : clients) {
+            client.setAddressDisplayName(this);
+            Log.d(TAG, "setUpListClient: Client: " + client);
+        }
+
+        ClientArrayAdapter clientsAddedAdapter = new ClientArrayAdapter(this, clients);
+        listItemsClientsAdded.setAdapter(clientsAddedAdapter);
+        ((TextView) findViewById(R.id.header_text)).setText(itinerary.getDisplayName());
+    }
+
+    /**
+     * Set up the token of the user.
+     * <p>
+     * Retrieve the token from the intent and set it in the route service.
+     * </p>
+     */
+    private void setUpToken() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(FragmentItineraries.CLE_TOKEN)) {
+            jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
+        } else {
+            // This should never happen
+            Log.e(TAG, "setUpToken: No token found in the intent");
+            popup.showAlertDialog(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this), null, null);
+        }
+    }
+
+    public JWTToken getJwtToken() {
+        return jwtToken;
+    }
+
+    private void createAndStartRoute() {
+        routeService.createRoute(this, itinerary);
+    }
+
+    public Popup getPopup() {
+        return popup;
+    }
+
+    public void redirectToPlayerActivity(Route route) {
+        Intent intent = new Intent(this, PlayerItinerary.class);
+        intent.putExtra(InfoItinerary.ROUTE_KEY, route);
+        intent.putExtra(InfoItinerary.JWT_TOKEN_KEY, jwtToken);
+        startActivity(intent);
+    }
+}

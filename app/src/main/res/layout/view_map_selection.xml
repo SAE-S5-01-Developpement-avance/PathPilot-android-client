@@ -27,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:id="@+id/adresse_input"
-        android:autofillHints="postalAddress"/>
+        android:autofillHints="postalAddress"
+        android:inputType="textPostalAddress" />
 
     <Button
         android:id="@+id/search"
@@ -38,23 +39,23 @@
         android:layout_marginStart="@dimen/micro_gap"/>
     </LinearLayout>
 
-
-
     <org.osmdroid.views.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/small_gap"
+        android:layout_marginBottom="@dimen/micro_gap"
         app:layout_constraintTop_toBottomOf="@+id/adresse_input_layout"
-        app:layout_constraintHeight_percent="0.6" />
+        app:layout_constraintBottom_toTopOf="@+id/footer" />
 
     <Button
         android:id="@+id/select"
-        android:text="@string/validate_selected_position"
-        android:layout_width="match_parent"
+        android:text="@string/validate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/DefaultButtonStyle"
         android:layout_marginBottom="@dimen/micro_gap"
-        app:layout_constraintTop_toBottomOf="@+id/mapview"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/footer" />
 
     <include layout="@layout/component_footer"/>

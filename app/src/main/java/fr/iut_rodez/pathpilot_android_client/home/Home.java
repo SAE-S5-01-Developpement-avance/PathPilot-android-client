@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -69,20 +68,15 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
                 FragmentItineraries.ICON
         };
 
-        new TabLayoutMediator(tabManager, viewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        // Get the custom view of the tab
-                        View customView = LayoutInflater.from(Home.this).inflate(R.layout.tab_icon, null);
-                        // Set the icon in the custom view
-                        ImageView tabIcon = customView.findViewById(R.id.tab_icon);
-                        tabIcon.setImageResource(icons[position]);
-                        // Set the custom view of the tab
-                        tab.setCustomView(customView);
-                    }
-                }
-        ).attach();
+        new TabLayoutMediator(tabManager, viewPager, (tab, position) -> {
+            // Get the custom view of the tab
+            View customView = LayoutInflater.from(Home.this).inflate(R.layout.tab_icon, null);
+            // Set the icon in the custom view
+            ImageView tabIcon = customView.findViewById(R.id.tab_icon);
+            tabIcon.setImageResource(icons[position]);
+            // Set the custom view of the tab
+            tab.setCustomView(customView);
+        }).attach();
 
         // Get the token from the intent
         Intent intent = getIntent();

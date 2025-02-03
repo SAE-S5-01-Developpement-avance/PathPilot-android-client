@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Utility class to handle Volley errors and provide user-friendly error messages
