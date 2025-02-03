@@ -14,6 +14,7 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 
@@ -47,8 +48,7 @@ public class RouteService implements IRouteService {
                 },
                 error -> {
                     popup.dismissProgressDialog();
-                    // TODO better message
-                    popup.showErrorDialog("Error while creating the route");
+                    VolleyErrorHandler.handleError(activity, error);
                 });
 
         popup.showProgressDialog();
