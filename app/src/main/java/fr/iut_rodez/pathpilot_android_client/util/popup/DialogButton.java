@@ -1,7 +1,10 @@
 package fr.iut_rodez.pathpilot_android_client.util.popup;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+
+import fr.iut_rodez.pathpilot_android_client.R;
 
 /**
  * Describe a button with a text and an onClickListener.
@@ -16,8 +19,8 @@ public record DialogButton(String text, DialogInterface.OnClickListener onClickL
      *
      * @return the button
      */
-    public static DialogButton okDismiss() {
-        return new DialogButton("OK", getDismissListener());
+    public static DialogButton okDismiss(Context context) {
+        return new DialogButton(context.getString(R.string.ok), getDismissListener());
     }
 
 
@@ -28,7 +31,7 @@ public record DialogButton(String text, DialogInterface.OnClickListener onClickL
      * @return the button
      */
     public static DialogButton okFinish(Activity activity) {
-        return new DialogButton("OK", getFinishListener(activity));
+        return new DialogButton(activity.getString(R.string.ok), getFinishListener(activity));
     }
 
     /**

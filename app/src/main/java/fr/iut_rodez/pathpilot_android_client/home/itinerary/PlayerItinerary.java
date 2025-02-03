@@ -190,7 +190,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             // if the road build process failed, show an error dialog
             if (road.mStatus != Road.STATUS_OK) {
                 Log.e(TAG, "setRoutePolyline: Error while drawing the road");
-                popup.showAlertDialogOK(getString(R.string.error), getString(R.string.error_while_drawing_the_road), DialogButton.okDismiss());
+                popup.showAlertDialogOK(getString(R.string.error), getString(R.string.error_while_drawing_the_road), DialogButton.okDismiss(this));
             }
 
             // Draw the road on the map

@@ -13,6 +13,8 @@
     <!--
     String for Sign up activité
     -->
+    <string name="account_created_successfully">Account created successfully</string>
+    <string name="success">Success</string>
     <string name="first_name">First name</string>
     <string name="placeholder_first_name">John</string>
     <string name="last_name">Last name</string>
@@ -88,6 +90,7 @@
     -->
     <string name="error">Error</string>
     <string name="warning">Warning</string>
+    <string name="ok">OK</string>
     <string name="network_error_unable_to_connect_to_the_server">Network error. Unable to connect to the server.</string>
     <string name="authentication_failed_give_valid_credentials">Authentication failed. Please give valid credentials.</string>
     <string name="unable_to_process_server_response">Unable to process server response.</string>

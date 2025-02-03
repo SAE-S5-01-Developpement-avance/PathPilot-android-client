@@ -58,8 +58,7 @@ public class Popup {
      * @param message the message of the dialog
      */
     public void showAlertDialog(String title, String message) {
-        DialogButton okDialogButton = new DialogButton("OK", (dialog, which) -> dialog.dismiss());
-        showAlertDialog(title, message, okDialogButton, null, null);
+        showAlertDialog(title, message, DialogButton.okDismiss(context), null, null);
     }
 
 
@@ -94,7 +93,7 @@ public class Popup {
 
         // If no button is provided, add an OK button that dismisses the dialog
         if (positiveDialogButton == null && neutralDialogButton == null && negativeDialogButton == null) {
-            DialogButton okButton = DialogButton.okDismiss();
+            DialogButton okButton = DialogButton.okDismiss(context);
             dialog.setPositiveButton(okButton.text(), okButton.onClickListener());
         }
 
