@@ -89,7 +89,7 @@ public class Parser {
      * @return the list of clients parsed from the JSON array
      * @see Client#createClientFromShortJson(JSONObject)
      */
-    public static List<Client> getShortClients(JSONArray jsonArray) {
+    public static ArrayList<Client> getShortClients(JSONArray jsonArray) {
         ArrayList<Client> listClients = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
