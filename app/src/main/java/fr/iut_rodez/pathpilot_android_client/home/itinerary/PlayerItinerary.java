@@ -90,6 +90,17 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
 
+    /**
+     * Initialise the map
+     * <p>
+     * Set the tile source, the zoom controller, the multi touch controls and the zoom level
+     * Set the center of the map to the salesman home
+     * Draw the road between the salesman home and the clients
+     * <br>
+     * Also request the location permission and center the map
+     * </p>
+     * @see PlayerItinerary#requestPermissionAndCenter()
+     */
     private void initialiseMap() {
         Log.d(TAG, "initialiseMap: Initialising the map");
         mapView = findViewById(R.id.mapview);
