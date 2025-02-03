@@ -319,7 +319,7 @@ public class Client implements Parcelable {
         );
     }
 
-    private static class ClientConstant {
+    static class ClientConstant {
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
     }
 }
