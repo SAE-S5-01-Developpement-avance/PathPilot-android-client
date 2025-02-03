@@ -133,6 +133,13 @@ public class FragmentClients extends Fragment {
         ClientPage getClientPage();
     }
 
+    /**
+     * Get the list of clients displayed in the list view
+     * <p>
+     *     It's use in the {@link fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary} activity
+     * </p>
+     * @return The list of clients displayed in the list view
+     */
     public ArrayList<Client> getListClients() {
         ArrayList<Client> listClients = new ArrayList<>();
         for (int i = 0; listClientsView.getAdapter().getCount() > i; i++) {
