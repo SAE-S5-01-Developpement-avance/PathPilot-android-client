@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,20 +29,27 @@ public class LocationNameProvider {
      */
     @NonNull
     public static String getAddressName(@NonNull Context context, @NonNull GeoPoint geoPoint) {
-        String placeName = "";
-        Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoderAddress.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                placeName = address.getAddressLine(0);
-            } else {
-                placeName += context.getString(R.string.client_address_not_found);
-            }
-        } catch (IOException e) {
-            placeName += context.getString(R.string.client_address_not_found);
+        String placeName = context.getString(R.string.client_address_not_found);
+        List<Address> addresses = getAddresses(context, geoPoint);
+        if (!addresses.isEmpty()) {
+            placeName = addresses.get(0).getAddressLine(0);
         }
         return placeName;
+    }
+
+    @NonNull
+    public static List<Address> getAddresses(@NonNull Context context, @NonNull GeoPoint geoPoint) {
+        Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = Collections.emptyList();
+        try {
+            var addressesFound = geocoderAddress.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            if (addressesFound != null && !addressesFound.isEmpty()) {
+                addresses = addressesFound;
+            }
+        } catch (IOException e) {
+            // Do nothing
+        }
+        return addresses;
     }
 
     private LocationNameProvider() {}
