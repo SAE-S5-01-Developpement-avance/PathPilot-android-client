@@ -1,18 +1,17 @@
 package fr.iut_rodez.pathpilot_android_client.player;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -20,7 +19,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 
@@ -31,8 +29,8 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.LocationNameProvider;
-import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class PlayerItinerary extends ActivityWithCurrentPosition {
 
@@ -83,11 +81,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         clientVisitedBtn.setOnClickListener(v -> clientVisited());
         listClientsBtn.setOnClickListener(v -> listClients());
 
-        // Show a loading popup. The dialog is dismissed when the route is drawn
+        // Show a loading popup.
         popup.showProgressDialog();
 
         setRouteInformation();
         initialiseMap();
+        popup.dismissProgressDialog();
     }
 
 
@@ -117,7 +116,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         currentPosition = new CurrentPosition(this);
         requestPermissionAndCenter();
 
-        setRoutePolyline(route.getExpectedClients(), route.getSalesmanHome());
+        setMarkers(route.getNextClient(), route.getExpectedClients(), route.getSalesmanHome());
         mapView.invalidate(); // Refresh the map
     }
 
@@ -178,43 +177,20 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     /**
-     * Draw a line that follows the road and link all the clients.
+     * Set the markers on the map
      * <p>
-     * The line is drawn between the salesman home and the first client, then between each client.
-     * The last line is drawn between the last client and the salesman home.
+     * The next client is displayed with a marker
+     * <br>
+     * Every other client is displayed with a different marker
      * </p>
      *
+     * @param nextClient
      * @param expectedClients The list of expected clients
      * @param salesmanHome    The home of the salesman
      */
-    private void setRoutePolyline(ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
-        ArrayList<GeoPoint> waypoints = new ArrayList<>();
-        waypoints.add(salesmanHome);
-        expectedClients.forEach(client -> waypoints.add(client.getGeoPoint()));
-        waypoints.add(salesmanHome);
-
-
-        new Thread(() -> {
-            // Get the road between the waypoints
-            Road road = roadManager.getRoad(waypoints);
-            popup.dismissProgressDialog();
-
-            // if the road build process failed, show an error dialog
-            if (road.mStatus != Road.STATUS_OK) {
-                Log.e(TAG, "setRoutePolyline: Error while drawing the road");
-                popup.showAlertDialogOK(getString(R.string.error), getString(R.string.error_while_drawing_the_road), DialogButton.okDismiss(this));
-            }
-
-            // Draw the road on the map
-            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-            Paint outlinePaint = roadOverlay.getOutlinePaint();
-            outlinePaint.setStrokeWidth(10);
-            outlinePaint.setColor(getColor(R.color.blue_1));
-            mapView.getOverlays().add(roadOverlay);
-
-            setExpectedClientMarker(route.getExpectedClients());
-            addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
-        }).start();
+    private void setMarkers(Client nextClient, ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
+        setExpectedClientMarker(expectedClients, nextClient);
+        addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()), R.drawable.marker_departure);
     }
 
     /**
@@ -222,14 +198,15 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      *
      * @param expectedClients The list of expected clients
      */
-    private void setExpectedClientMarker(ArrayList<Client> expectedClients) {
+    private void setExpectedClientMarker(ArrayList<Client> expectedClients, @NonNull Client nextClient) {
         for (int i = 0; i < expectedClients.size(); i++) {
-            addClientMarker(expectedClients.get(i), i + 1);
+            Client client = expectedClients.get(i);
+            addClientMarker(client, i + 1, nextClient.equals(client));
         }
     }
 
-    private void addClientMarker(Client client, int index) {
-        addMarker(client.getGeoPoint(), String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName());
+    private void addClientMarker(Client client, int index, boolean isNextClient) {
+        addMarker(client.getGeoPoint(), String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName(), isNextClient ? null : R.drawable.marker_node);
     }
 
     /**
@@ -244,11 +221,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * @param title       The title of the marker
      * @param description The description of the marker
      */
-    private void addMarker(GeoPoint position, String title, String description) {
+    private void addMarker(GeoPoint position, String title, String description, Integer icon) {
         Marker marker = new Marker(mapView);
         marker.setPosition(position);
         marker.setTitle(title);
         marker.setSnippet(description);
+        if (icon != null) {
+            marker.setIcon(AppCompatResources.getDrawable(this, icon));
+        }
         mapView.getOverlays().add(marker);
     }
 

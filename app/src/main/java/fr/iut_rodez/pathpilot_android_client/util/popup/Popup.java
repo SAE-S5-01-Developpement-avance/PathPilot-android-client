@@ -15,7 +15,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 public class Popup {
 
     private final Context context;
-    
+
     private ProgressDialog progressDialog;
 
     public Popup(Context context) {
