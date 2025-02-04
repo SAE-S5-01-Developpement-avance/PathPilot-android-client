@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class MapSelection extends ActivityWithCurrentPosition implements MapEventsReceiver {
