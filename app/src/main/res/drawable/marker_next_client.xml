@@ -1,25 +1,12 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="19dp"
     android:height="34dp"
     android:viewportWidth="19"
     android:viewportHeight="34">
   <path
       android:pathData="M19,9.5C19,10.736 18.764,11.917 18.334,13H18.333C18.333,13 11.5,24.516 9,34C6.906,24.516 0.668,13 0.668,13H0.666C0.236,11.917 0,10.736 0,9.5C0,4.253 4.253,0 9.5,0C14.747,0 19,4.253 19,9.5Z"
-      android:fillType="evenOdd">
-    <aapt:attr name="android:fillColor">
-      <gradient 
-          android:startX="10"
-          android:startY="34"
-          android:endX="9"
-          android:endY="-12.5"
-          android:type="linear">
-        <item android:offset="0" android:color="#FF000000"/>
-        <item android:offset="0.545" android:color="#FFBC0909"/>
-        <item android:offset="1" android:color="#FFFFFFFF"/>
-      </gradient>
-    </aapt:attr>
-  </path>
+      android:fillColor="#FF9747"
+      android:fillType="evenOdd"/>
   <group>
     <clip-path
         android:pathData="M19,9.5C19,10.736 18.764,11.917 18.334,13H18.333C18.333,13 11.5,24.516 9,34C6.906,24.516 0.668,13 0.668,13H0.666C0.236,11.917 0,10.736 0,9.5C0,4.253 4.253,0 9.5,0C14.747,0 19,4.253 19,9.5Z"
@@ -29,7 +16,8 @@
         android:fillColor="#000000"/>
   </group>
   <path
-      android:pathData="M9.5,8C10.328,8 11,7.328 11,6.5C11,5.672 10.328,5 9.5,5C8.672,5 8,5.672 8,6.5C8,7.328 8.672,8 9.5,8ZM9.465,9C7.701,9 6,10.5 6,12V12.14C6,12.693 6.448,13.14 7,13.14H11.929C12.481,13.14 12.929,12.693 12.929,12.14V12C12.929,10.535 11.228,9 9.465,9Z"
+      android:strokeWidth="1"
+      android:pathData="M9.5,8.5C10.605,8.5 11.5,7.605 11.5,6.5C11.5,5.395 10.605,4.5 9.5,4.5C8.395,4.5 7.5,5.395 7.5,6.5C7.5,7.605 8.395,8.5 9.5,8.5ZM9.465,8.5C8.445,8.5 7.466,8.931 6.743,9.56C6.024,10.186 5.5,11.063 5.5,12V12.14C5.5,12.969 6.172,13.64 7,13.64H11.929C12.757,13.64 13.429,12.969 13.429,12.14V12C13.429,11.079 12.903,10.203 12.188,9.575C11.467,8.942 10.487,8.5 9.465,8.5Z"
       android:fillColor="#D9D9D9"
-      android:fillType="evenOdd"/>
+      android:strokeColor="#000000"/>
 </vector>

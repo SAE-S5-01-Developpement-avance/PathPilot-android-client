@@ -20,8 +20,8 @@ import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
  */
 public class MapMarker {
 
-    private ActivityWithCurrentPosition activity;
-    private MapView mapView;
+    private final ActivityWithCurrentPosition activity;
+    private final MapView mapView;
 
     /**
      * Create a new MapMarker object
@@ -117,6 +117,7 @@ public class MapMarker {
         CLIENT_VISITED(R.drawable.marker_client_visited, MarkerAnchor.TOP_CENTER),
         NEXT_CLIENT(R.drawable.marker_next_client, MarkerAnchor.BOTTOM_CENTER),
         EXPECTED_CLIENT(R.drawable.marker_expected_client, MarkerAnchor.BOTTOM_CENTER),
+        SALESMAN_HOME(R.drawable.marker_salesman_home, MarkerAnchor.CENTER),
         ;
 
         private final int drawableId;
