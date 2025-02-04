@@ -17,8 +17,6 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 
@@ -26,8 +24,8 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
-import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -186,7 +184,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * Every other client is displayed with a different marker
      * </p>
      *
-     * @param nextClient
+     * @param nextClient     The next client
      * @param expectedClients The list of expected clients
      * @param salesmanHome    The home of the salesman
      */
@@ -271,15 +269,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         Log.d(TAG, "stop: ");
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public MapView getMapView() {
-        return mapView;
     }
 }
