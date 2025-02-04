@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.util;
+package fr.iut_rodez.pathpilot_android_client.util.map;
 
 import android.content.Context;
 import android.location.Address;
