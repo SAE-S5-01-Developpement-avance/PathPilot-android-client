@@ -87,7 +87,13 @@ public class MapMarker {
      * @see MarkerType
      */
     public void addMarker(@NonNull String title,@NonNull String description,@NonNull GeoPoint position,@NonNull MarkerType markerType) {
-        addMarker(title, description, position, markerType.getDrawable(activity));
+        Marker marker = new Marker(mapView);
+        marker.setTitle(title);
+        marker.setSnippet(description);
+        marker.setPosition(position);
+        marker.setIcon(markerType.getDrawable(activity));
+        marker.setAnchor(markerType.anchor.horizontal, markerType.anchor.vertical);
+        mapView.getOverlays().add(marker);
     }
 
     /**
@@ -107,16 +113,18 @@ public class MapMarker {
      * Define the custom map marker icon.
      */
     public enum MarkerType {
-        CLIENT_IGNORED(R.drawable.marker_client_ignored),
-        CLIENT_VISITED(R.drawable.marker_client_visited),
-        NEXT_CLIENT(R.drawable.marker_next_client),
-        EXPECTED_CLIENT(R.drawable.marker_expected_client),
+        CLIENT_IGNORED(R.drawable.marker_client_ignored, MarkerAnchor.TOP_CENTER),
+        CLIENT_VISITED(R.drawable.marker_client_visited, MarkerAnchor.TOP_CENTER),
+        NEXT_CLIENT(R.drawable.marker_next_client, MarkerAnchor.BOTTOM_CENTER),
+        EXPECTED_CLIENT(R.drawable.marker_expected_client, MarkerAnchor.BOTTOM_CENTER),
         ;
 
         private final int drawableId;
+        private final MarkerAnchor anchor;
 
-        MarkerType(int drawableId) {
+        MarkerType(int drawableId, MarkerAnchor anchor) {
             this.drawableId = drawableId;
+            this.anchor = anchor;
         }
 
         /**
@@ -127,6 +135,12 @@ public class MapMarker {
          */
         public Drawable getDrawable(Context context) {
             return AppCompatResources.getDrawable(context, drawableId);
+        }
+
+        private record MarkerAnchor(float horizontal, float vertical) {
+            public static final MarkerAnchor CENTER = new MarkerAnchor(0.5f, 0.5f);
+            public static final MarkerAnchor BOTTOM_CENTER = new MarkerAnchor(0.5f, 1f);
+            public static final MarkerAnchor TOP_CENTER = new MarkerAnchor(0.5f, 0f);
         }
     }
 }
