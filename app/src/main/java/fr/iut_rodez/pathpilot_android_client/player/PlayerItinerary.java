@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.home.itinerary;
+package fr.iut_rodez.pathpilot_android_client.player;
 
 import android.content.Intent;
 import android.graphics.Paint;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
