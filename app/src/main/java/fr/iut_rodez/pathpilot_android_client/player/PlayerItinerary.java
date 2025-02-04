@@ -29,6 +29,7 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
+import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -49,6 +50,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private final Popup popup = new Popup(this);
     private CurrentPosition currentPosition;
+    private MapMarker mapMarker;
     private IMapController mapController;
     RoadManager roadManager;
 
@@ -113,6 +115,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         mapController.setCenter(route.getSalesmanHome());
 
         currentPosition = new CurrentPosition(this);
+        mapMarker = new MapMarker(this);
         requestPermissionAndCenter();
 
         setMarkers(route.getNextClient(), route.getExpectedClients(), route.getSalesmanHome());
@@ -189,7 +192,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private void setMarkers(Client nextClient, ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
         setExpectedClientMarker(expectedClients, nextClient);
-        addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()), R.drawable.marker_departure);
+        mapMarker.addMarker("Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), R.drawable.marker_departure);
     }
 
     /**
@@ -205,30 +208,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     private void addClientMarker(Client client, int index, boolean isNextClient) {
-        addMarker(client.getGeoPoint(), String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName(), isNextClient ? null : R.drawable.marker_node);
-    }
-
-    /**
-     * Add a marker on the map
-     * <p>
-     * The marker is added with the given position, title and description
-     * <br>
-     * The title and description are displayed when the user click on the marker
-     * </p>
-     *
-     * @param position    The position of the marker
-     * @param title       The title of the marker
-     * @param description The description of the marker
-     */
-    private void addMarker(GeoPoint position, String title, String description, Integer icon) {
-        Marker marker = new Marker(mapView);
-        marker.setPosition(position);
-        marker.setTitle(title);
-        marker.setSnippet(description);
-        if (icon != null) {
-            marker.setIcon(AppCompatResources.getDrawable(this, icon));
-        }
-        mapView.getOverlays().add(marker);
+        mapMarker.addMarker(String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName(), client.getGeoPoint(), isNextClient ? MapMarker.MarkerType.NEXT_CLIENT : MapMarker.MarkerType.EXPECTED_CLIENT);
     }
 
     /**
@@ -262,7 +242,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private double distanceToClient(Client client) {
         // TODO calculate with the roads and not in a straight line
-        return currentPosition.getCurrentGeoPoint().distanceToAsDouble(client.getGeoPoint()) / 1000;
+        double distance = Double.NaN;
+        try {
+            distance = currentPosition.getCurrentGeoPoint().distanceToAsDouble(client.getGeoPoint()) / 1000;
+        } catch (Exception e) {
+            // Do nothing
+        }
+        return distance;
     }
 
     private void listClients() {

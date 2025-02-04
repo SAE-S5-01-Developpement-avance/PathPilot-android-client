@@ -3,6 +3,8 @@ package fr.iut_rodez.pathpilot_android_client.util.map;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.util.GeoPoint;
@@ -45,11 +47,37 @@ public class MapMarker {
     }
 
     /**
-     * Add a marker on the map.
+     * Add a marker on the map
      * <p>
-     * The title and the description are displayed when the marker is clicked.
+     * The marker is added with the given position, title and description
      * <br>
-     * The markerType is used to set the icon of the marker. {@link MarkerType}
+     * The title and description are displayed when the user click on the marker
+     * <br>
+     * The marker icon is the given drawable. If the drawable is null, the default marker icon is used.
+     * </p>
+     *
+     * @param title       the title of the marker
+     * @param description the description of the marker
+     * @param position    the position of the marker
+     * @param drawable    the drawable of the marker. If null, the default marker icon is used.
+     */
+    public void addMarker(@NonNull String title, @NonNull String description, @NonNull GeoPoint position, Drawable drawable) {
+        Marker marker = new Marker(mapView);
+        marker.setTitle(title);
+        marker.setSnippet(description);
+        marker.setPosition(position);
+        if (drawable != null) {
+            marker.setIcon(drawable);
+        }
+        mapView.getOverlays().add(marker);
+    }
+
+    /**
+     * Add a marker on the map
+     * <p>
+     * The marker is added with the given position, title and description
+     * <br>
+     * The title and description are displayed when the user click on the marker
      * </p>
      *
      * @param title       the title of the marker
@@ -58,13 +86,17 @@ public class MapMarker {
      * @param markerType  the type of the marker
      * @see MarkerType
      */
-    public void addMarker(String title, String description, GeoPoint position, MarkerType markerType) {
-        Marker marker = new Marker(mapView);
-        marker.setTitle(title);
-        marker.setSnippet(description);
-        marker.setPosition(position);
-        marker.setIcon(markerType.getDrawable(activity));
-        mapView.getOverlays().add(marker);
+    public void addMarker(@NonNull String title,@NonNull String description,@NonNull GeoPoint position,@NonNull MarkerType markerType) {
+        addMarker(title, description, position, markerType.getDrawable(activity));
+    }
+
+    /**
+     * Add a marker on the map with the given icon id
+     *
+     * @see #addMarker(String, String, GeoPoint, Drawable)
+     */
+    public void addMarker(@NonNull String title,@NonNull String description,@NonNull GeoPoint position,@DrawableRes int iconId) {
+        addMarker(title, description, position, AppCompatResources.getDrawable(activity, iconId));
     }
 
     public void removeAllMarkers() {
