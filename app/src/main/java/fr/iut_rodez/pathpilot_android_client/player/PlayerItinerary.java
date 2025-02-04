@@ -43,7 +43,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private TextView clientAddress;
     private TextView clientDistance;
     private TextView counterVisitedClients;
-    private MapView mapView;
     private ImageButton pauseBtn;
 
     private Route route;

@@ -34,7 +34,6 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
 
     private Button selectButton;
     private EditText adresseInput;
-    private MapView map = null;
 
     private GeoPoint pointSelected = null;
     private Marker selectedMarker = null;
@@ -60,16 +59,16 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
         findViewById(R.id.search).setOnClickListener(v -> searchAddress());
 
         // Initialise the map
-        map = findViewById(R.id.mapview);
-        map.setTileSource(TileSourceFactory.MAPNIK);
+        mapView = findViewById(R.id.mapview);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
         currentPosition = new CurrentPosition(this);
 
         // Enable zoom buttons and multi-touch zoom
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
-        map.setMultiTouchControls(true);
+        mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
+        mapView.setMultiTouchControls(true);
 
         // Set the map center and zoom level
-        IMapController mapController = map.getController();
+        IMapController mapController = mapView.getController();
         mapController.setZoom(13.0);
         // Set the map center to the given point or the default point
         mapController.setCenter(getGivenSelectedPointOrDefault());
@@ -85,7 +84,7 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
 
         // Add a map event overlay to handle the long press event
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        map.getOverlays().add(mapEventsOverlay);
+        mapView.getOverlays().add(mapEventsOverlay);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
 
     @Override
     public MapView getMapView() {
-        return map;
+        return mapView;
     }
 
     /**
@@ -171,22 +170,8 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
     }
 
     private void centerToSelected() {
-        map.getController().animateTo(pointSelected);
-        map.getController().setZoom(17.0);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Needed for OSMdroid
-        map.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Needed for OSMdroid
-        map.onPause();
+        mapView.getController().animateTo(pointSelected);
+        mapView.getController().setZoom(17.0);
     }
 
     /**
@@ -222,17 +207,17 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
     private void setSelectedPoint(GeoPoint geoPoint) {
         if (selectedMarker != null) {
             // Remove the previous selected marker if it exists
-            map.getOverlays().remove(selectedMarker);
+            mapView.getOverlays().remove(selectedMarker);
         }
         pointSelected = geoPoint;
 
         // Add a new marker at the selected point
-        selectedMarker = new Marker(map);
+        selectedMarker = new Marker(mapView);
         selectedMarker.setPosition(pointSelected);
         selectedMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         selectedMarker.setDraggable(true);
-        map.getOverlays().add(selectedMarker);
-        map.invalidate();
+        mapView.getOverlays().add(selectedMarker);
+        mapView.invalidate();
 
         // Enable the select button
         selectButton.setEnabled(pointSelected != null);
