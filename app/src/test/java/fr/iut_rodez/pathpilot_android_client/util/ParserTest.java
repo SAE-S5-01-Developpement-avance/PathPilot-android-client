@@ -12,11 +12,14 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientCategory;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
 
 @RunWith(RobolectricTestRunner.class)
@@ -72,7 +75,8 @@ public class ParserTest {
 
         JSONObject response = new JSONObject(clientsResponseJson);
 
-        List<Client> clients = Parser.getClientsPageable(response);
+        ClientPage clientPage = Parser.getClientsPageable(response);
+        ArrayList<Client> clients = clientPage.clients();
 
         assertNotNull(clients);
         assertEquals(2, clients.size());
@@ -176,7 +180,8 @@ public class ParserTest {
 
         JSONObject response = new JSONObject(itineraryResponseJson);
 
-        List<Itinerary> itineraries = Parser.getItinerariesPageable(response);
+        ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
+        List<Itinerary> itineraries = itineraryPage.itineraries();
 
         assertNotNull(itineraries);
         assertEquals(1, itineraries.size());
