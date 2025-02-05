@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -51,7 +49,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private CurrentPosition currentPosition;
     private MapMarker mapMarker;
     private IMapController mapController;
-    RoadManager roadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +102,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         Log.d(TAG, "initialiseMap: Initialising the map");
         mapView = findViewById(R.id.mapview);
         mapController = mapView.getController();
-        roadManager = new OSRMRoadManager(this, getString(R.string.app_name));
 
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
