@@ -36,16 +36,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private static final int ICON_PLAY = R.drawable.icon_start;
     private static final int ICON_PAUSE = R.drawable.icon_pause;
-
+    private final Popup popup = new Popup(this);
     private TextView clientName;
     private TextView clientAddress;
     private TextView clientDistance;
     private TextView counterVisitedClients;
     private ImageButton pauseBtn;
-
     private Route route;
-
-    private final Popup popup = new Popup(this);
     private CurrentPosition currentPosition;
     private MapMarker mapMarker;
     private IMapController mapController;
@@ -96,6 +93,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * <br>
      * Also request the location permission and center the map
      * </p>
+     *
      * @see PlayerItinerary#requestPermissionAndCenter()
      */
     private void initialiseMap() {
