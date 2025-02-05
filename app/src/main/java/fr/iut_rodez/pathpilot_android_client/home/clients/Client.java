@@ -3,8 +3,6 @@ package fr.iut_rodez.pathpilot_android_client.home.clients;
 import static fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,12 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 
 /**
  * Class representing a client.
@@ -206,7 +200,7 @@ public class Client implements Parcelable {
      * @param context context of the Geocoder.
      */
     public void setAddressDisplayName(Context context) {
-        this.addressDisplayName = getAddressDisplayName(context, latHomeAddress, longHomeAddress);
+        this.addressDisplayName = LocationNameProvider.getAddressName(context, getGeoPoint());
     }
 
     @Override
@@ -271,23 +265,6 @@ public class Client implements Parcelable {
         dest.writeString(this.contactFirstName);
         dest.writeString(this.phoneNumber);
         dest.writeString(this.salesman);
-    }
-
-    private static String getAddressDisplayName(Context context, double latHomeAddress, double longHomeAddress) {
-        String placeName = "";
-        Geocoder geocoderAddress = new Geocoder(context, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoderAddress.getFromLocation(latHomeAddress, longHomeAddress, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                placeName = address.getAddressLine(0);
-            } else {
-                placeName += context.getString(R.string.client_address_not_found);
-            }
-        } catch (IOException e) {
-            placeName += context.getString(R.string.client_address_not_found);
-        }
-        return placeName;
     }
 
     public GeoPoint getGeoPoint() {
