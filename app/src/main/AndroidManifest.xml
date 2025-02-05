@@ -34,7 +34,7 @@
         <activity android:name=".home.itinerary.AddItinerary" />
         <activity android:name=".map.MapSelection" />
         <activity android:name=".home.itinerary.InfoItinerary" />
-        <activity android:name=".home.itinerary.PlayerItinerary" />
+        <activity android:name=".player.PlayerItinerary" />
     </application>
 
 </manifest>

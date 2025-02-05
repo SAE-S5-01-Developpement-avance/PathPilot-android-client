@@ -159,4 +159,5 @@ String for Login activity
     <string name="error_while_searching">Erreur lors de la recherche: </string>
     <string name="no_itinerary_retrieve">Aucun itinéraire reçu</string>
     <string name="no_token_retrieve">Aucun jeton reçu</string>
+    <string name="home">Maison</string>
 </resources>

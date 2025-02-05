@@ -1,37 +1,36 @@
-package fr.iut_rodez.pathpilot_android_client.home.itinerary;
+package fr.iut_rodez.pathpilot_android_client.player;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.icu.text.MessageFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
-import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.util.LocationNameProvider;
-import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
+import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
+import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class PlayerItinerary extends ActivityWithCurrentPosition {
 
@@ -44,13 +43,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private TextView clientAddress;
     private TextView clientDistance;
     private TextView counterVisitedClients;
-    private MapView mapView;
     private ImageButton pauseBtn;
 
     private Route route;
 
     private final Popup popup = new Popup(this);
     private CurrentPosition currentPosition;
+    private MapMarker mapMarker;
     private IMapController mapController;
     RoadManager roadManager;
 
@@ -82,11 +81,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         clientVisitedBtn.setOnClickListener(v -> clientVisited());
         listClientsBtn.setOnClickListener(v -> listClients());
 
-        // Show a loading popup. The dialog is dismissed when the route is drawn
+        // Show a loading popup.
         popup.showProgressDialog();
 
         setRouteInformation();
         initialiseMap();
+        popup.dismissProgressDialog();
     }
 
 
@@ -114,9 +114,11 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         mapController.setCenter(route.getSalesmanHome());
 
         currentPosition = new CurrentPosition(this);
+        mapMarker = new MapMarker(this);
         requestPermissionAndCenter();
 
-        setRoutePolyline(route.getExpectedClients(), route.getSalesmanHome());
+        setExpectedClientMarker(route.getExpectedClients(), route.getNextClient());
+        mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
         mapView.invalidate(); // Refresh the map
     }
 
@@ -177,78 +179,16 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     /**
-     * Draw a line that follows the road and link all the clients.
-     * <p>
-     * The line is drawn between the salesman home and the first client, then between each client.
-     * The last line is drawn between the last client and the salesman home.
-     * </p>
-     *
-     * @param expectedClients The list of expected clients
-     * @param salesmanHome    The home of the salesman
-     */
-    private void setRoutePolyline(ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
-        ArrayList<GeoPoint> waypoints = new ArrayList<>();
-        waypoints.add(salesmanHome);
-        expectedClients.forEach(client -> waypoints.add(client.getGeoPoint()));
-        waypoints.add(salesmanHome);
-
-
-        new Thread(() -> {
-            // Get the road between the waypoints
-            Road road = roadManager.getRoad(waypoints);
-            popup.dismissProgressDialog();
-
-            // if the road build process failed, show an error dialog
-            if (road.mStatus != Road.STATUS_OK) {
-                Log.e(TAG, "setRoutePolyline: Error while drawing the road");
-                popup.showAlertDialogOK(getString(R.string.error), getString(R.string.error_while_drawing_the_road), DialogButton.okDismiss(this));
-            }
-
-            // Draw the road on the map
-            Polyline roadOverlay = RoadManager.buildRoadOverlay(road);
-            Paint outlinePaint = roadOverlay.getOutlinePaint();
-            outlinePaint.setStrokeWidth(10);
-            outlinePaint.setColor(getColor(R.color.blue_1));
-            mapView.getOverlays().add(roadOverlay);
-
-            setExpectedClientMarker(route.getExpectedClients());
-            addMarker(route.getSalesmanHome(), "Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()));
-        }).start();
-    }
-
-    /**
      * Add a marker for each client in the list of expected clients
      *
      * @param expectedClients The list of expected clients
      */
-    private void setExpectedClientMarker(ArrayList<Client> expectedClients) {
+    private void setExpectedClientMarker(ArrayList<Client> expectedClients, @NonNull Client nextClient) {
         for (int i = 0; i < expectedClients.size(); i++) {
-            addClientMarker(expectedClients.get(i), i + 1);
+            Client client = expectedClients.get(i);
+            String title = MessageFormat.format("({0}) - {1}", i + 1, client.getCompanyName());
+            mapMarker.addMarker(title, client.getAddressDisplayName(), client.getGeoPoint(), nextClient.equals(client) ? MapMarker.MarkerType.NEXT_CLIENT : MapMarker.MarkerType.EXPECTED_CLIENT);
         }
-    }
-
-    private void addClientMarker(Client client, int index) {
-        addMarker(client.getGeoPoint(), String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName());
-    }
-
-    /**
-     * Add a marker on the map
-     * <p>
-     * The marker is added with the given position, title and description
-     * <br>
-     * The title and description are displayed when the user click on the marker
-     * </p>
-     *
-     * @param position    The position of the marker
-     * @param title       The title of the marker
-     * @param description The description of the marker
-     */
-    private void addMarker(GeoPoint position, String title, String description) {
-        Marker marker = new Marker(mapView);
-        marker.setPosition(position);
-        marker.setTitle(title);
-        marker.setSnippet(description);
-        mapView.getOverlays().add(marker);
     }
 
     /**
@@ -282,7 +222,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private double distanceToClient(Client client) {
         // TODO calculate with the roads and not in a straight line
-        return currentPosition.getCurrentGeoPoint().distanceToAsDouble(client.getGeoPoint()) / 1000;
+        double distance = Double.NaN;
+        try {
+            distance = currentPosition.getCurrentGeoPoint().distanceToAsDouble(client.getGeoPoint()) / 1000;
+        } catch (Exception e) {
+            // Do nothing
+        }
+        return distance;
     }
 
     private void listClients() {
@@ -305,15 +251,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         Log.d(TAG, "stop: ");
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public MapView getMapView() {
-        return mapView;
     }
 }

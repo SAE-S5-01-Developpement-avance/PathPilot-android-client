@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import org.jetbrains.annotations.Nls;
+
 import fr.iut_rodez.pathpilot_android_client.R;
 
 /**
@@ -12,7 +14,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
  * @param text            the text of the button
  * @param onClickListener the onClickListener of the button
  */
-public record DialogButton(String text, DialogInterface.OnClickListener onClickListener) {
+public record DialogButton(@Nls String text, DialogInterface.OnClickListener onClickListener) {
 
     /**
      * Create a button with the text "OK" that dismisses the dialog.

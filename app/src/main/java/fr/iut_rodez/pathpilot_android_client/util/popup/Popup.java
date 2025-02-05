@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.Nls;
+
 import fr.iut_rodez.pathpilot_android_client.R;
 
 /**
@@ -20,7 +22,7 @@ public class Popup {
         this.context = context;
     }
 
-    public void showProgressDialog(String title, String message) {
+    public void showProgressDialog(@Nls String title, @Nls String message) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle(title);
         progressDialog.setMessage(message);
@@ -37,16 +39,16 @@ public class Popup {
         }
     }
 
-    private void showToast(CharSequence message, int length) {
+    private void showToast(@Nls CharSequence message, int length) {
         new Toast(context);
         Toast.makeText(context, message, length).show();
     }
 
-    public void showToastLong(CharSequence message) {
+    public void showToastLong(@Nls CharSequence message) {
         showToast(message, Toast.LENGTH_LONG);
     }
 
-    public void showToastShort(CharSequence message) {
+    public void showToastShort(@Nls CharSequence message) {
         showToast(message, Toast.LENGTH_SHORT);
     }
 
@@ -57,7 +59,7 @@ public class Popup {
      * @param title   the title of the dialog
      * @param message the message of the dialog
      */
-    public void showAlertDialog(String title, String message) {
+    public void showAlertDialog(@Nls String title, @Nls String message) {
         showAlertDialog(title, message, DialogButton.okDismiss(context), null, null);
     }
 
@@ -75,7 +77,7 @@ public class Popup {
      * @param negativeDialogButton the button to display
      *                       with the text and the onClickListener
      */
-    public void showAlertDialog(String title, String message, DialogButton positiveDialogButton, DialogButton neutralDialogButton, DialogButton negativeDialogButton) {
+    public void showAlertDialog(@Nls String title, @Nls String message, DialogButton positiveDialogButton, DialogButton neutralDialogButton, DialogButton negativeDialogButton) {
         AlertDialog.Builder dialog =
                 new AlertDialog.Builder(context)
                         .setTitle(title)
@@ -100,11 +102,11 @@ public class Popup {
         dialog.show();
     }
 
-    public void showErrorDialog(String message) {
+    public void showErrorDialog(@Nls String message) {
         showAlertDialog(context.getString(R.string.error), message);
     }
 
-    public void showAlertDialogOK(String title, String message, DialogButton positiveDialogButton) {
+    public void showAlertDialogOK(@Nls String title, @Nls String message, DialogButton positiveDialogButton) {
         showAlertDialog(title, message, positiveDialogButton, null, null);
     }
 }

@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.map;
+package fr.iut_rodez.pathpilot_android_client.util.map;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
@@ -11,12 +11,12 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 
 public class CurrentPosition {
 
@@ -192,13 +192,5 @@ public class CurrentPosition {
         centerOnLocation = true;
         myLocationOverlay.enableMyLocation();
         myLocationOverlay.enableFollowLocation();
-    }
-
-    public abstract static class ActivityWithCurrentPosition extends AppCompatActivity {
-        public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        abstract public MapView getMapView();
     }
 }
