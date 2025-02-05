@@ -18,7 +18,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +41,6 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
  */
 public class ItineraryService extends AppCompatActivity{
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
-    public static final String API_ORS_MATRIX_URL = "https://api.openrouteservice.org/v2/matrix/driving-car?profile=driving-car";
     private static final String TAG = ItineraryService.class.getSimpleName();
 
     /**
@@ -61,18 +59,11 @@ public class ItineraryService extends AppCompatActivity{
         String jwtToken = addItineraryActivity.getJWTToken().getToken();
         JSONArray listIdClient = new JSONArray();
         JSONObject itinerariesInput = new JSONObject();
-        JSONArray clientsLocationsJson = new JSONArray();
+
         for (Client client : listClients) {
             listIdClient.put(client.getId());
         }
-
-        for (int i = 0; i < clientsLocations.size(); i++) {
-            clientsLocationsJson.put(new JSONArray(clientsLocations.get(i)));
-        }
-
         itinerariesInput.put("clients_schedule", listIdClient);
-        itinerariesInput.put("locations", clientsLocationsJson);
-        itinerariesInput.put("metrics", "distance");
 
         Popup popup = new Popup(context);
         popup.showProgressDialog(context.getString(R.string.progress_creating_itinerary));

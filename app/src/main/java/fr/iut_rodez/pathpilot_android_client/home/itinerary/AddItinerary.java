@@ -2,7 +2,6 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
