@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.player;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.icu.text.MessageFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -116,7 +117,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         mapMarker = new MapMarker(this);
         requestPermissionAndCenter();
 
-        setMarkers(route.getNextClient(), route.getExpectedClients(), route.getSalesmanHome());
+        setExpectedClientMarker(route.getExpectedClients(), route.getNextClient());
+        mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
         mapView.invalidate(); // Refresh the map
     }
 
@@ -177,23 +179,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     /**
-     * Set the markers on the map
-     * <p>
-     * The next client is displayed with a marker
-     * <br>
-     * Every other client is displayed with a different marker
-     * </p>
-     *
-     * @param nextClient     The next client
-     * @param expectedClients The list of expected clients
-     * @param salesmanHome    The home of the salesman
-     */
-    private void setMarkers(Client nextClient, ArrayList<Client> expectedClients, GeoPoint salesmanHome) {
-        setExpectedClientMarker(expectedClients, nextClient);
-        mapMarker.addMarker("Home", LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), R.drawable.marker_departure);
-    }
-
-    /**
      * Add a marker for each client in the list of expected clients
      *
      * @param expectedClients The list of expected clients
@@ -201,12 +186,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void setExpectedClientMarker(ArrayList<Client> expectedClients, @NonNull Client nextClient) {
         for (int i = 0; i < expectedClients.size(); i++) {
             Client client = expectedClients.get(i);
-            addClientMarker(client, i + 1, nextClient.equals(client));
+            String title = MessageFormat.format("({0}) - {1}", i + 1, client.getCompanyName());
+            mapMarker.addMarker(title, client.getAddressDisplayName(), client.getGeoPoint(), nextClient.equals(client) ? MapMarker.MarkerType.NEXT_CLIENT : MapMarker.MarkerType.EXPECTED_CLIENT);
         }
-    }
-
-    private void addClientMarker(Client client, int index, boolean isNextClient) {
-        mapMarker.addMarker(String.format("(%d) - %s", index, client.getCompanyName()), client.getAddressDisplayName(), client.getGeoPoint(), isNextClient ? MapMarker.MarkerType.NEXT_CLIENT : MapMarker.MarkerType.EXPECTED_CLIENT);
     }
 
     /**
