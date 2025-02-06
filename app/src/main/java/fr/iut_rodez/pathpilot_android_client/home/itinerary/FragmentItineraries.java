@@ -126,7 +126,9 @@ public class FragmentItineraries extends Fragment {
 
         if (optionSelected == R.id.delete_itinerary) {
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
-            itineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
+            ItineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
+        } else if (optionSelected == R.id.create_route) {
+            Log.d(TAG, "onContextItemSelected: Create route");
         } else {
             Log.e(TAG, "onContextItemSelected: Unknown option selected");
         }
@@ -157,89 +159,5 @@ public class FragmentItineraries extends Fragment {
     public interface FragmentItineraryActions {
         ActivityResultLauncher<Intent> getAddItineraryLauncher();
         ItineraryPage getItineraryPage();
-    }
-
-    /**
-     * Get the list of itineraries displayed in the list view
-     * <p>
-     *     It's use in the {@link fr.iut_rodez.pathpilot_android_client.home.routes.AddRoute} activity
-     * </p>
-     * @return The list of itineraries displayed in the list view
-     */
-    public ArrayList<Itinerary> getListItineraries() {
-        Log.d(TAG, "getListItineraries: Get list of itineraries");
-        ArrayList<Itinerary> listItineraries = new ArrayList<>();
-        for (int i = 0; listItinerariesView.getAdapter().getCount() > i; i++) {
-            listItineraries.add((Itinerary) listItinerariesView.getAdapter().getItem(i));
-        }
-        Log.d(TAG, "getListItineraries: List of itineraries: " + listItineraries);
-        return listItineraries;
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
-        int optionSelected = item.getItemId();
-
-        if (optionSelected == R.id.create_route) {
-
-        } else {
-            Log.e(TAG, "onContextItemSelected: Unknown option selected");
-        }
-        return (super.onContextItemSelected(item));
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
-        int optionSelected = item.getItemId();
-
-        if (optionSelected == R.id.create_route) {
-
-        } else {
-            Log.e(TAG, "onContextItemSelected: Unknown option selected");
-        }
-        return (super.onContextItemSelected(item));
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
-        int optionSelected = item.getItemId();
-
-        if (optionSelected == R.id.create_route) {
-
-        } else {
-            Log.e(TAG, "onContextItemSelected: Unknown option selected");
-        }
-        return (super.onContextItemSelected(item));
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        new MenuInflater(getActivity()).inflate(R.menu.itinerary_context_menu, menu);
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
-        int optionSelected = item.getItemId();
-
-        if (optionSelected == R.id.create_route) {
-
-        } else {
-            Log.e(TAG, "onContextItemSelected: Unknown option selected");
-        }
-        return (super.onContextItemSelected(item));
     }
 }

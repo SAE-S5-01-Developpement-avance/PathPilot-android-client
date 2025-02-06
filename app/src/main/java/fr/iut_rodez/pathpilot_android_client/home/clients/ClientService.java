@@ -59,20 +59,8 @@ public class ClientService implements IClientService {
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
-                    try {
-                        List<Client> clientsArray = new ArrayList<>();
-                        if (response.has("_embedded")) {
-                            JSONArray clients = response.getJSONObject("_embedded").getJSONArray("clientResponseModelList");
-                            Log.d(TAG, "getClients: " + clients);
-                            for (int i = 0; i < clients.length(); i++) {
-                                clientsArray.add(new Client(clients.getJSONObject(i)));
-                            }
-                        }
-                    }catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    List<Client> clientsArray = Parser.getClientsPageable(response);
-                    Log.d(TAG, "getClients: " + clientsArray);
+                    ClientPage clientPage = Parser.getClientsPageable(response);
+                    Log.d(TAG, "getClients: " + clientPage);
 
                     ClientArrayAdapter adapter = new ClientArrayAdapter(homeActivity, clientPage.clients());
                     listClientsView.post(() -> {
