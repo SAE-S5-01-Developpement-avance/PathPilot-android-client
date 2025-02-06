@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientCategory;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientCategory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;

@@ -13,10 +13,11 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
-import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
-import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;

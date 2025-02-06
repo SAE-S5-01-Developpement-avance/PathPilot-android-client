@@ -22,6 +22,8 @@ import androidx.fragment.app.Fragment;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
 /**

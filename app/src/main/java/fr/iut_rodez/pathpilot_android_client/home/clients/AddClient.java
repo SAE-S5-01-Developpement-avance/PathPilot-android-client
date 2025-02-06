@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;

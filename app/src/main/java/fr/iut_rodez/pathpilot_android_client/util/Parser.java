@@ -14,11 +14,12 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryPage;
-import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 
 /**
  * Utility class that abstracts the parsing of Volley responses
@@ -107,7 +108,7 @@ public class Parser {
      * Parse the JSON response of the GET itineraries request and return a list of itineraries
      * <p>
      * Request URL example:
-     * <a href="http://localhost:8080/api/routes">/api/routes</a>
+     * <a href="http://localhost:8080/api/itineraries">/api/itineraries</a>
      *
      * @param response JSON response of the GET itineraries request
      * @return List of itineraries parsed from the JSON response. If an error occurs, an empty list is returned
@@ -135,6 +136,37 @@ public class Parser {
     }
 
     /**
+     * Parse the JSON response of the GET routes request and return a list of routes
+     * <p>
+     * Request URL example:
+     * <a href="http://localhost:8080/api/routes">/api/routes</a>
+     *
+     * @param response JSON response of the GET routes request
+     * @return List of routes parsed from the JSON response. If an error occurs, an empty list is returned
+     */
+    public static RoutePage getRoutesPageable(JSONObject response) {
+        ArrayList<Route> listRoutes = new ArrayList<>();
+        ArrayList<Link> listLinks = new ArrayList<>();
+
+        try {
+            JSONArray embeddedListRoutes = response
+                    .getJSONObject("_embedded")
+                    .getJSONArray("routeResponseModelList");
+
+            for (int i = 0; i < embeddedListRoutes.length(); i++) {
+                JSONObject routeJson = embeddedListRoutes.getJSONObject(i);
+                listRoutes.add(new Route(routeJson));
+            }
+            getPaginationLinks(response, listLinks);
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Error while parsing the JSON response", e);
+        }
+
+        return new RoutePage(listRoutes, listLinks);
+    }
+
+    /**
      * Parse the GeoPoint from a JSON object
      * <p>
      *     JSON object example:
@@ -145,7 +177,7 @@ public class Parser {
      *         }
      *     </pre>
      * </p>
-     * @param jsonObject JSON object containing the x and y coordinates
+     * @param geoJsonPoint JSON object containing the x and y coordinates
      * @return The GeoPoint parsed from the JSON object. If an error occurs, null is returned
      */
     @NonNull

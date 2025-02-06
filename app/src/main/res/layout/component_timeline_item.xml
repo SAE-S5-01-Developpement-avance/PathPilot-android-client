@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="8dp">
+
+    <!-- Client Name -->
+    <TextView
+        android:id="@+id/client_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue_0"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Client 1 (CLIENT)" />
+
+    <!-- Timeline Line -->
+    <View
+        android:id="@+id/timeline_line"
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:background="@color/blue_0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/client_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Timeline Dot -->
+    <View
+        android:id="@+id/timeline_dot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/circle_dot"
+        android:backgroundTint="@color/white"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/client_name"
+        app:layout_constraintEnd_toEndOf="@id/timeline_line"
+        app:layout_constraintStart_toStartOf="@id/timeline_line"
+        app:layout_constraintTop_toTopOf="@id/client_name" />
+
+    <!-- Address -->
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/blue_0"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/timeline_line"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="3 rue Des clients" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

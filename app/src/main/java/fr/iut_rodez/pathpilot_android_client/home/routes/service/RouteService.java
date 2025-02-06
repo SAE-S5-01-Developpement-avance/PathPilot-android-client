@@ -1,0 +1,154 @@
+package fr.iut_rodez.pathpilot_android_client.home.routes.service;
+
+import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
+import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
+
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.util.Log;
+import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
+
+import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
+import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
+
+public class RouteService implements IRouteService {
+
+    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "routes";
+    private static final String TAG = ClientService.class.getSimpleName();
+
+    public void getRoutes(Context context, ListView listRoutesView) {
+        Log.d(TAG, "API URL: " + API_BASE_URL);
+
+        Home homeActivity = (Home) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    RoutePage routePage = Parser.getRoutesPageable(response);
+                    Log.d(TAG, "getRoutes: " + routePage.routes());
+
+                    Route.RouteArrayAdapter adapter = new Route.RouteArrayAdapter(homeActivity, routePage.routes());
+                    listRoutesView.post(() -> {
+                        listRoutesView.setAdapter(adapter);
+                    });
+
+                    // Save the client page to the activity
+                    ((Home) context).setRoutePage(routePage);
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    public void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, Route.RouteArrayAdapter adapter) {
+        Log.d(TAG, "Next Page URL: " + nextPageUrl);
+
+        Home homeActivity = (Home) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = homeActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    RoutePage routePage = Parser.getRoutesPageable(response);
+                    Log.d(TAG, "getNextRoutePageable: " + routePage);
+
+                    adapter.addAll(routePage.routes());
+                    adapter.notifyDataSetChanged();
+
+                    // Save the client page to the activity
+                    ((Home) context).setRoutePage(routePage);
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    /**
+     * Create a route from an itinerary.
+     * <p>
+     * Send a request to the server to create a route from an route.<br>
+     * If the request is successful, it redirects the user to the player activity with the new route.
+     * If the request fails, it shows an error message.
+     * </p>
+     *
+     * @param activity  The activity that calls the service
+     * @param itinerary The itinerary to create the route from
+     */
+    @Override
+    public void createRoute(InfoItinerary activity, Itinerary itinerary) {
+        JWTToken jwtToken = activity.getJwtToken();
+        RequestQueue requestQueue = NetworkUtils.getRequestQueue(activity);
+        Popup popup = activity.getPopup();
+        RouteRequestModel routeRequestModel = new RouteRequestModel(itinerary.getId());
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, ROUTES_API_ENDPOINT, routeRequestModel.toJson(), jwtToken.getToken(),
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "createRoute: " + response);
+
+                    Route route = Parser.getRoute(response);
+                    activity.redirectToPlayerActivity(route);
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    VolleyErrorHandler.handleError(activity, error);
+                });
+
+        popup.showProgressDialog();
+        requestQueue.add(request);
+    }
+
+    record RouteRequestModel(@NonNull String itineraryId) {
+        public JSONObject toJson() {
+            JSONObject json = new JSONObject();
+            try {
+                json.put("itineraryId", itineraryId);
+            } catch (Exception ignored) {
+                // This should never happen, has the valu isn't a Number
+            }
+            return json;
+        }
+    }
+}

@@ -24,6 +24,8 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -61,6 +63,7 @@ public class AddItinerary extends AppCompatActivity {
 
         Intent intent = getIntent();
         Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
+
         ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
         listClientsToAdd.addAll(clients);
 

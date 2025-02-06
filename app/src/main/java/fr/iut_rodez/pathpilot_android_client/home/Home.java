@@ -22,13 +22,16 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.FragmentClientsActions;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries.FragmentItineraryActions;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.FragmentRouteActions;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 
@@ -36,11 +39,12 @@ import fr.iut_rodez.pathpilot_android_client.login.LoginService;
  * Handle the different fragments of the application and the JWT token.
  * The JWT token is passed from the login activity to the home activity.
  */
-public class Home extends AppCompatActivity implements FragmentClientsActions, FragmentItineraryActions {
+public class Home extends AppCompatActivity implements FragmentClientsActions, FragmentItineraryActions, FragmentRouteActions {
 
     private static final String TAG = Home.class.getSimpleName();
     public static final int INDEX_FRAGMENT_CLIENT = 0;
     public static final int INDEX_FRAGMENT_ITINERARY = 1;
+    public static final int INDEX_FRAGMENT_ROUTE = 2;
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
@@ -52,6 +56,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
     private ClientPage clientPage;
     private ItineraryPage itineraryPage;
+    private RoutePage routePage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +70,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
         int[] icons = {
                 FragmentClients.ICON,
-                FragmentItineraries.ICON
+                FragmentItineraries.ICON,
+                FragmentRoutes.ICON
         };
 
         new TabLayoutMediator(tabManager, viewPager, (tab, position) -> {
@@ -151,6 +157,15 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         this.itineraryPage = itineraryPage;
     }
 
+    /**
+     * Set the routes page
+     *
+     * @param routePage The route page
+     */
+    public void setRoutePage(RoutePage routePage) {
+        this.routePage = routePage;
+    }
+
     @Override
     public ClientPage getClientPage() {
         return clientPage;
@@ -159,6 +174,11 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     @Override
     public ItineraryPage getItineraryPage() {
         return itineraryPage;
+    }
+
+    @Override
+    public RoutePage getRoutePage() {
+        return routePage;
     }
 
     public ActivityResultLauncher<Intent> getAddItineraryLauncher() {

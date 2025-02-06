@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.home.clients;
+package fr.iut_rodez.pathpilot_android_client.home.clients.entity;
 
 import androidx.annotation.NonNull;
 

@@ -19,9 +19,12 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.ItineraryArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;

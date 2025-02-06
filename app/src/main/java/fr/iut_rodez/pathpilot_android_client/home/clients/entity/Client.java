@@ -1,6 +1,6 @@
-package fr.iut_rodez.pathpilot_android_client.home.clients;
+package fr.iut_rodez.pathpilot_android_client.home.clients.entity;
 
-import static fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
+import static fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -12,6 +12,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 
@@ -294,6 +300,23 @@ public class Client implements Parcelable {
                 companyLocation.getLatitude(),
                 companyLocation.getLongitude()
         );
+    }
+
+    /**
+     * Convert the list of clients to a string list used in route / itinerary.
+     *
+     * @param clients The list of clients
+     * @return The string representation of the list of clients
+     */
+    public static String getClientsDisplay(ArrayList<Client> clients) {
+        StringBuilder clientNames = new StringBuilder();
+        for (int i = 0; i < clients.size(); i++) {
+            clientNames.append(i + 1).append(". ").append(clients.get(i).toShortString());
+            if (i < clients.size() - 1) {
+                clientNames.append("\n");
+            }
+        }
+        return clientNames.toString();
     }
 
     static class ClientConstant {
