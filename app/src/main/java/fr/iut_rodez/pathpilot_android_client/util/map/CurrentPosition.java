@@ -23,11 +23,11 @@ public class CurrentPosition {
     private static final String TAG = CurrentPosition.class.getSimpleName();
     public static final int LOCATION_UPDATE_MIN_TIME_MS = 1000;
     public static final int LOCATION_UPDATE_MIN_DISTANCE_METERS = 5;
+    
     private final ActivityWithCurrentPosition activity;
+    private final MyLocationNewOverlay myLocationOverlay;
     private Runnable permissionGrantedCallback;
     private Runnable permissionDeniedCallback;
-    private final MyLocationNewOverlay myLocationOverlay;
-    private boolean centerOnLocation;
     private LocationManager locationManager;
 
     /**
@@ -38,15 +38,18 @@ public class CurrentPosition {
      */
     public CurrentPosition(ActivityWithCurrentPosition activity) {
         this.activity = activity;
-
         this.myLocationOverlay = new MyLocationNewOverlay(
                 new GpsMyLocationProvider(activity),
                 activity.getMapView()
         );
-        enableCenterOnLocation();
         activity.getMapView().getOverlays().add(myLocationOverlay);
     }
 
+    /**
+     * Check if the location permission is granted
+     *
+     * @return true if the location permission is granted
+     */
     public boolean isLocationPermissionGranted() {
         final String accessCoarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION;
         final String accessFineLocation = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -60,7 +63,8 @@ public class CurrentPosition {
      * <h1>Usage</h1>
      * This method should be called in the activity where the permission is requested.
      * The activity must override the {@link Activity#onRequestPermissionsResult(int, String[], int[])} method.
-     * In this method, the activity must call {@link CurrentPosition#onRequestPermissionsResult(int, String[], int[])}.
+     * In this method,
+     * the activity must call {@link CurrentPosition#onRequestPermissionsResult(int, String[], int[])}.
      *
      * @param grantedCallback Runnable to execute when permission is granted
      * @param deniedCallback  Runnable to execute when permission is denied
@@ -72,10 +76,6 @@ public class CurrentPosition {
         final String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         Log.d(TAG, "requestLocationPermission: Requesting GPS Location permission");
         activity.requestPermissions(permissions, REQUEST_POSITION_CODE);
-    }
-
-    public void requestLocationPermission() {
-        requestLocationPermission(null, null);
     }
 
     /**
@@ -104,7 +104,6 @@ public class CurrentPosition {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "GPS Location permission granted");
                 locationManager = (LocationManager) activity.getSystemService(Activity.LOCATION_SERVICE);
-                Log.d(TAG, "onRequestPermissionsResult: " + locationManager);
 
                 // Execute callback if provided
                 if (permissionGrantedCallback != null) {
@@ -127,17 +126,37 @@ public class CurrentPosition {
     }
 
     /**
+     * Get the current position
+     * <p>
+     *     This method returns the current position from the location manager
+     *     if the location permission is granted.
+     *     <br>
+     *     If the method {@link #positionFromManager()} returns null,
+     *     the method returns the current position from the location overlay.
      * @return The current position
+     * @see #positionFromManager()
+     * @see MyLocationNewOverlay#getMyLocation()
      */
     public GeoPoint getCurrentGeoPoint() {
-        GeoPoint myLocation = myLocationOverlay.getMyLocation();
+        GeoPoint myLocation = positionFromManager();
         if (myLocation == null) {
-            myLocation = positionFromManager();
+            myLocation = myLocationOverlay.getMyLocation();
         }
         Log.d(TAG, "getCurrentGeoPoint: " + myLocation);
         return myLocation;
     }
 
+    /**
+     * Get the current position from the location manager
+     * <p>
+     * This method should be called only if the location permission is granted.
+     * <br>
+     * If the location permission is not granted, or the location manager is null, this method returns null.
+     * </p>
+     *
+     * @return The current position
+     * @see LocationManager#getLastKnownLocation(String)
+     */
     @SuppressLint("MissingPermission") // We check the permission with isLocationPermissionGranted
     private GeoPoint positionFromManager() {
         GeoPoint myLocation = null;
@@ -151,45 +170,38 @@ public class CurrentPosition {
     }
 
     /**
-     * As soon as we can get the user location, execute the runnable.
-     * <p>
-     * If the user location is already available, the runnable will be executed immediately.<br>
-     * Otherwise, the runnable will be executed as soon as the user location is available.
-     * </p
+     * Follow the user location or not depending on the parameter
      *
-     * @param runnable The runnable
-     * @see MyLocationNewOverlay#runOnFirstFix(Runnable)
+     * @param follow true to follow the user location, false otherwise
+     * @see MyLocationNewOverlay#enableFollowLocation()
+     * @see MyLocationNewOverlay#disableFollowLocation()
      */
-    public void runOnFirstFix(Runnable runnable) {
-        Runnable locationFixRunnable = () -> {
-            runnable.run();
-            if (centerOnLocation) {
-                activity.runOnUiThread(() -> {
-                    GeoPoint currentPoint = getCurrentGeoPoint();
-                    activity.getMapView().getController().setCenter(currentPoint);
-                    activity.getMapView().getController().animateTo(currentPoint);
-                    activity.getMapView().getOverlays().add(myLocationOverlay);
-                });
-            }
-        };
-        myLocationOverlay.runOnFirstFix(locationFixRunnable);
+    public void followLocation(boolean follow) {
+        if (follow) {
+            myLocationOverlay.enableFollowLocation();
+        } else {
+            myLocationOverlay.disableFollowLocation();
+        }
     }
 
     /**
-     * Disable the center on location
+     * Resume the location overlay
      * <p>
-     * The map will not center automatically on the user location
+     * This method should be called in the activity's {@linkplain Activity#onResume()} method.
      * </p>
      */
-    public void disableCenterOnLocation() {
-        centerOnLocation = false;
-        myLocationOverlay.disableFollowLocation();
+    public void onResume() {
+        myLocationOverlay.enableMyLocation();
     }
 
-    public void enableCenterOnLocation() {
-        centerOnLocation = true;
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.enableFollowLocation();
+    /**
+     * Pause the location overlay
+     * <p>
+     * This method should be called in the activity's {@link Activity#onPause()} method.
+     * </p>
+     */
+    public void onPause() {
+        myLocationOverlay.disableMyLocation();
     }
 
     /**
