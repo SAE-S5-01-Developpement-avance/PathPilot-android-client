@@ -17,10 +17,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
@@ -28,6 +28,7 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.Iti
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
@@ -37,6 +38,8 @@ public class ItineraryService implements IItineraryService {
 
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
     private static final String TAG = ItineraryService.class.getSimpleName();
+
+    private static Popup popup;
 
     /**
      * Request to the API to add an itinerary.
@@ -63,10 +66,28 @@ public class ItineraryService implements IItineraryService {
         Popup popup = new Popup(context);
         popup.showProgressDialog(context.getString(R.string.progress_creating_itinerary));
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, itinerariesInput, jwtToken,
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST,
+                API_BASE_URL, itinerariesInput, jwtToken,
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
+                    try {
+                        JSONArray orderedClientsList = response.getJSONArray("clients_schedule");
+                        for (int i = 0; i < orderedClientsList.length(); i++) {
+                            namesClient.add(orderedClientsList.getJSONObject(i).getString("companyName"));
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // TODO move the strings in the values files
+                    DialogButton btnSaveItinerary = new DialogButton("Confirm",
+                            ((dialog, which) -> {
+                        dialog.dismiss();
+                        Intent returnIntent = new Intent(addItineraryActivity, Home.class);
+                        addItineraryActivity.setResult(AddItinerary.RESULT_OK, returnIntent);
+                        returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, true);
+                        addItineraryActivity.finish();
+                    }));
 
                     Intent returnIntent = new Intent(addItineraryActivity, Home.class);
                     addItineraryActivity.setResult(AddItinerary.RESULT_OK, returnIntent);
@@ -100,7 +121,8 @@ public class ItineraryService implements IItineraryService {
         Popup popup = new Popup(context);
         popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
 
-        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL,
+                null, jwtToken,
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
@@ -108,7 +130,8 @@ public class ItineraryService implements IItineraryService {
                     ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
                     Log.d(TAG, "getItineraries: " + itineraryPage.itineraries());
 
-                    ItineraryArrayAdapter adapter = new ItineraryArrayAdapter(homeActivity, itineraryPage.itineraries());
+                    ItineraryArrayAdapter adapter = new ItineraryArrayAdapter(homeActivity,
+                            itineraryPage.itineraries());
                     listItinerariesView.post(() -> {
                         listItinerariesView.setAdapter(adapter);
                     });
@@ -147,7 +170,8 @@ public class ItineraryService implements IItineraryService {
         Popup popup = new Popup(context);
         popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
 
-        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl,
+                null, jwtToken,
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
@@ -185,8 +209,8 @@ public class ItineraryService implements IItineraryService {
      * @param itinerarySelected  The itinerary to delete
      * @param listItinerariesView The view where the itineraries will be displayed
      */
-    @Override
-    public void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView) {
+    public static void deleteItinerary(Home homeActivity, Itinerary itinerarySelected,
+                                       ListView listItinerariesView) {
 
         String apiURLDelete = API_BASE_URL + "/" + itinerarySelected.getId();
 
@@ -198,21 +222,61 @@ public class ItineraryService implements IItineraryService {
 
         Log.d(TAG, "deleteItinerary: " + itinerarySelected.getId());
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE,
+                apiURLDelete, null, jwtToken,
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
                     listItinerariesView.post(() -> {
-                        ItineraryArrayAdapter itineraryArrayAdapter = (ItineraryArrayAdapter) listItinerariesView.getAdapter();
+                        ItineraryArrayAdapter itineraryArrayAdapter
+                                = (ItineraryArrayAdapter) listItinerariesView.getAdapter();
                         itineraryArrayAdapter.remove(itinerarySelected);
                         itineraryArrayAdapter.notifyDataSetChanged();
-                        Log.d(TAG, "deleteClient: Itinerary" + itinerarySelected.getId() + "removed");
+                        Log.d(TAG, "deleteClient: Itinerary" + itinerarySelected.getId()
+                                + "removed");
                     });
                 },
                 error -> {
                     popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(homeActivity, error);
+                }
+        );
+        requestQueue.add(request);
+    }
+
+    /**
+     * Delete the itinerary after the salesman saws the order of clients of the current itinerary
+     * created and cancel the creation.
+     * @param context context of the application
+     * @param idItinerary id of the itinerary to delete
+     */
+    public static  void deleteItineraryToCancelTheCreation(Context context,String idItinerary) {
+        String apiURLDelete = API_BASE_URL + "/" + idItinerary;
+
+        popup = new Popup(context);
+
+        AddItinerary addItineraryActivity = (AddItinerary) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = addItineraryActivity.getJWTToken().getToken();
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.show();
+
+        Log.d(TAG, "deleteItinerary: " + idItinerary);
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE,
+                apiURLDelete, null, jwtToken,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "onResponse: " + response);
+                    // TODO move the strings in the values files
+                    popup.showAlertDialog("Information", "The itinerary is now deleted");
+                },
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
                 }
         );
         requestQueue.add(request);
