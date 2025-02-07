@@ -7,10 +7,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -22,11 +21,14 @@ public class CurrentPosition {
 
     public static final int REQUEST_POSITION_CODE = 1;
     private static final String TAG = CurrentPosition.class.getSimpleName();
+    public static final int LOCATION_UPDATE_MIN_TIME_MS = 1000;
+    public static final int LOCATION_UPDATE_MIN_DISTANCE_METERS = 5;
     private final ActivityWithCurrentPosition activity;
     private Runnable permissionGrantedCallback;
     private Runnable permissionDeniedCallback;
     private final MyLocationNewOverlay myLocationOverlay;
     private boolean centerOnLocation;
+    private LocationManager locationManager;
 
     /**
      * Create a new CurrentPosition object
@@ -41,8 +43,8 @@ public class CurrentPosition {
                 new GpsMyLocationProvider(activity),
                 activity.getMapView()
         );
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.enableFollowLocation();
+        enableCenterOnLocation();
+        activity.getMapView().getOverlays().add(myLocationOverlay);
     }
 
     public boolean isLocationPermissionGranted() {
@@ -55,9 +57,14 @@ public class CurrentPosition {
 
     /**
      * Request location permission with an optional callback
+     * <h1>Usage</h1>
+     * This method should be called in the activity where the permission is requested.
+     * The activity must override the {@link Activity#onRequestPermissionsResult(int, String[], int[])} method.
+     * In this method, the activity must call {@link CurrentPosition#onRequestPermissionsResult(int, String[], int[])}.
      *
      * @param grantedCallback Runnable to execute when permission is granted
      * @param deniedCallback  Runnable to execute when permission is denied
+     * @see CurrentPosition#onRequestPermissionsResult(int, String[], int[])
      */
     public void requestLocationPermission(Runnable grantedCallback, Runnable deniedCallback) {
         this.permissionGrantedCallback = grantedCallback;
@@ -93,12 +100,11 @@ public class CurrentPosition {
      * @see CurrentPosition#requestLocationPermission(Runnable, Runnable)
      */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d(TAG, "" + requestCode);
         if (requestCode == REQUEST_POSITION_CODE) {
-            Log.d(TAG, "" + grantResults);
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "" + grantResults[0]);
-                Log.d(TAG, "GPS Location permission granted");
+                Log.i(TAG, "GPS Location permission granted");
+                locationManager = (LocationManager) activity.getSystemService(Activity.LOCATION_SERVICE);
+                Log.d(TAG, "onRequestPermissionsResult: " + locationManager);
 
                 // Execute callback if provided
                 if (permissionGrantedCallback != null) {
@@ -125,23 +131,20 @@ public class CurrentPosition {
      */
     public GeoPoint getCurrentGeoPoint() {
         GeoPoint myLocation = myLocationOverlay.getMyLocation();
-        Log.d(TAG, "getCurrentGeoPoint: " + myLocation);
         if (myLocation == null) {
             myLocation = positionFromManager();
         }
+        Log.d(TAG, "getCurrentGeoPoint: " + myLocation);
         return myLocation;
     }
 
     @SuppressLint("MissingPermission") // We check the permission with isLocationPermissionGranted
     private GeoPoint positionFromManager() {
         GeoPoint myLocation = null;
-        if (isLocationPermissionGranted()) {
-            LocationManager locationManager = (LocationManager) activity.getSystemService(Activity.LOCATION_SERVICE);
-            if (locationManager != null) {
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    myLocation = new GeoPoint(location);
-                }
+        if (isLocationPermissionGranted() && locationManager != null) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                myLocation = new GeoPoint(location);
             }
         }
         return myLocation;
@@ -187,5 +190,43 @@ public class CurrentPosition {
         centerOnLocation = true;
         myLocationOverlay.enableMyLocation();
         myLocationOverlay.enableFollowLocation();
+    }
+
+    /**
+     * Start location updates
+     * <p>
+     * If the location permission is granted, the location updates are started.
+     * <br>
+     * Every {@value LOCATION_UPDATE_MIN_TIME_MS} milliseconds or every {@value LOCATION_UPDATE_MIN_DISTANCE_METERS} meters, the callback is called with the new location.
+     * </p>
+     *
+     * @param callback The callback to call when the location changes
+     * @see LocationCallback
+     */
+    @SuppressLint("MissingPermission") // We check the permission with isLocationPermissionGranted
+    public void startLocationUpdates(LocationCallback callback) {
+        Log.d(TAG, "startLocationUpdates: Starting location updates");
+        LocationListener locationListener = location -> {
+            Log.d(TAG, "startLocationUpdates: Location changed");
+            Log.d(TAG, "startLocationUpdates: " + location);
+            callback.onLocationChanged(location);
+        };
+
+        if (isLocationPermissionGranted()) {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    LOCATION_UPDATE_MIN_TIME_MS,
+                    LOCATION_UPDATE_MIN_DISTANCE_METERS,
+                    locationListener
+            );
+        }
+    }
+
+    /**
+     * Describe the callback to call when the location changes.
+     */
+    @FunctionalInterface
+    public interface LocationCallback {
+        void onLocationChanged(Location location);
     }
 }

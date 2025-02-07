@@ -16,6 +16,7 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private CurrentPosition currentPosition;
     private MapMarker mapMarker;
     private IMapController mapController;
+    private GeoPoint startTrace;
+    private Polyline salesmanTrace;
+    private TextView infoUpdate;
+    private int updateCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         pauseBtn = findViewById(R.id.pause_btn);
         ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
         ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
+        infoUpdate = findViewById(R.id.infoUpdate);
 
         // Set onClickListener
         detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
@@ -127,8 +133,35 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         currentPosition.requestLocationPermission(
                 // If the permission is granted, set the center with the current position
                 () -> {
-                    setCenter();
+                    currentPosition.enableCenterOnLocation();
+                    startTrace = currentPosition.getCurrentGeoPoint();
+                    mapMarker.addMarker(getString(R.string.start), getString(R.string.start_of_the_trace), startTrace);
+                    mapController.setCenter(startTrace);
+
+                    currentPosition.enableCenterOnLocation();
+                    currentPosition.runOnFirstFix(() -> Log.d(TAG, currentPosition.getCurrentGeoPoint().toString()));
+
                     setNextClientInfo(route.getNextClient());
+
+                    salesmanTrace = new Polyline();
+                    salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
+                    salesmanTrace.getOutlinePaint().setStrokeWidth(5);
+                    salesmanTrace.addPoint(startTrace);
+                    mapView.getOverlayManager().add(salesmanTrace);
+
+                    updateInfoMessage();
+
+                    Log.d(TAG, "requestPermissionAndCenter: Avant startLocationUpdates");
+                    currentPosition.startLocationUpdates(location -> {
+                        GeoPoint currentPoint = new GeoPoint(location);
+                        Log.d(TAG, "requestPermissionAndCenter: " + currentPoint);
+                        salesmanTrace.addPoint(currentPoint);
+                        mapView.invalidate();
+                        //setNextClientInfo(route.getNextClient());
+                        updateInfoMessage();
+                        updateCount++;
+                    });
+
                 },
                 // If the permission is denied,
                 // show a popup to ask the user to allow the location permission
@@ -140,17 +173,15 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         );
     }
 
-    /**
-     * Set the center of the map to the current position
-     * Every time the position is updated, the map is centered on the current position
-     */
-    private void setCenter() {
-        currentPosition.enableCenterOnLocation();
-        currentPosition.runOnFirstFix(() -> runOnUiThread(() -> {
-            GeoPoint currentPoint = currentPosition.getCurrentGeoPoint();
-            mapController.setCenter(currentPoint);
-            mapController.animateTo(currentPoint);
-        }));
+    private void updateInfoMessage() {
+        infoUpdate.setText(MessageFormat.format(
+                "Latitude: {0}\nLongitude: {1}\nDistance from Start : {2,number,##}m\nUpdate Count : {3}\nPolyline Length : {4,number,##}m",
+                startTrace.getLatitude(),
+                startTrace.getLongitude(),
+                startTrace.distanceToAsDouble(startTrace),
+                updateCount,
+                salesmanTrace.getDistance())
+        );
     }
 
     /**
