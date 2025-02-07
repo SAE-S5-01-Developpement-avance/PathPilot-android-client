@@ -27,6 +27,7 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
@@ -86,8 +87,7 @@ public class ItineraryService extends AppCompatActivity{
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    // TODO move the strings in the values files
-                    DialogButton btnSaveItinerary = new DialogButton("Confirm",
+                    DialogButton btnSaveItinerary = new DialogButton(context.getString(R.string.confirm_creation_itinerary),
                             ((dialog, which) -> {
                         dialog.dismiss();
                         Intent returnIntent = new Intent(addItineraryActivity, Home.class);
@@ -282,8 +282,6 @@ public class ItineraryService extends AppCompatActivity{
     public static  void deleteItineraryToCancelTheCreation(Context context,String idItinerary) {
         String apiURLDelete = API_BASE_URL + "/" + idItinerary;
 
-        popup = new Popup(context);
-
         AddItinerary addItineraryActivity = (AddItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = addItineraryActivity.getJWTToken().getToken();
@@ -298,8 +296,6 @@ public class ItineraryService extends AppCompatActivity{
                 response -> {
                     progressDialog.dismiss();
                     Log.d(TAG, "onResponse: " + response);
-                    // TODO move the strings in the values files
-                    popup.showAlertDialog("Information", "The itinerary is now deleted");
                 },
                 error -> {
                     progressDialog.dismiss();
