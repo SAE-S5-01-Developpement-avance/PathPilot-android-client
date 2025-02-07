@@ -17,12 +17,12 @@ import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
 public class ServiceFactory {
 
     static ServiceFactory instance;
+
     IRouteService routeService;
     ILoginService loginService;
     ISignUpService signUpService;
     IClientService clientService;
     IItineraryService itineraryService;
-    // TODO add all services
 
     private ServiceFactory() {
         this.routeService = new RouteService();
@@ -32,49 +32,41 @@ public class ServiceFactory {
         this.itineraryService = new ItineraryService();
     }
 
-    public static ServiceFactory getInstance() {
+    private static ServiceFactory getInstance() {
         if (instance == null) {
             instance = new ServiceFactory();
         }
         return instance;
     }
 
-    public IRouteService routeService() {
+    private IRouteService routeService() {
         return routeService;
     }
-
-    public ILoginService loginService() {
+    private ILoginService loginService() {
         return loginService;
     }
-
-    public ISignUpService signUpService() {
+    private ISignUpService signUpService() {
         return signUpService;
     }
-
-    public IClientService clientService() {
+    private IClientService clientService() {
         return clientService;
     }
-
-    public IItineraryService itineraryService() {
+    private IItineraryService itineraryService() {
         return itineraryService;
     }
 
     public static IRouteService getRouteService() {
         return getInstance().routeService();
     }
-
     public static ILoginService getLoginService() {
         return getInstance().loginService();
     }
-
     public static ISignUpService getSignUpService() {
         return getInstance().signUpService();
     }
-
     public static IClientService getClientService() {
         return getInstance().clientService();
     }
-
     public static IItineraryService getItineraryService() {
         return getInstance().itineraryService();
     }
