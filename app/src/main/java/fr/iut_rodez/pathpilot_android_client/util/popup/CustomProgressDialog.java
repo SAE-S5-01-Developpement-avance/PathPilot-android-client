@@ -14,22 +14,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 public class CustomProgressDialog extends AlertDialog {
     private static final String TAG = CustomProgressDialog.class.getSimpleName();
     private TextView message;
-    private final String messageToDisplay;
-
-    /**
-     * Creates a dialog with a progress spinner and a message.
-     * <p>
-     * The supplied {@code context} is used to get the window manager and
-     * base theme used to present the dialog.
-     *
-     * @param context the context in which the dialog should run
-     * @param message the message to display
-     */
-    public CustomProgressDialog(@NonNull Context context, String message) {
-        super(context);
-        Log.d(TAG, "CustomProgressDialog: " + message);
-        messageToDisplay = message;
-    }
+    private String messageToDisplay;
 
     /**
      * Creates a dialog with a progress spinner and a default message.
@@ -39,7 +24,12 @@ public class CustomProgressDialog extends AlertDialog {
      * @param context
      */
     public CustomProgressDialog(@NonNull Context context) {
-        this(context, context.getString(R.string.loading));
+        super(context);
+        messageToDisplay = context.getString(R.string.loading);
+    }
+
+    public void setMessage(String messageToDisplay) {
+        this.messageToDisplay = messageToDisplay;
     }
 
     @Override
@@ -50,14 +40,6 @@ public class CustomProgressDialog extends AlertDialog {
 
         message = findViewById(R.id.message);
         message.setText(messageToDisplay);
-    }
-
-    public void setMessage(String message) {
-        this.message.setText(message);
-    }
-
-    public void setMessage(int message) {
-        this.message.setText(message);
     }
 
     public void show() {

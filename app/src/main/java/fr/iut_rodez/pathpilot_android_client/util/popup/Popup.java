@@ -1,7 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.util.popup;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -14,28 +13,32 @@ import fr.iut_rodez.pathpilot_android_client.R;
  */
 public class Popup {
 
+    private static final String TAG = Popup.class.getSimpleName();
     private final Context context;
-
-    private ProgressDialog progressDialog;
+    private CustomProgressDialog customProgressDialog;
 
     public Popup(Context context) {
         this.context = context;
     }
 
-    public void showProgressDialog(@Nls String title, @Nls String message) {
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle(title);
-        progressDialog.setMessage(message);
-        progressDialog.show();
+    public void showProgressDialog(@Nls String message) {
+        dismissProgressDialog(); // Dismiss any previous dialog
+
+        customProgressDialog = new CustomProgressDialog(context);
+        customProgressDialog.setCancelable(false);
+        if (message != null && !message.isBlank()) {
+            customProgressDialog.setMessage(message);
+        }
+        customProgressDialog.show();
     }
 
     public void showProgressDialog() {
-        showProgressDialog("", "");
+        showProgressDialog(null);
     }
 
     public void dismissProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
+        if (customProgressDialog != null) {
+            customProgressDialog.dismiss();
         }
     }
 
