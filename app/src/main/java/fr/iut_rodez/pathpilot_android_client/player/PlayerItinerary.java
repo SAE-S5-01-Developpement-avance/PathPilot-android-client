@@ -12,12 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
 
@@ -38,36 +37,32 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private static final int ICON_PLAY = R.drawable.icon_start;
     private static final int ICON_PAUSE = R.drawable.icon_pause;
-
+    private final Popup popup = new Popup(this);
     private TextView clientName;
     private TextView clientAddress;
     private TextView clientDistance;
     private TextView counterVisitedClients;
     private ImageButton pauseBtn;
-
     private Route route;
-
-    private final Popup popup = new Popup(this);
-    private CurrentPosition currentPosition;
     private MapMarker mapMarker;
     private IMapController mapController;
-    RoadManager roadManager;
+    private GeoPoint startTrace;
+    private Polyline salesmanTrace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //The parent class ActivityWithCurrentPosition,
+        // need the view to be set because it uses findViewById
+        setContentView(R.layout.view_player_itinerary);
         super.onCreate(savedInstanceState);
 
-        // Important! Initialise the osmdroid configuration
-        Configuration.getInstance().setUserAgentValue(getPackageName());
-
-        setContentView(R.layout.view_player_itinerary);
+        mapMarker = new MapMarker(this);
 
         ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
         clientName = findViewById(R.id.client_name);
         clientAddress = findViewById(R.id.client_address);
         clientDistance = findViewById(R.id.client_distance);
         counterVisitedClients = findViewById(R.id.counter_visited_clients);
-        mapView = findViewById(R.id.mapview);
         ImageButton stopBtn = findViewById(R.id.stop_btn);
         pauseBtn = findViewById(R.id.pause_btn);
         ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
@@ -99,13 +94,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * <br>
      * Also request the location permission and center the map
      * </p>
+     *
      * @see PlayerItinerary#requestPermissionAndCenter()
      */
     private void initialiseMap() {
         Log.d(TAG, "initialiseMap: Initialising the map");
-        mapView = findViewById(R.id.mapview);
         mapController = mapView.getController();
-        roadManager = new OSRMRoadManager(this, getString(R.string.app_name));
 
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
@@ -113,8 +107,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         mapController.setZoom(15.0);
         mapController.setCenter(route.getSalesmanHome());
 
-        currentPosition = new CurrentPosition(this);
-        mapMarker = new MapMarker(this);
         requestPermissionAndCenter();
 
         setExpectedClientMarker(route.getExpectedClients(), route.getNextClient());
@@ -133,7 +125,23 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         currentPosition.requestLocationPermission(
                 // If the permission is granted, set the center with the current position
                 () -> {
-                    setCenter();
+                    currentPosition.followLocation(true);
+                    startTrace = currentPosition.getCurrentGeoPoint();
+                    mapController.setCenter(startTrace);
+
+                    salesmanTrace = new Polyline();
+                    salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
+                    salesmanTrace.getOutlinePaint().setStrokeWidth(5);
+                    salesmanTrace.addPoint(startTrace);
+                    mapView.getOverlayManager().add(salesmanTrace);
+
+                    currentPosition.startLocationUpdates(location -> {
+                        GeoPoint currentPoint = new GeoPoint(location);
+                        Log.d(TAG, "requestPermissionAndCenter: " + currentPoint);
+                        salesmanTrace.addPoint(currentPoint);
+                        mapView.invalidate();
+                        setNextClientInfo(route.getNextClient());
+                    });
                     setNextClientInfo(route.getNextClient());
                 },
                 // If the permission is denied,
@@ -144,19 +152,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     popup.showAlertDialog(getString(R.string.warning), getString(R.string.need_to_allow_location_permission), yes, null, no);
                 }
         );
-    }
-
-    /**
-     * Set the center of the map to the current position
-     * Every time the position is updated, the map is centered on the current position
-     */
-    private void setCenter() {
-        currentPosition.enableCenterOnLocation();
-        currentPosition.runOnFirstFix(() -> runOnUiThread(() -> {
-            GeoPoint currentPoint = currentPosition.getCurrentGeoPoint();
-            mapController.setCenter(currentPoint);
-            mapController.animateTo(currentPoint);
-        }));
     }
 
     /**
@@ -249,11 +244,5 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private void stop() {
         Log.d(TAG, "stop: ");
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

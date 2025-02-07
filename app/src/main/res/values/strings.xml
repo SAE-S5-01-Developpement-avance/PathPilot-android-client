@@ -158,9 +158,9 @@
     <string name="error_while_searching">Error during research:</string>
     <string name="no_itinerary_retrieve">No itinerary retrieve</string>
     <string name="no_token_retrieve">No token retrieve</string>
+    <string name="home">Home</string>
 
 
     <string name="content_description_pathpilot_icon" translatable="false">PathPilot icon</string>
     <string name="content_description_plus_icon" translatable="false">Plus icon</string>
-    <string name="home">Home</string>
 </resources>

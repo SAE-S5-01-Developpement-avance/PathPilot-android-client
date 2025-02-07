@@ -15,8 +15,8 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
-import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class RouteService implements IRouteService {
 
