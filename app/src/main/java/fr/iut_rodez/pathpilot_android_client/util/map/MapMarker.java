@@ -110,6 +110,16 @@ public class MapMarker {
     }
 
     /**
+     * Add a marker on the map with the default marker icon
+     * @param title The title of the marker
+     * @param description The description of the marker
+     * @param startTrace The position of the marker
+     */
+    public void addMarker(@NonNull String title,@NonNull String description,@NonNull GeoPoint startTrace) {
+        addMarker(title, description, startTrace, (Drawable) null);
+    }
+
+    /**
      * Define the custom map marker icon.
      */
     public enum MarkerType {
