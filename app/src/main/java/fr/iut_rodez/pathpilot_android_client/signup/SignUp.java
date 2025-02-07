@@ -27,16 +27,20 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
 import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
-import fr.iut_rodez.pathpilot_android_client.signup.SignUpService.SignUpInput;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Handle the sign up Activity
  */
 public class SignUp extends AppCompatActivity {
+
     private static final String TAG = SignUp.class.getSimpleName();
+
+    private final ISignUpService signUpService = ServiceFactory.getSignUpService();
+
     private EditText firstName;
     private EditText lastName;
     private EditText mail;
@@ -290,7 +294,7 @@ public class SignUp extends AppCompatActivity {
                 passwordText
         );
 
-        SignUpService.signUp(signUpInput, this);
+        signUpService.signUp(signUpInput, this);
     }
 
     /**
