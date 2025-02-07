@@ -20,6 +20,7 @@ import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;

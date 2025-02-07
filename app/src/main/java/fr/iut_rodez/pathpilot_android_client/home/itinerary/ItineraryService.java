@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
@@ -41,8 +42,6 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 public class ItineraryService extends AppCompatActivity{
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
     private static final String TAG = ItineraryService.class.getSimpleName();
-
-    private static Popup popup;
 
     /**
      * Request to the API to add an itinerary.
@@ -70,34 +69,12 @@ public class ItineraryService extends AppCompatActivity{
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
-
+        List<Client> listClientOrdered = new ArrayList<>();
         JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST,
                 API_BASE_URL, itinerariesInput, jwtToken,
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
-
-                    StringBuilder orderedClientsListText = new StringBuilder();
-                    try {
-                        JSONArray orderedClientsList = response.getJSONArray("clients_schedule");
-                        for (int i = 0; i < orderedClientsList.length(); i++) {
-                            for (int j = 0; j < listClients.size(); j++) {
-                                if (listClients.get(j).getId() == orderedClientsList.getJSONObject(i).getInt("id")){
-                                    orderedClientsListText.append(listClients.get(j).layoutClientItemList()).append("\n");
-                                }
-                            }
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    DialogButton btnSaveItinerary = new DialogButton(context.getString(R.string.confirm_creation_itinerary),
-                            ((dialog, which) -> {
-                        dialog.dismiss();
-                        Intent returnIntent = new Intent(addItineraryActivity, Home.class);
-                        addItineraryActivity.setResult(AddItinerary.RESULT_OK, returnIntent);
-                        returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, true);
-                        addItineraryActivity.finish();
-                    }));
 
                     StringBuilder orderedClientsListText = new StringBuilder();
                     try {
@@ -285,9 +262,9 @@ public class ItineraryService extends AppCompatActivity{
     public static  void deleteItineraryToCancelTheCreation(Context context,String idItinerary) {
         String apiURLDelete = API_BASE_URL + "/" + idItinerary;
 
-        AddItinerary addItineraryActivity = (AddItinerary) context;
+        SaveItinerary saveItinerary = (SaveItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = addItineraryActivity.getJWTToken().getToken();
+        String jwtToken = saveItinerary.getJWTToken().getToken();
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
