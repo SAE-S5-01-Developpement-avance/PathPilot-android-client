@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.clients;
 
-import static fr.iut_rodez.pathpilot_android_client.home.clients.ClientService.getNextPageClients;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
@@ -43,6 +42,7 @@ public class FragmentClients extends Fragment {
 
     private ListView listClientsView;
     private Home homeActivity;
+    private final IClientService clientService = ServiceFactory.getClientService();
 
 
 
@@ -81,7 +81,7 @@ public class FragmentClients extends Fragment {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getClientPage().getNext();
                     if (nextLink != null) {
-                        getNextPageClients(homeActivity, listClientsView, nextLink.href(), (ClientArrayAdapter) listClientsView.getAdapter());
+                        clientService.getNextPageClients(homeActivity, listClientsView, nextLink.href(), (ClientArrayAdapter) listClientsView.getAdapter());
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class FragmentClients extends Fragment {
 
         if (optionSelected == R.id.delete_client) {
             Log.d(TAG, "onContextItemSelected: Delete client");
-            ClientService.deleteClient(homeActivity, clientSelected, listClientsView);
+            clientService.deleteClient(homeActivity, clientSelected, listClientsView);
         } else {
             Log.e(TAG, "onContextItemSelected: Unknown option selected");
         }
@@ -117,7 +117,7 @@ public class FragmentClients extends Fragment {
     }
 
     public void loadClients() {
-        ClientService.getClients(homeActivity, listClientsView);
+        clientService.getClients(homeActivity, listClientsView);
     }
 
     private void gotoCreateClient() {

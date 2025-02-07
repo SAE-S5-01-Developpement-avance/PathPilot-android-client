@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client;
 
+import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
+import fr.iut_rodez.pathpilot_android_client.home.clients.IClientService;
 import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.home.routes.RouteService;
 import fr.iut_rodez.pathpilot_android_client.login.ILoginService;
@@ -16,12 +18,14 @@ public class ServiceFactory {
     IRouteService routeService;
     ILoginService loginService;
     ISignUpService signUpService;
+    IClientService clientService;
     // TODO add all services
 
     private ServiceFactory() {
         this.routeService = new RouteService();
         this.loginService = new LoginService();
         this.signUpService = new SignUpService();
+        this.clientService = new ClientService();
     }
 
     public static ServiceFactory getInstance() {
@@ -43,6 +47,10 @@ public class ServiceFactory {
         return signUpService;
     }
 
+    public IClientService clientService() {
+        return clientService;
+    }
+
     public static IRouteService getRouteService() {
         return getInstance().routeService();
     }
@@ -53,5 +61,9 @@ public class ServiceFactory {
 
     public static ISignUpService getSignUpService() {
         return getInstance().signUpService();
+    }
+
+    public static IClientService getClientService() {
+        return getInstance().clientService();
     }
 }
