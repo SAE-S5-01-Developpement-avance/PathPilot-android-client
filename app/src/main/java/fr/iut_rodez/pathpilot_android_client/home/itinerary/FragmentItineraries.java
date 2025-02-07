@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
-import static fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryService.getNextPageItineraries;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
@@ -45,6 +43,7 @@ public class FragmentItineraries extends Fragment {
 
     private ListView listItinerariesView;
     private Home homeActivity;
+    private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
     public static FragmentItineraries newInstance() {
         return new FragmentItineraries();
@@ -82,7 +81,7 @@ public class FragmentItineraries extends Fragment {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getItineraryPage().getNext();
                     if (nextLink != null) {
-                        getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(), (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter());
+                        itineraryService.getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(), (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter());
                     }
                 }
             }
@@ -119,7 +118,7 @@ public class FragmentItineraries extends Fragment {
 
         if (optionSelected == R.id.delete_itinerary) {
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
-            ItineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
+            itineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
         } else {
             Log.e(TAG, "onContextItemSelected: Unknown option selected");
         }
@@ -130,7 +129,7 @@ public class FragmentItineraries extends Fragment {
      * Call the service to load all the itineraries from the API.
      */
     public void loadItineraries() {
-        ItineraryService.getItineraries(homeActivity, listItinerariesView);
+        itineraryService.getItineraries(homeActivity, listItinerariesView);
     }
 
     /**
