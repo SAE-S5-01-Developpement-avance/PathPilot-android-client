@@ -20,8 +20,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import fr.iut_rodez.pathpilot_android_client.BuildConfig;
-import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryArrayAdapter;
@@ -65,7 +63,7 @@ public class ItineraryService implements IItineraryService {
 
                     Intent returnIntent = new Intent(addItineraryActivity, Home.class);
                     addItineraryActivity.setResult(AddItinerary.RESULT_OK, returnIntent);
-                    returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, true);
+                    returnIntent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, true);
                     addItineraryActivity.finish();
                 },
                 error -> {

@@ -22,7 +22,7 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
  * Service to handle login requests.
  */
 public class LoginService implements ILoginService {
-    public static final String CLE_TOKEN = "token";
+    public static final String TOKEN_KEY = "token";
 
     @Override
     public void login(String email, String password, Context context) {
@@ -48,7 +48,7 @@ public class LoginService implements ILoginService {
 
                         Intent intent = new Intent(context, Home.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(LoginService.CLE_TOKEN, JWTToken);
+                        intent.putExtra(TOKEN_KEY, JWTToken);
 
                         context.startActivity(intent);
                     } catch (JSONException e) {

@@ -38,7 +38,7 @@ public class FragmentClients extends Fragment {
      */
     public static final int ICON = R.drawable.icon_clients;
     private static final String TAG = FragmentClients.class.getSimpleName();
-    public static final String CLE_TOKEN = "token";
+    public static final String TOKEN_KEY = "token";
 
     private ListView listClientsView;
     private Home homeActivity;
@@ -123,7 +123,7 @@ public class FragmentClients extends Fragment {
     private void gotoCreateClient() {
         Log.d(TAG, "gotoCreateClient: Goto create client");
         Intent intent = new Intent(getActivity(), AddClient.class);
-        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+        intent.putExtra(TOKEN_KEY, homeActivity.getJWTToken());
 
         homeActivity.getAddClientLauncher().launch(intent);
     }

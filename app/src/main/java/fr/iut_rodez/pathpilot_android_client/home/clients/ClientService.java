@@ -16,7 +16,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 
@@ -143,7 +142,7 @@ public class ClientService implements IClientService {
                     Log.d(TAG, "onResponse: " + response);
 
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra(AddClient.CLE_CLIENT_ADDED, true);
+                    returnIntent.putExtra(AddClient.ADDED_CLIENT_KEY, true);
                     addClientActivity.setResult(AddClient.RESULT_OK, returnIntent);
 
                     addClientActivity.finish();

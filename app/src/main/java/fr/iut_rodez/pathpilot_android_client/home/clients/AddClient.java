@@ -38,7 +38,7 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 public class AddClient extends AppCompatActivity {
 
     private static final String TAG = fr.iut_rodez.pathpilot_android_client.signup.SignUp.class.getSimpleName();
-    public static final String CLE_CLIENT_ADDED = "clientAdded";
+    public static final String ADDED_CLIENT_KEY = "clientAdded";
 
     private ActivityResultLauncher<Intent> launcherMapSelection;
 
@@ -91,7 +91,7 @@ public class AddClient extends AppCompatActivity {
         popup = new Popup(this);
 
         Intent intent = getIntent();
-        jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
+        jwtToken = intent.getParcelableExtra(FragmentClients.TOKEN_KEY);
 
         launcherMapSelection = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::handleReturnedMapSelection);
     }
@@ -319,7 +319,7 @@ public class AddClient extends AppCompatActivity {
         Log.d(TAG, "Switch to Home activity");
 
         Intent returnIntention = new Intent();
-        returnIntention.putExtra(CLE_CLIENT_ADDED, false);
+        returnIntention.putExtra(ADDED_CLIENT_KEY, false);
         setResult(RESULT_OK, returnIntention);
 
         finish();

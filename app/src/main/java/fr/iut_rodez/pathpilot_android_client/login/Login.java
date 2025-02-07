@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
-import static fr.iut_rodez.pathpilot_android_client.signup.SignUpService.CLE_MAIL;
+import static fr.iut_rodez.pathpilot_android_client.signup.SignUpService.EMAIL_KEY;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,8 +53,8 @@ public class Login extends AppCompatActivity {
 
         // If the Activity was started by the SignUp Activity, get the email from the intent
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(CLE_MAIL)) {
-            emailInput.setText(intent.getStringExtra(CLE_MAIL));
+        if (intent != null && intent.hasExtra(EMAIL_KEY)) {
+            emailInput.setText(intent.getStringExtra(EMAIL_KEY));
         }
     }
 

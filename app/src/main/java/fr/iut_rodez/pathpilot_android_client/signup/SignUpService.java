@@ -13,7 +13,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
 import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
@@ -21,7 +20,7 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class SignUpService implements ISignUpService {
-    public static final String CLE_MAIL = "mail";
+    public static final String EMAIL_KEY = "mail";
 
     @Override
     public void signUp(SignUpInput signUpInput, Context context)  {
@@ -47,7 +46,7 @@ public class SignUpService implements ISignUpService {
                         dialog.dismiss();
 
                         Intent intent = new Intent(context, Login.class);
-                        intent.putExtra(SignUpService.CLE_MAIL, signUpInput.mail());
+                        intent.putExtra(SignUpService.EMAIL_KEY, signUpInput.mail());
 
                         context.startActivity(intent);
                     });
