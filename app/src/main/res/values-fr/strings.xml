@@ -211,4 +211,8 @@ String for Login activity
     <string name="cancel_creation_itinerary">Annuler</string>
     <string name="confirm_creation_itinerary">Confirmer</string>
     <string name="save_itinerary_title">Sauvegarder l\'itinéraire</string>
+    <string name="header_save_itinerary">Sauvegarder un itinéraire</string>
+    <string name="title_save_itinerary">L\'ordre des clients à visiter</string>
+    <string name="btn_cancel_itinerary_creation">Annuler</string>
+    <string name="btn_save_itinerary">Sauvegarder</string>
 </resources>
