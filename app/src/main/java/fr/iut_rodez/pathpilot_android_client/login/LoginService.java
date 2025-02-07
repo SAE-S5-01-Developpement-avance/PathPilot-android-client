@@ -6,7 +6,6 @@ import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.ge
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -42,7 +41,6 @@ public class LoginService implements ILoginService {
                     try {
                         String token = response.getString("token");
                         int expiresIn = response.getInt("expiresIn");
-                        LoginService.saveAuthToken(token, context); // TODO See if we really need it
 
                         JWTToken JWTToken = new JWTToken(token, expiresIn);
 
@@ -65,21 +63,6 @@ public class LoginService implements ILoginService {
         };
 
         requestQueue.add(request);
-    }
-
-    /**
-     * Save the authentication token in the SharedPreferences.
-     *
-     * @param token   the authentication token
-     * @param context the context of the application
-     */
-    private static void saveAuthToken(String token, Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AuthPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("auth_token", token);
-        editor.apply();
-        Log.d(TAG, "saveAuthToken: Token saved");
-        Log.d(TAG, "saveAuthToken: Token: " + token);
     }
 
     /**
