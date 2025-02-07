@@ -39,17 +39,12 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
     private Marker selectedMarker = null;
 
     private Popup popup;
-    private CurrentPosition currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.view_map_selection);
         super.onCreate(savedInstanceState);
         popup = new Popup(this);
-
-        // Important! Initialise the osmdroid configuration
-        Configuration.getInstance().setUserAgentValue(getPackageName());
-
-        setContentView(R.layout.view_map_selection);
 
         selectButton = findViewById(R.id.select);
         selectButton.setOnClickListener(v -> sendSelectedPoint());
@@ -59,9 +54,7 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
         findViewById(R.id.search).setOnClickListener(v -> searchAddress());
 
         // Initialise the map
-        mapView = findViewById(R.id.mapview);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
-        currentPosition = new CurrentPosition(this);
 
         // Enable zoom buttons and multi-touch zoom
         mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
@@ -74,7 +67,7 @@ public class MapSelection extends ActivityWithCurrentPosition implements MapEven
         mapController.setCenter(getGivenSelectedPointOrDefault());
         currentPosition.requestLocationPermission(() -> {
             mapController.setCenter(getGivenSelectedPointOrDefault());
-            currentPosition.disableCenterOnLocation();
+            currentPosition.followLocation(false);
         }, null);
 
         GeoPoint givenSelectedPoint = getGivenSelectedPoint();

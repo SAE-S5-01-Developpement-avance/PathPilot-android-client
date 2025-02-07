@@ -44,34 +44,29 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private TextView counterVisitedClients;
     private ImageButton pauseBtn;
     private Route route;
-    private CurrentPosition currentPosition;
     private MapMarker mapMarker;
     private IMapController mapController;
     private GeoPoint startTrace;
     private Polyline salesmanTrace;
-    private TextView infoUpdate;
-    private int updateCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //The parent class ActivityWithCurrentPosition,
+        // need the view to be set because it uses findViewById
+        setContentView(R.layout.view_player_itinerary);
         super.onCreate(savedInstanceState);
 
-        // Important! Initialise the osmdroid configuration
-        Configuration.getInstance().setUserAgentValue(getPackageName());
-
-        setContentView(R.layout.view_player_itinerary);
+        mapMarker = new MapMarker(this);
 
         ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
         clientName = findViewById(R.id.client_name);
         clientAddress = findViewById(R.id.client_address);
         clientDistance = findViewById(R.id.client_distance);
         counterVisitedClients = findViewById(R.id.counter_visited_clients);
-        mapView = findViewById(R.id.mapview);
         ImageButton stopBtn = findViewById(R.id.stop_btn);
         pauseBtn = findViewById(R.id.pause_btn);
         ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
         ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
-        infoUpdate = findViewById(R.id.infoUpdate);
 
         // Set onClickListener
         detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
@@ -104,7 +99,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private void initialiseMap() {
         Log.d(TAG, "initialiseMap: Initialising the map");
-        mapView = findViewById(R.id.mapview);
         mapController = mapView.getController();
 
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
@@ -113,8 +107,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         mapController.setZoom(15.0);
         mapController.setCenter(route.getSalesmanHome());
 
-        currentPosition = new CurrentPosition(this);
-        mapMarker = new MapMarker(this);
         requestPermissionAndCenter();
 
         setExpectedClientMarker(route.getExpectedClients(), route.getNextClient());
@@ -133,15 +125,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         currentPosition.requestLocationPermission(
                 // If the permission is granted, set the center with the current position
                 () -> {
-                    currentPosition.enableCenterOnLocation();
+                    currentPosition.followLocation(true);
                     startTrace = currentPosition.getCurrentGeoPoint();
                     mapMarker.addMarker(getString(R.string.start), getString(R.string.start_of_the_trace), startTrace);
                     mapController.setCenter(startTrace);
-
-                    currentPosition.enableCenterOnLocation();
-                    currentPosition.runOnFirstFix(() -> Log.d(TAG, currentPosition.getCurrentGeoPoint().toString()));
-
-                    setNextClientInfo(route.getNextClient());
 
                     salesmanTrace = new Polyline();
                     salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
@@ -149,19 +136,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     salesmanTrace.addPoint(startTrace);
                     mapView.getOverlayManager().add(salesmanTrace);
 
-                    updateInfoMessage();
-
-                    Log.d(TAG, "requestPermissionAndCenter: Avant startLocationUpdates");
                     currentPosition.startLocationUpdates(location -> {
                         GeoPoint currentPoint = new GeoPoint(location);
                         Log.d(TAG, "requestPermissionAndCenter: " + currentPoint);
                         salesmanTrace.addPoint(currentPoint);
                         mapView.invalidate();
-                        //setNextClientInfo(route.getNextClient());
-                        updateInfoMessage();
-                        updateCount++;
+                        setNextClientInfo(route.getNextClient());
                     });
-
+                    setNextClientInfo(route.getNextClient());
                 },
                 // If the permission is denied,
                 // show a popup to ask the user to allow the location permission
@@ -170,17 +152,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     DialogButton yes = new DialogButton(getString(R.string.yes_give_access), DialogButton.getFinishListener(this));
                     popup.showAlertDialog(getString(R.string.warning), getString(R.string.need_to_allow_location_permission), yes, null, no);
                 }
-        );
-    }
-
-    private void updateInfoMessage() {
-        infoUpdate.setText(MessageFormat.format(
-                "Latitude: {0}\nLongitude: {1}\nDistance from Start : {2,number,##}m\nUpdate Count : {3}\nPolyline Length : {4,number,##}m",
-                startTrace.getLatitude(),
-                startTrace.getLongitude(),
-                startTrace.distanceToAsDouble(startTrace),
-                updateCount,
-                salesmanTrace.getDistance())
         );
     }
 
@@ -274,11 +245,5 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private void stop() {
         Log.d(TAG, "stop: ");
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        currentPosition.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
