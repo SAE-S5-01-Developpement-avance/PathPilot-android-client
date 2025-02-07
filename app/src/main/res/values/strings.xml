@@ -126,6 +126,11 @@
     <string name="select_client_to_create_itinerary">Select clients</string>
     <string name="client_address_not_found">Address not found</string>
     <string name="delete_itinerary">Delete</string>
+    <string name="cancel_creation_itinerary">Cancel</string>
+    <string name="confirm_creation_itinerary">Confirm</string>
+    <string name="save_itinerary_title">Save the itinerary</string>
+    <string name="save_itinerary_popup_content">The order of the clients to visit for this itinerary</string>
+
 
     <!--
     Itinerary info
