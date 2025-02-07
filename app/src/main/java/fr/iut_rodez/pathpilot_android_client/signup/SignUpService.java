@@ -24,7 +24,7 @@ public class SignUpService implements ISignUpService {
 
     @Override
     public void signUp(SignUpInput signUpInput, Context context)  {
-        Log.d(SignUpService.TAG, "API URL: " + SignUpService.LOGIN_URL);
+        Log.d(TAG, "API URL: " + LOGIN_URL);
 
         Popup popup = new Popup(context);
 
@@ -34,11 +34,11 @@ public class SignUpService implements ISignUpService {
         RequestQueue requestQueue = getRequestQueue(context);
         JSONObject signUpInputJson = signUpInput.toJson();
 
-        Log.d(SignUpService.TAG, "signUp: " + signUpInputJson);
+        Log.d(TAG, "signUp: " + signUpInputJson);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SignUpService.LOGIN_URL, signUpInputJson,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, signUpInputJson,
                 response -> {
-                    Log.d(SignUpService.TAG, "onResponse: " + response);
+                    Log.d(TAG, "onResponse: " + response);
                     progressDialog.dismiss();
 
                     // Button to go to login page
@@ -60,7 +60,7 @@ public class SignUpService implements ISignUpService {
                     );
                 },
                 error -> {
-                    Log.e(SignUpService.TAG, "Error while sending request", error);
+                    Log.e(TAG, "Error while sending request", error);
                     progressDialog.dismiss();
                     VolleyErrorHandler.handleError(context, error);
                 }

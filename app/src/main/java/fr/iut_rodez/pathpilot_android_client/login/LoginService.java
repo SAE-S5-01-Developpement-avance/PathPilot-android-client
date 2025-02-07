@@ -26,7 +26,7 @@ public class LoginService implements ILoginService {
 
     @Override
     public void login(String email, String password, Context context) {
-        Log.d(TAG, "API URL: " + LoginService.LOGIN_URL);
+        Log.d(TAG, "API URL: " + LOGIN_URL);
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
@@ -36,7 +36,7 @@ public class LoginService implements ILoginService {
 
         Log.d(TAG, "login: " + loginInputJson);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LoginService.LOGIN_URL, loginInputJson,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, loginInputJson,
                 response -> {
                     Log.d(TAG, "onResponse: " + response);
                     try {
