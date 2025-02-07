@@ -45,11 +45,6 @@ public class CurrentPosition {
         myLocationOverlay.enableFollowLocation();
     }
 
-    @NonNull
-    private static GeoPoint getGeoPoint(Location location) {
-        return new GeoPoint(location.getLatitude(), location.getLongitude());
-    }
-
     public boolean isLocationPermissionGranted() {
         final String accessCoarseLocation = Manifest.permission.ACCESS_COARSE_LOCATION;
         final String accessFineLocation = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -145,7 +140,7 @@ public class CurrentPosition {
             if (locationManager != null) {
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
-                    myLocation = getGeoPoint(location);
+                    myLocation = new GeoPoint(location);
                 }
             }
         }
