@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
+import static fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.JWT_TOKEN_KEY;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +19,10 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.PlayerItinerary;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -27,7 +30,6 @@ public class InfoRoute extends AppCompatActivity {
 
     private static final String TAG = InfoRoute.class.getSimpleName();
     public static final String ROUTE_KEY = "route";
-    public static final String JWT_TOKEN_KEY = "jwtToken";
 
     private Route route;
     private Popup popup;
@@ -72,16 +74,15 @@ public class InfoRoute extends AppCompatActivity {
         }
 
         List<Client> clients = route.getExpectedClients();
+        for (Client client : clients) {
+            client.setState(getVisitStatus(client));
+            client.setAddressDisplayName(this);
+        }
         List<TimelineItem> timelineItems = new ArrayList<>();
 
         // Convert route stops to timeline items
         for (Client client : clients) {
-            String visitStatus = getVisitStatus(client);
-            timelineItems.add(new TimelineItem(
-                    client.getCompanyName(),
-                    visitStatus,
-                    client.getAddressDisplayName()
-            ));
+            timelineItems.add(new TimelineItem(client));
             Log.d(TAG, "setUpTimelineClients: Client: " + client);
         }
 
@@ -89,7 +90,7 @@ public class InfoRoute extends AppCompatActivity {
         TimelineAdapter timelineAdapter = new TimelineAdapter(this, timelineItems);
         timelineRecyclerView.setAdapter(timelineAdapter);
 
-        // Set header title TODO change to route name
+        // Set header text to route ID
         ((TextView) findViewById(R.id.header_text)).setText(route.getId());
 
         // Update resume button text based on route status
@@ -101,16 +102,16 @@ public class InfoRoute extends AppCompatActivity {
      * @param client The client to check
      * @return Status string (VISITED/CURRENT/PENDING)
      */
-    private String getVisitStatus(Client client) {
+    private ClientState getVisitStatus(Client client) {
         int clientIndex = route.getExpectedClients().indexOf(client);
         int currentIndex = route.getIndexCurrentClient();
 
         if (clientIndex < currentIndex) {
-            return "VISITED";
-        } else if (clientIndex == currentIndex) {
-            return "CURRENT";
+            return ClientState.VISITED;
+        } else if (clientIndex >= currentIndex) {
+            return ClientState.NOT_VISITED;
         } else {
-            return "PENDING";
+            return ClientState.SKIPPED;
         }
     }
 

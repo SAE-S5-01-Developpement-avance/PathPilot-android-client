@@ -12,12 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
-import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 
@@ -37,6 +33,7 @@ public class Client implements Parcelable {
     private String contactFirstName;
     private String phoneNumber;
     private String salesman;
+    private ClientState state;
 
     public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, ClientCategory clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
         this.id = id;
@@ -321,5 +318,13 @@ public class Client implements Parcelable {
 
     static class ClientConstant {
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
+    }
+
+    public void setState(ClientState state) {
+        this.state = state;
+    }
+
+    public ClientState getState() {
+        return state;
     }
 }

@@ -38,9 +38,9 @@ public class FragmentRoutes extends Fragment {
      *
      * @see Home
      */
-    public static final int ICON = R.drawable.icon_list;
+    public static final int ICON = R.drawable.icon_car;
     private static final String TAG = FragmentRoutes.class.getSimpleName();
-    public static final String CLE_TOKEN = "token";
+    public static final String JWT_TOKEN_KEY = "token";
     public static final String LIST_CLIENT_KEY = "listClient";
     public static final String ITINERARY_KEY = "route";
 
@@ -101,7 +101,7 @@ public class FragmentRoutes extends Fragment {
             Log.d(TAG, "onItemClick: Route: " + route);
             Intent intent = new Intent(getActivity(), InfoRoute.class);
             intent.putExtra(ITINERARY_KEY, route);
-            intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+            intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
             startActivity(intent);
         });
 
@@ -133,6 +133,7 @@ public class FragmentRoutes extends Fragment {
      */
     public void loadRoutes() {
         routeService.getRoutes(homeActivity, listRoutesView);
+
     }
 
     /**

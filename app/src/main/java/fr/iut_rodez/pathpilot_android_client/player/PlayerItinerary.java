@@ -22,11 +22,12 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
-import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.map.CurrentPosition.ActivityWithCurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.util.LocationNameProvider;
-import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
+import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
+import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 

@@ -21,13 +21,15 @@ import org.osmdroid.util.GeoPoint;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
-import fr.iut_rodez.pathpilot_android_client.util.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 
 public class Route implements Parcelable {
 
@@ -73,6 +75,11 @@ public class Route implements Parcelable {
      * The current position of the salesman
      */
     private GeoPoint currentSalesmanPosition;
+
+    /**
+     * The display name of the route date
+     */
+    private String dateDisplayName;
 
     public Route(JSONObject routeJson) throws JSONException {
         // Parse the JSON object and create a route
@@ -124,6 +131,27 @@ public class Route implements Parcelable {
         dest.writeParcelable(currentSalesmanPosition, flags);
     }
 
+   /**
+     * Get the display name of the route date
+     *
+     * @return The display name of the route date
+     */
+    public void setDateDisplayName(Locale currentLocale) {
+        DateTimeFormatter localeFormatter = DateTimeFormatter
+                .ofPattern("dd/MM/yyyy hh:mm")
+                .withLocale(currentLocale);
+        this.dateDisplayName = startDate.format(localeFormatter);
+    }
+
+    /**
+     * Get the display name of the route date
+     *
+     * @return The display name of the route date
+     */
+    public String getDateDisplayName() {
+        return dateDisplayName == null ? "" : dateDisplayName;
+    }
+
     /**
      * Adapter to display the routes in a ListView.
      */
@@ -163,7 +191,13 @@ public class Route implements Parcelable {
 
             routeClientNames.setText(getClientsDisplay(route.getExpectedClients()));
 
-            routeBeginDate.setText(MessageFormat.format("{0}{1}", context.getString(R.string.route_begin_date), route.getStartDate()));
+            // Solution 3 : Avec localisation
+            DateTimeFormatter frenchFormatter = DateTimeFormatter
+                    .ofPattern("dd MMMM yyyy à HH'h'mm")
+                    .withLocale(Locale.FRENCH);
+            String frenchFormatted = route.getStartDate().format(frenchFormatter);
+
+            routeBeginDate.setText(MessageFormat.format("{0}{1}", context.getString(R.string.route_begin_date), route.getDateDisplayName()));
 
             String state = switch (route.getState()) {
                 case NOT_STARTED -> context.getString(R.string.route_state_not_started);

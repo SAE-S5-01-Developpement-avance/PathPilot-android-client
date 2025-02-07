@@ -23,6 +23,7 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
@@ -53,7 +54,8 @@ public class RouteService implements IRouteService {
                     RoutePage routePage = Parser.getRoutesPageable(response);
                     Log.d(TAG, "getRoutes: " + routePage.routes());
 
-                    Route.RouteArrayAdapter adapter = new Route.RouteArrayAdapter(homeActivity, routePage.routes());
+                    routePage.routes().forEach(route -> route.setDateDisplayName(context.getResources().getConfiguration().getLocales().get(0)));
+                    RouteArrayAdapter adapter = new RouteArrayAdapter(homeActivity, routePage.routes());
                     listRoutesView.post(() -> {
                         listRoutesView.setAdapter(adapter);
                     });
@@ -71,7 +73,7 @@ public class RouteService implements IRouteService {
         requestQueue.add(request);
     }
 
-    public void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, Route.RouteArrayAdapter adapter) {
+    public void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, RouteArrayAdapter adapter) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;

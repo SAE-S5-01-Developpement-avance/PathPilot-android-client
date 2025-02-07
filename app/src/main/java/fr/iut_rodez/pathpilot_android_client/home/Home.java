@@ -22,10 +22,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.FragmentClientsActions;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries.FragmentItineraryActions;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;

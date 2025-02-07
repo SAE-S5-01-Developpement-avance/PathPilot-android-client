@@ -12,7 +12,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 
 /**
