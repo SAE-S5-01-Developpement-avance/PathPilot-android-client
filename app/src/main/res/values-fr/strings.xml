@@ -160,4 +160,5 @@ String for Login activity
     <string name="no_itinerary_retrieve">Aucun itinéraire reçu</string>
     <string name="no_token_retrieve">Aucun jeton reçu</string>
     <string name="home">Maison</string>
+    <string name="loading">Loading...</string>
 </resources>
