@@ -2,7 +2,6 @@ package fr.iut_rodez.pathpilot_android_client.signup;
 
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -27,9 +26,7 @@ public class SignUpService implements ISignUpService {
         Log.d(TAG, "API URL: " + LOGIN_URL);
 
         Popup popup = new Popup(context);
-
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        popup.showProgressDialog("Creating account...");
 
         RequestQueue requestQueue = getRequestQueue(context);
         JSONObject signUpInputJson = signUpInput.toJson();
@@ -39,7 +36,7 @@ public class SignUpService implements ISignUpService {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, signUpInputJson,
                 response -> {
                     Log.d(TAG, "onResponse: " + response);
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
 
                     // Button to go to login page
                     DialogButton btnLogin = new DialogButton(context.getString(R.string.sign_in), (dialog, which) -> {
@@ -61,7 +58,7 @@ public class SignUpService implements ISignUpService {
                 },
                 error -> {
                     Log.e(TAG, "Error while sending request", error);
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     VolleyErrorHandler.handleError(context, error);
                 }
         );

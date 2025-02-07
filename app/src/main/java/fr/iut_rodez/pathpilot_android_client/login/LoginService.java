@@ -3,7 +3,6 @@ package fr.iut_rodez.pathpilot_android_client.login;
 import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -16,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Service to handle login requests.
@@ -27,8 +27,8 @@ public class LoginService implements ILoginService {
     public void login(String email, String password, Context context) {
         Log.d(TAG, "API URL: " + LOGIN_URL);
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.logging_in));
 
         RequestQueue requestQueue = getRequestQueue(context);
         JSONObject loginInputJson = new LoginInput(email, password).toJson();
@@ -38,6 +38,7 @@ public class LoginService implements ILoginService {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, loginInputJson,
                 response -> {
                     Log.d(TAG, "onResponse: " + response);
+                    popup.dismissProgressDialog();
                     try {
                         String token = response.getString("token");
                         int expiresIn = response.getInt("expiresIn");
@@ -52,11 +53,10 @@ public class LoginService implements ILoginService {
                     } catch (JSONException e) {
                         Log.e(TAG, "Error while parsing JSON response", e);
                     }
-                    progressDialog.dismiss();
                 },
                 error -> {
                     Log.e(TAG, "Error while logging in", error);
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
 
                     handleError(context, error);
                 }) {

@@ -161,5 +161,16 @@ String for Login activity
     <string name="no_token_retrieve">Aucun jeton reçu</string>
     <string name="home">Maison</string>
 
-    <string name="loading">Chargement …</string>
+    <!--
+    Loading messages
+    -->
+    <string name="loading">Chargement…</string>
+    <string name="logging_in">Connexion…</string>
+    <string name="progress_creating_itinerary">Création de l\'itinéraire…</string>
+    <string name="progress_adding_client">Ajout du client…</string>
+    <string name="progress_creating_route">Création du parcours…</string>
+    <string name="progress_fetching_clients">Récupération des clients…</string>
+    <string name="progress_fetching_itineraries">Récupération des itinéraires…</string>
+    <string name="progress_deleting_client">Suppression du client…</string>
+    <string name="progress_deleting_itinerary">Suppression de l\'itinéraire…</string>
 </resources>
