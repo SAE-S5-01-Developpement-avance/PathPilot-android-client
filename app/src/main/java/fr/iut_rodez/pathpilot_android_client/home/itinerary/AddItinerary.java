@@ -84,8 +84,9 @@ public class AddItinerary extends AppCompatActivity {
                 Client client = getItem(position);
                 String spinnerItemText = client.getCompanyName();
                 if (position != 0) {
-                    String addressDisplayName = client.getAddressDisplayName();
-                    spinnerItemText += addressDisplayName.isEmpty() ? "" : " - " + addressDisplayName;
+                    textView.setText(client.layoutClientItemList());
+                } else {
+                    textView.setText(client.getCompanyName());
                 }
                 textView.setText(spinnerItemText);
                 return view;

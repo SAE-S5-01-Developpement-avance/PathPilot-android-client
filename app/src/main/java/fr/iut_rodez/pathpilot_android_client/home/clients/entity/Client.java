@@ -322,4 +322,8 @@ public class Client implements Parcelable {
 
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
     }
+
+    public String layoutClientItemList() {
+        return getCompanyName() + " - " + getAddressDisplayName();
+    }
 }

@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
@@ -49,8 +50,8 @@ public class ItineraryService implements IItineraryService {
      * @param context     Context of the application
      * @param listClients The list of clients to create an itinerary
      */
-    @Override
-    public void addItinerary(Context context, List<Client> listClients) throws JSONException {
+    public static void addItinerary(Context context, List<Client> listClients)
+            throws JSONException {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         AddItinerary addItineraryActivity = (AddItinerary) context;
@@ -72,10 +73,16 @@ public class ItineraryService implements IItineraryService {
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
+
+                    StringBuilder orderedClientsListText = new StringBuilder();
                     try {
                         JSONArray orderedClientsList = response.getJSONArray("clients_schedule");
                         for (int i = 0; i < orderedClientsList.length(); i++) {
-                            namesClient.add(orderedClientsList.getJSONObject(i).getString("companyName"));
+                            for (int j = 0; j < listClients.size(); j++) {
+                                if (listClients.get(j).getId() == orderedClientsList.getJSONObject(i).getInt("id")){
+                                    orderedClientsListText.append(listClients.get(j).layoutClientItemList()).append("\n");
+                                }
+                            }
                         }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
