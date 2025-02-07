@@ -127,7 +127,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 () -> {
                     currentPosition.followLocation(true);
                     startTrace = currentPosition.getCurrentGeoPoint();
-                    mapMarker.addMarker(getString(R.string.start), getString(R.string.start_of_the_trace), startTrace);
                     mapController.setCenter(startTrace);
 
                     salesmanTrace = new Polyline();

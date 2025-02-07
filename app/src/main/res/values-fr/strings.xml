@@ -160,6 +160,4 @@ String for Login activity
     <string name="no_itinerary_retrieve">Aucun itinéraire reçu</string>
     <string name="no_token_retrieve">Aucun jeton reçu</string>
     <string name="home">Maison</string>
-    <string name="start">Départ</string>
-    <string name="start_of_the_trace">Départ de votre parcours</string>
 </resources>
