@@ -29,8 +29,7 @@ public class SaveItinerary extends AppCompatActivity {
 
         setContentView(R.layout.view_save_itinerary);
         ((TextView) findViewById(R.id.header_text)).setText(R.string.header_save_itinerary);
-        // TODO delete the itinerary if the back button is clicked
-        //findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> cancelItineraryCreation());
 
         Intent intent = getIntent();
         itinerary =(Itinerary) intent.getParcelableExtra(AddItinerary.KEY_ITINERARY_OBJECT);
