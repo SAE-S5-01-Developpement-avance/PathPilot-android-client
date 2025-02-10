@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
-import static fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryService.getNextPageItineraries;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
@@ -39,12 +37,13 @@ public class FragmentItineraries extends Fragment {
      */
     public static final int ICON = R.drawable.icon_list;
     private static final String TAG = FragmentItineraries.class.getSimpleName();
-    public static final String CLE_TOKEN = "token";
+    public static final String TOKEN_KEY = "token";
     public static final String LIST_CLIENT_KEY = "listClient";
     public static final String ITINERARY_KEY = "itinerary";
 
     private ListView listItinerariesView;
     private Home homeActivity;
+    private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
     public static FragmentItineraries newInstance() {
         return new FragmentItineraries();
@@ -82,7 +81,7 @@ public class FragmentItineraries extends Fragment {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getItineraryPage().getNext();
                     if (nextLink != null) {
-                        getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(), (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter());
+                        itineraryService.getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(), (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter());
                     }
                 }
             }
@@ -99,7 +98,7 @@ public class FragmentItineraries extends Fragment {
             Log.d(TAG, "onItemClick: Itinerary: " + itinerary);
             Intent intent = new Intent(getActivity(), InfoItinerary.class);
             intent.putExtra(ITINERARY_KEY, itinerary);
-            intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+            intent.putExtra(TOKEN_KEY, homeActivity.getJWTToken());
             startActivity(intent);
         });
 
@@ -119,7 +118,7 @@ public class FragmentItineraries extends Fragment {
 
         if (optionSelected == R.id.delete_itinerary) {
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
-            ItineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
+            itineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
         } else {
             Log.e(TAG, "onContextItemSelected: Unknown option selected");
         }
@@ -130,7 +129,7 @@ public class FragmentItineraries extends Fragment {
      * Call the service to load all the itineraries from the API.
      */
     public void loadItineraries() {
-        ItineraryService.getItineraries(homeActivity, listItinerariesView);
+        itineraryService.getItineraries(homeActivity, listItinerariesView);
     }
 
     /**
@@ -142,7 +141,7 @@ public class FragmentItineraries extends Fragment {
         Log.d(TAG, "gotoCreateItinerary: Goto create itinerary");
 
         Intent intent = new Intent(getActivity(), fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary.class);
-        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+        intent.putExtra(TOKEN_KEY, homeActivity.getJWTToken());
         intent.putExtra(LIST_CLIENT_KEY, homeActivity.getClients());
         homeActivity.getAddItineraryLauncher().launch(intent);
     }

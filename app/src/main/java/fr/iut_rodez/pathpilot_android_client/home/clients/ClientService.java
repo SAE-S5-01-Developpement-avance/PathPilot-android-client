@@ -16,17 +16,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 
 /**
  * Service to handle all client related requests
  */
-public class ClientService {
-
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "clients";
-    private static final String TAG = ClientService.class.getSimpleName();
+public class ClientService implements IClientService {
 
     /**
      * Request to the API the clients.
@@ -36,7 +32,8 @@ public class ClientService {
      * @param context         Context of the application
      * @param listClientsView The view where the clients will be displayed
      */
-    public static void getClients(Context context, ListView listClientsView) {
+    @Override
+    public void getClients(Context context, ListView listClientsView) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         Home homeActivity = (Home) context;
@@ -82,7 +79,8 @@ public class ClientService {
      * @param nextPageUrl     The URL of the next page
      * @param adapter         The adapter to add the clients to
      */
-    public static void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter) {
+    @Override
+    public void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;
@@ -123,7 +121,8 @@ public class ClientService {
      * @param context Context of the application
      * @param client  The client to add
      */
-    public static void addClient(Context context, Client client) {
+    @Override
+    public void addClient(Context context, Client client) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         AddClient addClientActivity = (AddClient) context;
@@ -143,7 +142,7 @@ public class ClientService {
                     Log.d(TAG, "onResponse: " + response);
 
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra(AddClient.CLE_CLIENT_ADDED, true);
+                    returnIntent.putExtra(AddClient.ADDED_CLIENT_KEY, true);
                     addClientActivity.setResult(AddClient.RESULT_OK, returnIntent);
 
                     addClientActivity.finish();
@@ -166,7 +165,8 @@ public class ClientService {
      * @param clientSelected  The client to delete
      * @param listClientsView The view where the clients will be displayed
      */
-    public static void deleteClient(Home homeActivity, Client clientSelected, ListView listClientsView) {
+    @Override
+    public void deleteClient(Home homeActivity, Client clientSelected, ListView listClientsView) {
 
         String apiURLDelete = API_BASE_URL + "/" + clientSelected.getId();
 

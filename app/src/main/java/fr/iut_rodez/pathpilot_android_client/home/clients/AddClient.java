@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
@@ -37,7 +38,7 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 public class AddClient extends AppCompatActivity {
 
     private static final String TAG = fr.iut_rodez.pathpilot_android_client.signup.SignUp.class.getSimpleName();
-    public static final String CLE_CLIENT_ADDED = "clientAdded";
+    public static final String ADDED_CLIENT_KEY = "clientAdded";
 
     private ActivityResultLauncher<Intent> launcherMapSelection;
 
@@ -61,6 +62,7 @@ public class AddClient extends AppCompatActivity {
 
     private Popup popup;
     private JWTToken jwtToken;
+    private final IClientService clientService = ServiceFactory.getClientService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,7 @@ public class AddClient extends AppCompatActivity {
         popup = new Popup(this);
 
         Intent intent = getIntent();
-        jwtToken = intent.getParcelableExtra(FragmentClients.CLE_TOKEN);
+        jwtToken = intent.getParcelableExtra(FragmentClients.TOKEN_KEY);
 
         launcherMapSelection = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::handleReturnedMapSelection);
     }
@@ -307,7 +309,7 @@ public class AddClient extends AppCompatActivity {
      * Send information to the API for sign in the user with the entered informations.
      */
     public void sendInformationToCreateClient(String companyNameText, double latitudeValue, double longitudeValue, String descriptionText, Boolean isClient, String firstNameText, String lastNameText, String phoneNumberText) {
-        ClientService.addClient(this, new Client(companyNameText, latitudeValue, longitudeValue, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText));
+        clientService.addClient(this, new Client(companyNameText, latitudeValue, longitudeValue, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText));
     }
 
     /**
@@ -317,7 +319,7 @@ public class AddClient extends AppCompatActivity {
         Log.d(TAG, "Switch to Home activity");
 
         Intent returnIntention = new Intent();
-        returnIntention.putExtra(CLE_CLIENT_ADDED, false);
+        returnIntention.putExtra(ADDED_CLIENT_KEY, false);
         setResult(RESULT_OK, returnIntention);
 
         finish();

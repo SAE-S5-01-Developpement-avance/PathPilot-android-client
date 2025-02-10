@@ -20,8 +20,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import fr.iut_rodez.pathpilot_android_client.BuildConfig;
-import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryArrayAdapter;
@@ -31,10 +29,7 @@ import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 /**
  * Service to handle all itinerary related requests
  */
-public class ItineraryService {
-
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
-    private static final String TAG = ItineraryService.class.getSimpleName();
+public class ItineraryService implements IItineraryService {
 
     /**
      * Request to the API to add an itinerary.
@@ -43,7 +38,8 @@ public class ItineraryService {
      * @param context     Context of the application
      * @param listClients The list of clients to create an itinerary
      */
-    public static void addItinerary(Context context, List<Client> listClients) throws JSONException {
+    @Override
+    public void addItinerary(Context context, List<Client> listClients) throws JSONException {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         AddItinerary addItineraryActivity = (AddItinerary) context;
@@ -67,7 +63,7 @@ public class ItineraryService {
 
                     Intent returnIntent = new Intent(addItineraryActivity, Home.class);
                     addItineraryActivity.setResult(AddItinerary.RESULT_OK, returnIntent);
-                    returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, true);
+                    returnIntent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, true);
                     addItineraryActivity.finish();
                 },
                 error -> {
@@ -86,7 +82,8 @@ public class ItineraryService {
      * @param context             Context of the application
      * @param listItinerariesView The view where the itineraries will be displayed
      */
-    public static void getItineraries(Context context, ListView listItinerariesView) {
+    @Override
+    public void getItineraries(Context context, ListView listItinerariesView) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         Home homeActivity = (Home) context;
@@ -132,7 +129,8 @@ public class ItineraryService {
      * @param nextPageUrl     The URL of the next page
      * @param adapter         The adapter to add the clients to
      */
-    public static void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter) {
+    @Override
+    public void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;
@@ -174,7 +172,8 @@ public class ItineraryService {
      * @param itinerarySelected  The itinerary to delete
      * @param listItinerariesView The view where the itineraries will be displayed
      */
-    public static void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView) {
+    @Override
+    public void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView) {
 
         String apiURLDelete = API_BASE_URL + "/" + itinerarySelected.getId();
 

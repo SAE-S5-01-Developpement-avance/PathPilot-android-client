@@ -6,7 +6,7 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 
 public interface IRouteService {
     String ROUTES_API_ENDPOINT = BuildConfig.API_BASE_URL + "routes";
-    static final String TAG = IRouteService.class.getSimpleName();
+    String TAG = IRouteService.class.getSimpleName();
 
     /**
      * Create a route from an itinerary.

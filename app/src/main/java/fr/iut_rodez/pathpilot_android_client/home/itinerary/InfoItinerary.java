@@ -86,8 +86,8 @@ public class InfoItinerary extends AppCompatActivity {
      */
     private void setUpToken() {
         Intent intent = getIntent();
-        if (intent.hasExtra(FragmentItineraries.CLE_TOKEN)) {
-            jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
+        if (intent.hasExtra(FragmentItineraries.TOKEN_KEY)) {
+            jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
         } else {
             // This should never happen
             Log.e(TAG, "setUpToken: No token found in the intent");

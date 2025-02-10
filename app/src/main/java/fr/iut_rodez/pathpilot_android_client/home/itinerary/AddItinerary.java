@@ -21,13 +21,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
-    public static final String CLE_ITINERARY_ADDED = "itineraryAdded";
+    public static final String ITINERARY_ADDED_KEY = "itineraryAdded";
     private Spinner selectClientToAdd;
     private ListView listClientsAddedView;
     private ArrayList<Client> listClientsToAdd;
@@ -36,6 +37,7 @@ public class AddItinerary extends AppCompatActivity {
     private ArrayAdapter<Client> clientsToAddAdapter;
     private ClientArrayAdapter clientsAddedAdapter;
     private Popup popup;
+    private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +118,7 @@ public class AddItinerary extends AppCompatActivity {
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
-        jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
+        jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
     }
 
 
@@ -129,7 +131,7 @@ public class AddItinerary extends AppCompatActivity {
             popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_min_clients_per_itinerary));
         } else {
             try {
-                ItineraryService.addItinerary(this, listClientsAdded);
+                itineraryService.addItinerary(this, listClientsAdded);
             } catch (JSONException e) {
                 popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
             }

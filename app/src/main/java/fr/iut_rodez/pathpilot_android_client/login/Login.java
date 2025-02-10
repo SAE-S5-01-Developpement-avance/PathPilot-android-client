@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
-import static fr.iut_rodez.pathpilot_android_client.signup.SignUpService.CLE_MAIL;
+import static fr.iut_rodez.pathpilot_android_client.signup.SignUpService.EMAIL_KEY;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.signup.SignUp;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 import fr.iut_rodez.pathpilot_android_client.util.ValidateForm;
@@ -24,6 +25,7 @@ public class Login extends AppCompatActivity {
 
     private static final String TAG = Login.class.getSimpleName();
 
+    private final ILoginService loginService = ServiceFactory.getLoginService();
     private Popup popup;
 
     private Button loginButton;
@@ -51,8 +53,8 @@ public class Login extends AppCompatActivity {
 
         // If the Activity was started by the SignUp Activity, get the email from the intent
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra(CLE_MAIL)) {
-            emailInput.setText(intent.getStringExtra(CLE_MAIL));
+        if (intent != null && intent.hasExtra(EMAIL_KEY)) {
+            emailInput.setText(intent.getStringExtra(EMAIL_KEY));
         }
     }
 
@@ -90,7 +92,7 @@ public class Login extends AppCompatActivity {
         } else {
 
             // Send request to server
-            LoginService.login(new LoginService.LoginInput(email, password), this);
+            loginService.login(email, password, this);
         }
     }
 }
