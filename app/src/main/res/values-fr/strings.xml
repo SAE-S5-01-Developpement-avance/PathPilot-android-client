@@ -166,6 +166,7 @@ String for Login activity
     -->
     <string name="loading">Chargement…</string>
     <string name="logging_in">Connexion…</string>
+    <string name="creating_account">Création du compte…</string>
     <string name="progress_creating_itinerary">Création de l\'itinéraire…</string>
     <string name="progress_adding_client">Ajout du client…</string>
     <string name="progress_creating_route">Création du parcours…</string>

@@ -26,7 +26,7 @@ public class SignUpService implements ISignUpService {
         Log.d(TAG, "API URL: " + LOGIN_URL);
 
         Popup popup = new Popup(context);
-        popup.showProgressDialog("Creating account...");
+        popup.showProgressDialog(context.getString(R.string.creating_account));
 
         RequestQueue requestQueue = getRequestQueue(context);
         JSONObject signUpInputJson = signUpInput.toJson();

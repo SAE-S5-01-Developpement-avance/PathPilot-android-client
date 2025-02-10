@@ -168,6 +168,7 @@
     -->
     <string name="loading">Loading…</string>
     <string name="logging_in">Logging in…</string>
+    <string name="creating_account">Creating account…</string>
     <string name="progress_creating_route">Creating route…</string>
     <string name="progress_deleting_client">Deleting client…</string>
     <string name="progress_adding_client">Adding client…</string>
