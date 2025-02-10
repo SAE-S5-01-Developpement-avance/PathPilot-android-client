@@ -10,6 +10,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -51,7 +52,7 @@ public class RouteService implements IRouteService {
                     VolleyErrorHandler.handleError(activity, error);
                 });
 
-        popup.showProgressDialog();
+        popup.showProgressDialog(activity.getString(R.string.progress_creating_route));
         requestQueue.add(request);
     }
 

@@ -4,7 +4,6 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -18,6 +17,7 @@ import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Service to handle all client related requests
@@ -40,12 +40,12 @@ public class ClientService implements IClientService {
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_fetching_clients));
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     ClientPage clientPage = Parser.getClientsPageable(response);
@@ -60,7 +60,7 @@ public class ClientService implements IClientService {
                     ((Home) context).setClientPage(clientPage);
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
@@ -87,12 +87,12 @@ public class ClientService implements IClientService {
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_fetching_clients));
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     ClientPage clientPage = Parser.getClientsPageable(response);
@@ -105,7 +105,7 @@ public class ClientService implements IClientService {
                     ((Home) context).setClientPage(clientPage);
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
@@ -129,8 +129,8 @@ public class ClientService implements IClientService {
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = addClientActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_adding_client));
 
         JSONObject body = client.toJson();
 
@@ -138,7 +138,7 @@ public class ClientService implements IClientService {
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, body, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     Intent returnIntent = new Intent();
@@ -148,7 +148,7 @@ public class ClientService implements IClientService {
                     addClientActivity.finish();
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
@@ -173,14 +173,14 @@ public class ClientService implements IClientService {
         RequestQueue requestQueue = getRequestQueue(homeActivity);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(homeActivity);
-        progressDialog.show();
+        Popup popup = new Popup(homeActivity);
+        popup.showProgressDialog(homeActivity.getString(R.string.progress_deleting_client));
 
         Log.d(TAG, "deleteClient: " + clientSelected.getId());
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
                     listClientsView.post(() -> {
                         ClientArrayAdapter clientArrayAdapter = (ClientArrayAdapter) listClientsView.getAdapter();
@@ -190,7 +190,7 @@ public class ClientService implements IClientService {
                     });
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(homeActivity, error);
                 }

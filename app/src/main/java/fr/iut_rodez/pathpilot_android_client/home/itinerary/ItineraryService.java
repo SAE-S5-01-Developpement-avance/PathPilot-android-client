@@ -4,7 +4,6 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -25,6 +24,7 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.Itinerary.ItineraryArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Service to handle all itinerary related requests
@@ -53,12 +53,12 @@ public class ItineraryService implements IItineraryService {
         }
         itinerariesInput.put("clients_schedule", listIdClient);
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_creating_itinerary));
 
         JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, API_BASE_URL, itinerariesInput, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     Intent returnIntent = new Intent(addItineraryActivity, Home.class);
@@ -67,7 +67,7 @@ public class ItineraryService implements IItineraryService {
                     addItineraryActivity.finish();
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 });
@@ -90,12 +90,12 @@ public class ItineraryService implements IItineraryService {
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
@@ -110,7 +110,7 @@ public class ItineraryService implements IItineraryService {
                     ((Home) context).setItineraryPage(itineraryPage);
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
@@ -137,12 +137,12 @@ public class ItineraryService implements IItineraryService {
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
@@ -155,7 +155,7 @@ public class ItineraryService implements IItineraryService {
                     ((Home) context).setItineraryPage(itineraryPage);
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
@@ -180,14 +180,14 @@ public class ItineraryService implements IItineraryService {
         RequestQueue requestQueue = getRequestQueue(homeActivity);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(homeActivity);
-        progressDialog.show();
+        Popup popup = new Popup(homeActivity);
+        popup.showProgressDialog(homeActivity.getString(R.string.progress_deleting_itinerary));
 
         Log.d(TAG, "deleteItinerary: " + itinerarySelected.getId());
 
         JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE, apiURLDelete, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
                     listItinerariesView.post(() -> {
                         ItineraryArrayAdapter itineraryArrayAdapter = (ItineraryArrayAdapter) listItinerariesView.getAdapter();
@@ -197,7 +197,7 @@ public class ItineraryService implements IItineraryService {
                     });
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(homeActivity, error);
                 }
