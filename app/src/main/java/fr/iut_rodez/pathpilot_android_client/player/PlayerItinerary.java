@@ -109,7 +109,11 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         requestPermissionAndCenter();
 
-        setExpectedClientMarker(route.getExpectedClients(), route.getNextClient());
+        ArrayList<Client> clients = new ArrayList<>();
+        for (int i = 0; i < route.getClients().size(); i++) {
+            clients.add(route.getClients().get(i).getClient());
+        }
+        setExpectedClientMarker(clients, route.getNextClient().getClient());
         mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
         mapView.invalidate(); // Refresh the map
     }
@@ -170,7 +174,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
             popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
         }
-        route.getExpectedClients().forEach(client -> client.setAddressDisplayName(this));
+        route.getClients().forEach(routeClient -> routeClient.getClient().setAddressDisplayName(this));
     }
 
     /**

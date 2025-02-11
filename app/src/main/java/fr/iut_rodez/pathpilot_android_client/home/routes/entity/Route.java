@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 
@@ -49,7 +50,7 @@ public class Route implements Parcelable {
     /**
      * The ordered list of clients to visit
      */
-    private ArrayList<Client> expectedClients;
+    private ArrayList<RouteClient> clients;
 
     /**
      * The date when the route starts
@@ -67,11 +68,6 @@ public class Route implements Parcelable {
     private boolean isPaused;
 
     /**
-     * The list of clients already visited
-     */
-    private ArrayList<Client> visitedClients;
-
-    /**
      * The current position of the salesman
      */
     private GeoPoint currentSalesmanPosition;
@@ -86,23 +82,21 @@ public class Route implements Parcelable {
         id = routeJson.getString("id");
         salesmanHome = Parser.getGeoPointFromGeoJSONPoint(routeJson.getJSONObject("salesman_home"));
         startDate = Parser.getLocalDateTimeFromString(routeJson.getString("startDate"));
-        expectedClients = Parser.getShortClients(routeJson.getJSONArray("expected_clients"));
-        visitedClients = Parser.getShortClients(routeJson.getJSONArray("visited_clients"));
+        clients = Parser.getClientRoutes(routeJson.getJSONArray("clients"));
         currentSalesmanPosition = Parser.getGeoPointFromGeoJSONPoint(routeJson.getJSONObject("salesman_current_position"));
     }
 
     protected Route(Parcel in) {
         salesmanHome = in.readParcelable(GeoPoint.class.getClassLoader());
-        expectedClients = in.createTypedArrayList(Client.CREATOR);
+        clients = in.createTypedArrayList(RouteClient.CREATOR);
         long timeInMillis = in.readLong();
         startDate = LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
         indexCurrentClient = in.readInt();
         isPaused = in.readByte() != 0;
-        visitedClients = in.createTypedArrayList(Client.CREATOR);
         currentSalesmanPosition = in.readParcelable(GeoPoint.class.getClassLoader());
     }
 
-    public static final Creator<Route> CREATOR = new Creator<Route>() {
+    public static final Creator<Route> CREATOR = new Creator<>() {
         @Override
         public Route createFromParcel(Parcel in) {
             return new Route(in);
@@ -123,11 +117,10 @@ public class Route implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         long timeInMillis = startDate.toEpochSecond(ZONE_OFFSET) * RATIO_MILLI_SECOND;
         dest.writeParcelable(salesmanHome, flags);
-        dest.writeTypedList(expectedClients);
+        dest.writeTypedList(clients);
         dest.writeLong(timeInMillis);
         dest.writeInt(indexCurrentClient);
         dest.writeByte((byte) (isPaused ? 1 : 0));
-        dest.writeTypedList(visitedClients);
         dest.writeParcelable(currentSalesmanPosition, flags);
     }
 
@@ -189,13 +182,11 @@ public class Route implements Parcelable {
             String routeCoordinatesString = context.getString(R.string.route_address) + LocationNameProvider.getAddressName(context, route.getSalesmanHome());
             routeAdress.setText(routeCoordinatesString);
 
-            routeClientNames.setText(getClientsDisplay(route.getExpectedClients()));
-
-            // Solution 3 : Avec localisation
-            DateTimeFormatter frenchFormatter = DateTimeFormatter
-                    .ofPattern("dd MMMM yyyy à HH'h'mm")
-                    .withLocale(Locale.FRENCH);
-            String frenchFormatted = route.getStartDate().format(frenchFormatter);
+            ArrayList<Client> clients = new ArrayList<>();
+            for (int i = 0; i < route.getClients().size(); i++) {
+                clients.add(route.getClients().get(i).getClient());
+            }
+            routeClientNames.setText(getClientsDisplay(clients));
 
             routeBeginDate.setText(MessageFormat.format("{0}{1}", context.getString(R.string.route_begin_date), route.getDateDisplayName()));
 
@@ -253,14 +244,6 @@ public class Route implements Parcelable {
         return startDate;
     }
 
-    public ArrayList<Client> getExpectedClients() {
-        return expectedClients;
-    }
-
-    public ArrayList<Client> getVisitedClients() {
-        return visitedClients;
-    }
-
     public int getIndexCurrentClient() {
         return indexCurrentClient;
     }
@@ -277,8 +260,8 @@ public class Route implements Parcelable {
         return currentSalesmanPosition;
     }
 
-    public Client getCurrentClient() {
-        return expectedClients.get(indexCurrentClient);
+    public RouteClient getCurrentClient() {
+        return clients.get(indexCurrentClient);
     }
 
     /**
@@ -288,20 +271,35 @@ public class Route implements Parcelable {
      * </p>
      */
     public void clientHasBeenVisited() {
-        visitedClients.add(expectedClients.get(indexCurrentClient));
+        clients.get(indexCurrentClient).setState(ClientState.VISITED);
         indexCurrentClient++;
     }
 
-    public Client getNextClient() {
-        return expectedClients.get(indexCurrentClient);
+    /**
+     * Get the next client to visit
+     *
+     * @return The next client to visit
+     */
+    public RouteClient getNextClient() {
+        return clients.get(indexCurrentClient);
     }
 
+    /**
+     * Get the number of clients expected
+     *
+     * @return The number of clients expected
+     */
     public int getNumberOfClientsExpected() {
-        return expectedClients.size();
+        return clients.size();
     }
 
+    /**
+     * Get the number of clients visited
+     *
+     * @return The number of clients visited
+     */
     public int getNumberOfClientsVisited() {
-        return visitedClients.size();
+        return (int) clients.stream().filter(client -> client.getState() == ClientState.VISITED).count();
     }
 
     /**
@@ -313,6 +311,14 @@ public class Route implements Parcelable {
      * @return {@code true} if the route is completed, {@code false} otherwise
      */
     public boolean isCompleted() {
-        return indexCurrentClient == expectedClients.size();
+        return indexCurrentClient == clients.size();
+    }
+
+    public ArrayList<RouteClient> getClients() {
+        return clients;
+    }
+
+    public void setClients(ArrayList<RouteClient> clients) {
+        this.clients = clients;
     }
 }

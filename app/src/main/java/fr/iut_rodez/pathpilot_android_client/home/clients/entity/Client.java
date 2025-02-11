@@ -33,7 +33,6 @@ public class Client implements Parcelable {
     private String contactFirstName;
     private String phoneNumber;
     private String salesman;
-    private ClientState state;
 
     public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, ClientCategory clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
         this.id = id;
@@ -100,13 +99,13 @@ public class Client implements Parcelable {
     /**
      * Constructor for Itineraries clients
      *
-     * @param idCLient        id of the client
+     * @param idClient        id of the client
      * @param companyName     the client's companyName
      * @param latHomeAddress  the latitude of the client's home address
      * @param longHomeAddress the longitude of the client's home address
      */
-    public Client(int idCLient, String companyName, double latHomeAddress, double longHomeAddress) {
-        this.id = idCLient;
+    public Client(int idClient, String companyName, double latHomeAddress, double longHomeAddress) {
+        this.id = idClient;
         this.companyName = companyName;
         this.latHomeAddress = latHomeAddress;
         this.longHomeAddress = longHomeAddress;
@@ -284,6 +283,8 @@ public class Client implements Parcelable {
      *         <li>id</li>
      *         <li>companyName</li>
      *         <li>companyLocation</li>
+     *         <li>clientState</li>
+ *         </ul>
      * </p>
      *
      * @param clientJson the short JSON object
@@ -318,13 +319,5 @@ public class Client implements Parcelable {
 
     static class ClientConstant {
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
-    }
-
-    public void setState(ClientState state) {
-        this.state = state;
-    }
-
-    public ClientState getState() {
-        return state;
     }
 }

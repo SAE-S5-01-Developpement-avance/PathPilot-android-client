@@ -4,15 +4,21 @@ public enum ClientState {
     /**
      * The client has been visited (blue dot)
      */
-    VISITED,
+    VISITED("VISITED"),
 
     /**
      * The client has not been visited (white dot with blue border)
      */
-    NOT_VISITED,
+    EXPECTED("EXPECTED"),
 
     /**
      * The client has been skipped (blue dot with white border)
      */
-    SKIPPED
+    SKIPPED("SKIPPED");
+
+    public final String value;
+
+    ClientState(String value) {
+        this.value = value;
+    }
 }

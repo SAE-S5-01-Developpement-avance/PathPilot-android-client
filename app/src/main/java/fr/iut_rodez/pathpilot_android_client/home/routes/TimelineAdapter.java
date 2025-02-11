@@ -55,17 +55,17 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.address.setText(item.getAddress().isBlank() ? "NULL" : item.getAddress());
 
         // Set dot background based on client state TODO add after refactor route
-//        switch (item.getState()) {
-//            case VISITED:
-//                holder.timelineDot.setBackgroundResource(R.drawable.visited_dot);
-//                break;
-//            case NOT_VISITED:
-//                holder.timelineDot.setBackgroundResource(R.drawable.circle_dot);
-//                break;
-//            case SKIPPED:
-//                holder.timelineDot.setBackgroundResource(R.drawable.skipped_dot);
-//                break;
-//        }
+        switch (item.getState()) {
+            case VISITED:
+                holder.timelineDot.setBackgroundResource(R.drawable.visited_dot);
+                break;
+            case EXPECTED:
+                holder.timelineDot.setBackgroundResource(R.drawable.circle_dot);
+                break;
+            case SKIPPED:
+                holder.timelineDot.setBackgroundResource(R.drawable.skipped_dot);
+                break;
+        }
 
         // Modify timeline line for last item to add arrow
         if (position == items.size() - 1) {

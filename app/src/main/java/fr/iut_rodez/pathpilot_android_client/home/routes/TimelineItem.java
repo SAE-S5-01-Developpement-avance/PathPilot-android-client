@@ -1,7 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
-import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 
 /**
  * Class to represent a timeline item
@@ -10,8 +10,7 @@ public class TimelineItem {
     private String clientName;
     private String clientType;
     private String address;
-    //TODO add state after refactor
-    //private ClientState state;
+    private ClientState state;
 
     /**
      * Constructor for a timeline item
@@ -25,19 +24,19 @@ public class TimelineItem {
         this.clientName = clientName;
         this.clientType = clientType;
         this.address = address;
-        //this.state = state;
+        this.state = state;
     }
 
     /**
      * Constructor for a timeline item
      *
-     * @param client Client to create the timeline item from
+     * @param routeClient RouteClient to create the timeline item from
      */
-    public TimelineItem(Client client) {
-        this.clientName = client.getCompanyName();
-        this.clientType = client.getClientCategory();
-        this.address = client.getAddressDisplayName();
-        //this.state = client.getState();
+    public TimelineItem(RouteClient routeClient) {
+        this.clientName = routeClient.getClient().getCompanyName();
+        this.clientType = routeClient.getClient().getClientCategory();
+        this.address = routeClient.getClient().getAddressDisplayName();
+        this.state = routeClient.getState();
     }
 
     public String getClientName() {
@@ -52,7 +51,7 @@ public class TimelineItem {
         return address;
     }
 
-//    public ClientState getState() {
-//        return state;
-//    }
+    public ClientState getState() {
+        return state;
+    }
 }

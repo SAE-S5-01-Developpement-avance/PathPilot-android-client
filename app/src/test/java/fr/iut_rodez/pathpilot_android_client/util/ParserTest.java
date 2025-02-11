@@ -15,12 +15,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientCategory;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -119,7 +120,7 @@ public class ParserTest {
                                                 44.36224183353758
                                             ]
                                         },
-                                        "companyName": "Lidle"
+                                        "companyName": "Liddle"
                                     },
                                     {
                                         "id": 8,
@@ -142,7 +143,7 @@ public class ParserTest {
                                             "type": "Point",
                                             "coordinates": [2.3522, 48.8566]
                                         },
-                                        "companyName": "Intermarche"
+                                        "companyName": "Intermarché"
                                     },
                                     {
                                         "id": 17,
@@ -188,64 +189,97 @@ public class ParserTest {
 
         Itinerary firstItinerary = itineraries.get(0);
         assertEquals("679c7e2687ba45366b4b39e8", firstItinerary.getId());
-        assertEquals(44.36017116455328, firstItinerary.getSalesmanLatitude());
-        assertEquals(2.5767227655364024, firstItinerary.getSalesmanLongitude());
+        assertEquals(2.5767227655364024, firstItinerary.getSalesmanLatitude());
+        assertEquals(44.36017116455328, firstItinerary.getSalesmanLongitude());
         assertEquals(4, firstItinerary.getClients().size());
 
         Client firstClient = firstItinerary.getClients().get(0);
         assertEquals(7, firstClient.getId());
-        assertEquals("Lidle", firstClient.getCompanyName());
-        assertEquals(2.5680542079520023, firstClient.getLatHomeAddress());
-        assertEquals(44.36224183353758, firstClient.getLongHomeAddress());
+        assertEquals("Liddle", firstClient.getCompanyName());
+        assertEquals(44.36224183353758, firstClient.getLatHomeAddress());
+        assertEquals(2.5680542079520023, firstClient.getLongHomeAddress());
     }
 
     @Test
     public void testGetRoute() throws JSONException {
         String routeResponseJson = """
                 {
-                    "id": "679c870e87ba45366b4b39eb",
-                    "salesman_home": {
-                        "x": 2.5767227655364024,
-                        "y": 44.36017116455328,
-                        "type": "Point",
-                        "coordinates": [2.5767227655364024, 44.36017116455328]
-                    },
-                    "expected_clients": [
-                        {
-                            "id": 7,
-                            "companyLocation": {
-                                "x": 2.5680542079520023,
-                                "y": 44.36224183353758,
-                                "type": "Point",
-                                "coordinates": [2.5680542079520023, 44.36224183353758]
-                            },
-                            "companyName": "Lidle"
-                        },
-                        {
-                            "id": 8,
-                            "companyLocation": {
-                                "x": 2.555959091843846,
-                                "y": 44.36076301822145,
-                                "type": "Point",
-                                "coordinates": [2.555959091843846, 44.36076301822145]
-                            },
-                            "companyName": "Spar"
-                        }
-                    ],
-                    "startDate": "2025-01-31T08:17:18.392+00:00",
-                    "visited_clients": [],
-                    "salesman_current_position": {
-                        "x": 2.5767227655364024,
-                        "y": 44.36017116455328,
-                        "type": "Point",
-                        "coordinates": [2.5767227655364024, 44.36017116455328]
-                    },
-                    "_links": {
-                        "self": {
-                            "href": "http://localhost:8080/routes/679c870e87ba45366b4b39eb"
-                        }
-                    }
-                }
+                     "id": "67ab0e87ec091a7d076a63f0",
+                     "salesman_home": {
+                         "x": 0.0,
+                         "y": 0.0,
+                         "type": "Point",
+                         "coordinates": [
+                             0.0,
+                             0.0
+                         ]
+                     },
+                     "clients": [
+                         {
+                             "client": {
+                                 "id": 1,
+                                 "companyLocation": {
+                                     "x": 2.3522,
+                                     "y": 48.8566,
+                                     "type": "Point",
+                                     "coordinates": [
+                                         2.3522,
+                                         48.8566
+                                     ]
+                                 },
+                                 "companyName": "hp"
+                             },
+                             "state": "EXPECTED"
+                         },
+                         {
+                             "client": {
+                                 "id": 2,
+                                 "companyLocation": {
+                                     "x": 2.3522,
+                                     "y": 48.8566,
+                                     "type": "Point",
+                                     "coordinates": [
+                                         2.3522,
+                                         48.8566
+                                     ]
+                                 },
+                                 "companyName": "hp"
+                             },
+                             "state": "EXPECTED"
+                         },
+                         {
+                             "client": {
+                                 "id": 3,
+                                 "companyLocation": {
+                                     "x": 2.3522,
+                                     "y": 48.8566,
+                                     "type": "Point",
+                                     "coordinates": [
+                                         2.3522,
+                                         48.8566
+                                     ]
+                                 },
+                                 "companyName": "hp"
+                             },
+                             "state": "EXPECTED"
+                         }
+                     ],
+                     "startDate": "2025-02-11T08:47:03.298+00:00",
+                     "salesman_current_position": {
+                         "x": 0.0,
+                         "y": 0.0,
+                         "type": "Point",
+                         "coordinates": [
+                             0.0,
+                             0.0
+                         ]
+                     },
+                     "_links": {
+                         "self": {
+                             "href": "http://localhost:8080/routes/67ab0e87ec091a7d076a63f0"
+                         }
+                     }
+                 }
                 """;
 
         JSONObject response = new JSONObject(routeResponseJson);
@@ -253,21 +287,20 @@ public class ParserTest {
         Route route = Parser.getRoute(response);
 
         assertNotNull(route);
-        assertEquals("679c870e87ba45366b4b39eb", route.getId());
-        assertEquals(2.5767227655364024, route.getSalesmanHome().getLatitude());
-        assertEquals(44.36017116455328, route.getSalesmanHome().getLongitude());
-        LocalDateTime expectedStartDate = LocalDateTime.of(2025, 1, 31, 8, 17, 18, 392 * 1_000_000);
+        assertEquals("67ab0e87ec091a7d076a63f0", route.getId());
+        assertEquals(0.0, route.getSalesmanHome().getLatitude());
+        assertEquals(0.0, route.getSalesmanHome().getLongitude());
+        LocalDateTime expectedStartDate = LocalDateTime.of(2025, 2, 11, 8, 47, 03, 298 * 1_000_000);
         assertEquals(expectedStartDate, route.getStartDate());
-        assertEquals(2, route.getExpectedClients().size());
-        assertEquals(0, route.getVisitedClients().size());
-        assertEquals(2.5767227655364024, route.getCurrentSalesmanPosition().getLatitude());
-        assertEquals(44.36017116455328, route.getCurrentSalesmanPosition().getLongitude());
+        assertEquals(3, route.getClients().size());
+        assertEquals(0.0, route.getCurrentSalesmanPosition().getLatitude());
+        assertEquals(0.0, route.getCurrentSalesmanPosition().getLongitude());
 
-        Client firstClient = route.getExpectedClients().get(0);
-        assertEquals(7, firstClient.getId());
-        assertEquals("Lidle", firstClient.getCompanyName());
-        assertEquals(2.5680542079520023, firstClient.getLatHomeAddress());
-        assertEquals(44.36224183353758, firstClient.getLongHomeAddress());
+        RouteClient firstClient = route.getClients().get(0);
+        assertEquals(1, firstClient.getClient().getId());
+        assertEquals("hp", firstClient.getClient().getCompanyName());
+        assertEquals(48.8566, firstClient.getClient().getLatHomeAddress());
+        assertEquals(2.3522, firstClient.getClient().getLongHomeAddress());
     }
 
     @Test

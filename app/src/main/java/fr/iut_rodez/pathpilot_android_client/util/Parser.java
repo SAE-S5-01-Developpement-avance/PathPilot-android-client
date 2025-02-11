@@ -16,9 +16,11 @@ import java.util.Arrays;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 
 /**
@@ -71,17 +73,20 @@ public class Parser {
      * <pre>
      * {@code
      * {
-     *     "id": 1,
-     *     "companyLocation": {
-     *         "x": 0.0, // Latitude
-     *         "y": 10.0, // Longitude
-     *         "type": "Point",
+     *  "client": {
+     *      "id": 1,
+     *      "companyLocation": {
+     *         "x": 2.3522,
+     *         "y": 48.8566,
      *         "coordinates": [
-     *             2.673797607421875,
-     *             49.135002605812176
-     *         ]
-     *     },
-     *     "companyName": "Compagny name"
+     *             2.3522,
+     *             48.8566
+     *         ],
+     *         "type": "Point"
+     *      },
+     *      "companyName": "hp"
+     *   },
+     *   "state": "EXPECTED"
      * }
      * }
      * </pre>
@@ -102,6 +107,31 @@ public class Parser {
             }
         }
         return listClients;
+    }
+
+    /**
+     * Parse a JSON array of route clients and return a list of RouteClient objects.
+     * <p>
+     * This method will parse the JSON array to create RouteClient objects, which include
+     * a Client object and a state string.
+     * </p>
+     *
+     * @param jsonArray the JSON array to parse
+     * @return the list of RouteClient objects parsed from the JSON array
+     */
+    public static ArrayList<RouteClient> getClientRoutes(JSONArray jsonArray) {
+        ArrayList<RouteClient> listRouteClients = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                JSONObject clientJson = jsonArray.getJSONObject(i);
+                Client client = Client.createClientFromShortJson(clientJson.getJSONObject("client"));
+                String state = clientJson.getString("state");
+                listRouteClients.add(new RouteClient(client, ClientState.valueOf(state)));
+            } catch (JSONException e) {
+                Log.e(TAG, "Error while parsing the JSON response", e);
+            }
+        }
+        return listRouteClients;
     }
 
     /**
@@ -201,7 +231,7 @@ public class Parser {
     /**
      * Parse a string to a LocalDateTime
      * <p>
-     * For exemple <pre>2025-01-31T08:17:18.392+00:00</pre> while be parsed as the 31th of January 2025 at 8:17:18.392 in the UTC timezone (GMT+0)
+     * For example <pre>2025-01-31T08:17:18.392+00:00</pre> while be parsed as the 31th of January 2025 at 8:17:18.392 in the UTC timezone (GMT+0)
      * <br>
      * If the string is not in the correct format, the method will return null
      * </p>

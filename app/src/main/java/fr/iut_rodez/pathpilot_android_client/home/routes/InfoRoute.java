@@ -21,6 +21,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -73,17 +74,17 @@ public class InfoRoute extends AppCompatActivity {
             return;
         }
 
-        List<Client> clients = route.getExpectedClients();
-        for (Client client : clients) {
-            client.setState(getVisitStatus(client));
-            client.setAddressDisplayName(this);
+        ArrayList<RouteClient> clients = new ArrayList<>(route.getClients());
+        for (RouteClient routeClient : clients) {
+            routeClient.setState(getVisitStatus(routeClient));
+            routeClient.getClient().setAddressDisplayName(this);
         }
         List<TimelineItem> timelineItems = new ArrayList<>();
 
         // Convert route stops to timeline items
-        for (Client client : clients) {
-            timelineItems.add(new TimelineItem(client));
-            Log.d(TAG, "setUpTimelineClients: Client: " + client);
+        for (RouteClient routeClient : clients) {
+            timelineItems.add(new TimelineItem(routeClient));
+            Log.d(TAG, "setUpTimelineClients: Client: " + routeClient);
         }
 
         // Set up adapter
@@ -102,14 +103,14 @@ public class InfoRoute extends AppCompatActivity {
      * @param client The client to check
      * @return Status string (VISITED/CURRENT/PENDING)
      */
-    private ClientState getVisitStatus(Client client) {
-        int clientIndex = route.getExpectedClients().indexOf(client);
+    private ClientState getVisitStatus(RouteClient client) {
+        int clientIndex = route.getClients().indexOf(client);
         int currentIndex = route.getIndexCurrentClient();
 
         if (clientIndex < currentIndex) {
             return ClientState.VISITED;
         } else if (clientIndex >= currentIndex) {
-            return ClientState.NOT_VISITED;
+            return ClientState.EXPECTED;
         } else {
             return ClientState.SKIPPED;
         }
