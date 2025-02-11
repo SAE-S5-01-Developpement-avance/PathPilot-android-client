@@ -32,6 +32,7 @@
         <activity android:name=".home.Home" />
         <activity android:name=".home.clients.AddClient" />
         <activity android:name=".home.itinerary.AddItinerary" />
+        <activity android:name=".home.routes.AddRoute" />
         <activity android:name=".map.MapSelection" />
         <activity android:name=".home.itinerary.InfoItinerary" />
         <activity android:name=".player.PlayerItinerary" />

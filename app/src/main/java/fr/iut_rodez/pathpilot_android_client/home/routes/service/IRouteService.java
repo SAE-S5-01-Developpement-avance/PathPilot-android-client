@@ -3,10 +3,14 @@ package fr.iut_rodez.pathpilot_android_client.home.routes.service;
 import android.content.Context;
 import android.widget.ListView;
 
+import com.android.volley.Response;
+
+import org.json.JSONObject;
+
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 
 public interface IRouteService {
     String ROUTES_API_ENDPOINT = BuildConfig.API_BASE_URL + "routes";
@@ -42,8 +46,11 @@ public interface IRouteService {
      * If the request fails, it shows an error message.
      * </p>
      *
-     * @param activity The activity that calls the service
+     * @param context The context of the application
+     * @param jwtToken The JWT token of the user
      * @param itinerary The itinerary to create the route from
+     * @param onResponse The response listener
+     * @param onErrorResponse The error listener
      */
-    void createRoute(InfoItinerary activity, Itinerary itinerary);
+    void createRoute(Context context, JWTToken jwtToken, Itinerary itinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 }

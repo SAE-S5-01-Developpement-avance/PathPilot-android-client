@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
@@ -20,16 +21,12 @@ import org.json.JSONObject;
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
-import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
-import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
-import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class RouteService implements IRouteService {
 
@@ -110,35 +107,30 @@ public class RouteService implements IRouteService {
     /**
      * Create a route from an itinerary.
      * <p>
-     * Send a request to the server to create a route from an route.<br>
+     * Send a request to the server to create a route from an itinerary.<br>
      * If the request is successful, it redirects the user to the player activity with the new route.
      * If the request fails, it shows an error message.
      * </p>
      *
-     * @param activity  The activity that calls the service
+     * @param context The context of the application
+     * @param jwtToken The JWT token of the user
      * @param itinerary The itinerary to create the route from
+     * @param onResponse The response listener
+     * @param onErrorResponse The error listener
      */
     @Override
-    public void createRoute(InfoItinerary activity, Itinerary itinerary) {
-        JWTToken jwtToken = activity.getJwtToken();
-        RequestQueue requestQueue = NetworkUtils.getRequestQueue(activity);
-        Popup popup = activity.getPopup();
+    public void createRoute(Context context, JWTToken jwtToken, Itinerary itinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        RequestQueue requestQueue = NetworkUtils.getRequestQueue(context);
         RouteRequestModel routeRequestModel = new RouteRequestModel(itinerary.getId());
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST, ROUTES_API_ENDPOINT, routeRequestModel.toJson(), jwtToken.getToken(),
-                response -> {
-                    popup.dismissProgressDialog();
-                    Log.d(TAG, "createRoute: " + response);
-
-                    Route route = Parser.getRoute(response);
-                    activity.redirectToPlayerActivity(route);
-                },
-                error -> {
-                    popup.dismissProgressDialog();
-                    VolleyErrorHandler.handleError(activity, error);
-                });
-
-        popup.showProgressDialog();
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(
+                Request.Method.POST,
+                ROUTES_API_ENDPOINT,
+                routeRequestModel.toJson(),
+                jwtToken.getToken(),
+                onResponse,
+                onErrorResponse
+        );
         requestQueue.add(request);
     }
 

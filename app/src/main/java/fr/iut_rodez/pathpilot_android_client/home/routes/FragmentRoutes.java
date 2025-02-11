@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
+import static fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries.CLE_TOKEN;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -41,7 +44,7 @@ public class FragmentRoutes extends Fragment {
     public static final int ICON = R.drawable.icon_car;
     private static final String TAG = FragmentRoutes.class.getSimpleName();
     public static final String JWT_TOKEN_KEY = "token";
-    public static final String LIST_CLIENT_KEY = "listClient";
+    public static final String LIST_ITINERARIES_KEY = "listItineraries";
     public static final String ITINERARY_KEY = "route";
 
     private ListView listRoutesView;
@@ -94,7 +97,7 @@ public class FragmentRoutes extends Fragment {
         loadRoutes();
 
         registerForContextMenu(listRoutesView);
-        //TODO make create route view view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateRoute());
+        view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateRoute());
 
         listRoutesView.setOnItemClickListener((parent, view1, position, id) -> {
             Route route = (Route) parent.getItemAtPosition(position);
@@ -142,16 +145,17 @@ public class FragmentRoutes extends Fragment {
      * <p>
      *     Pass the JWT token and the list of clients to the activity.
      */
-//    private void gotoCreateRoute() {
-//        Log.d(TAG, "gotoCreateRoute: Goto create route");
-//
-//        Intent intent = new Intent(getActivity(), AddRoute.class);
-//        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
-//        intent.putExtra(LIST_CLIENT_KEY, homeActivity.getClients());
-//        homeActivity.getAddRouteLauncher().launch(intent);
-//    }
+    private void gotoCreateRoute() {
+        Log.d(TAG, "gotoCreateRoute: Goto create route");
+
+        Intent intent = new Intent(getActivity(), AddRoute.class);
+        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+        intent.putExtra(LIST_ITINERARIES_KEY, homeActivity.getItineraries());
+        homeActivity.getAddRouteLauncher().launch(intent);
+    }
 
     public interface FragmentRouteActions {
         RoutePage getRoutePage();
+        ActivityResultLauncher<Intent> getAddRouteLauncher();
     }
 }

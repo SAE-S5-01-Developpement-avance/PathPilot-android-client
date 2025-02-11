@@ -20,6 +20,8 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -101,7 +103,19 @@ public class InfoItinerary extends AppCompatActivity {
     }
 
     private void createAndStartRoute() {
-        routeService.createRoute(this, itinerary);
+        routeService.createRoute(this, jwtToken, itinerary,
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "createRoute: " + response);
+
+                    Route route = Parser.getRoute(response);
+                    redirectToPlayerActivity(route);
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    VolleyErrorHandler.handleError(this, error);
+                }
+        );
     }
 
     public Popup getPopup() {

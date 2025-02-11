@@ -201,4 +201,14 @@
     <string name="delete_route">Delete</string>
 
     <string name="home">Home</string>
+
+    <!--
+    Add Route
+    -->
+    <string name="title_select_itinerary">Select an itinerary:</string>
+    <string name="select_itinerary">Select an itinerary to create a route</string>
+    <string name="button_create_route">Create route</string>
+    <string name="select_itinerary_to_create_route">Select an itinerary</string>
+    <string name="error_select_itinerary">Cannot create a route without an itinerary selected</string>
+    <string name="header_create_route">Create route</string>
 </resources>
