@@ -62,7 +62,7 @@ public class ItineraryService implements IItineraryService {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
-        List<Client> listClientOrdered = new ArrayList<>();
+        ArrayList<Client> listClientsOrdered = new ArrayList<>();
         JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST,
                 API_BASE_URL, itinerariesInput, jwtToken,
                 response -> {
@@ -70,37 +70,12 @@ public class ItineraryService implements IItineraryService {
                     Log.d(TAG, "onResponse: " + response);
 
                     try {
-                        Itinerary t = new Itinerary(response);
-
-                        // TODO Proposer au client
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    StringBuilder orderedClientsListText = new StringBuilder();
-                    try {
-                        JSONArray orderedClientsList = response.getJSONArray("clients_schedule");
-                        for (int i = 0; i < orderedClientsList.length(); i++) {
-                            for (int j = 0; j < listClients.size(); j++) {
-                                if (listClients.get(j).getId()
-                                        == orderedClientsList.getJSONObject(i).getInt("id")){
-
-                                    orderedClientsListText.append(listClients.get(j)
-                                            .layoutClientItemList()).append("\n");
-                                    listClientOrdered.add(listClients.get(i));
-                                }
-                            }
-                        }
-                        Itinerary itinerary = new Itinerary();
-                        itinerary.setId(response.getString("id"));
-                        itinerary.setClients((ArrayList)listClientOrdered);
+                        Itinerary itinerary = new Itinerary(response);
                         Intent intent = new Intent(context,SaveItinerary.class);
                         intent.putExtra(FragmentItineraries.TOKEN_KEY,
                                 addItineraryActivity.getJWTToken());
                         intent.putExtra(AddItinerary.KEY_ITINERARY_OBJECT,itinerary);
                         addItineraryActivity.getSaveItineraryLauncher().launch(intent);
-
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
