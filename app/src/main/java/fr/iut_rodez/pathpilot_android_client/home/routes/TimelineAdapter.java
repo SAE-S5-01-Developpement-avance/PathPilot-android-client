@@ -1,10 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Path;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,34 +63,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                 break;
         }
 
-        // Modify timeline line for last item to add arrow
+        // Handle last item
         if (position == items.size() - 1) {
-            ViewGroup.LayoutParams params = holder.timelineLine.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            holder.timelineLine.setLayoutParams(params);
-            holder.timelineLine.setBackground(createArrowDrawable(holder.itemView.getContext()));
+            holder.timelineArrow.setVisibility(View.VISIBLE);
+        } else {
+            holder.timelineArrow.setVisibility(View.GONE);
         }
-    }
-
-    /**
-     * Create an arrow drawable
-     *
-     * @param context Context of the application
-     * @return Drawable with an arrow at the bottom
-     */
-    private Drawable createArrowDrawable(Context context) {
-        GradientDrawable drawable = new GradientDrawable();
-        drawable.setColor(Color.parseColor("#0093B8"));
-        drawable.setShape(GradientDrawable.RECTANGLE);
-
-        // Create a shape with an arrow at the bottom
-        Path path = new Path();
-        path.moveTo(0, 0);
-        path.lineTo(10, 0);
-        path.lineTo(5, 10);
-        path.close();
-
-        return drawable;
     }
 
     @Override
@@ -107,6 +81,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         TextView address;
         View timelineLine;
         View timelineDot;
+        View timelineArrow;
 
         TimelineViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -114,6 +89,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             address = itemView.findViewById(R.id.timeline_client_address);
             timelineLine = itemView.findViewById(R.id.timeline_line);
             timelineDot = itemView.findViewById(R.id.timeline_dot);
+            timelineArrow = itemView.findViewById(R.id.timeline_arrow);
         }
     }
 }
