@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -20,12 +18,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
-import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
@@ -33,13 +29,11 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.Iti
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
-import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
-import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Service to handle all itinerary related requests
  */
-public class ItineraryService extends AppCompatActivity{
+public class ItineraryService implements IItineraryService {
     public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
     private static final String TAG = ItineraryService.class.getSimpleName();
 
@@ -50,7 +44,8 @@ public class ItineraryService extends AppCompatActivity{
      * @param context     Context of the application
      * @param listClients The list of clients to create an itinerary
      */
-    public static void addItinerary(Context context, List<Client> listClients)
+    @Override
+    public void addItinerary(Context context, List<Client> listClients)
             throws JSONException {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
@@ -65,8 +60,6 @@ public class ItineraryService extends AppCompatActivity{
         }
         itinerariesInput.put("clients_schedule", listIdClient);
 
-        Popup popup = new Popup(context);
-
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
         List<Client> listClientOrdered = new ArrayList<>();
@@ -76,6 +69,15 @@ public class ItineraryService extends AppCompatActivity{
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
+                    try {
+                        Itinerary t = new Itinerary(response);
+
+                        // TODO Proposer au client
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     StringBuilder orderedClientsListText = new StringBuilder();
                     try {
                         JSONArray orderedClientsList = response.getJSONArray("clients_schedule");
@@ -83,6 +85,7 @@ public class ItineraryService extends AppCompatActivity{
                             for (int j = 0; j < listClients.size(); j++) {
                                 if (listClients.get(j).getId()
                                         == orderedClientsList.getJSONObject(i).getInt("id")){
+
                                     orderedClientsListText.append(listClients.get(j)
                                             .layoutClientItemList()).append("\n");
                                     listClientOrdered.add(listClients.get(i));
@@ -93,10 +96,10 @@ public class ItineraryService extends AppCompatActivity{
                         itinerary.setId(response.getString("id"));
                         itinerary.setClients((ArrayList)listClientOrdered);
                         Intent intent = new Intent(context,SaveItinerary.class);
-                        intent.putExtra(FragmentItineraries.CLE_TOKEN,
+                        intent.putExtra(FragmentItineraries.TOKEN_KEY,
                                 addItineraryActivity.getJWTToken());
                         intent.putExtra(AddItinerary.KEY_ITINERARY_OBJECT,itinerary);
-                        context.startActivity(intent);
+                        addItineraryActivity.getSaveItineraryLauncher().launch(intent);
 
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -167,7 +170,8 @@ public class ItineraryService extends AppCompatActivity{
      * @param nextPageUrl     The URL of the next page
      * @param adapter         The adapter to add the clients to
      */
-    public static void getNextPageItineraries(Context context, ListView listItinerariesView,
+    @Override
+    public void getNextPageItineraries(Context context, ListView listItinerariesView,
                                               String nextPageUrl, ItineraryArrayAdapter adapter) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
@@ -217,7 +221,8 @@ public class ItineraryService extends AppCompatActivity{
      * @param itinerarySelected  The itinerary to delete
      * @param listItinerariesView The view where the itineraries will be displayed
      */
-    public static void deleteItinerary(Home homeActivity, Itinerary itinerarySelected,
+    @Override
+    public void deleteItinerary(Home homeActivity, Itinerary itinerarySelected,
                                        ListView listItinerariesView) {
 
         String apiURLDelete = API_BASE_URL + "/" + itinerarySelected.getId();
@@ -259,7 +264,8 @@ public class ItineraryService extends AppCompatActivity{
      * @param context context of the application
      * @param idItinerary id of the itinerary to delete
      */
-    public static  void deleteItineraryToCancelTheCreation(Context context,String idItinerary) {
+    @Override
+    public void deleteItineraryToCancelTheCreation(Context context, String idItinerary) {
         String apiURLDelete = API_BASE_URL + "/" + idItinerary;
 
         SaveItinerary saveItinerary = (SaveItinerary) context;

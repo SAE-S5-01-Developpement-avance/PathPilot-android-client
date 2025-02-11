@@ -14,6 +14,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
@@ -32,8 +35,7 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
     public static final String ITINERARY_ADDED_KEY = "itineraryAdded";
-    public static final String CLE_ITINERARY_ADDED = "itineraryAdded";
-    public static final String KEY_ITINERARY_OBJECT = "itineraryAdded";
+    public static final String KEY_ITINERARY_OBJECT = "itineraryObjectAdded";
     private Spinner selectClientToAdd;
     private ListView listClientsAddedView;
     private ArrayList<Client> listClientsToAdd;
@@ -41,6 +43,7 @@ public class AddItinerary extends AppCompatActivity {
     private ArrayList<Client> listClientsAdded;
     private ArrayAdapter<Client> clientsToAddAdapter;
     private ClientArrayAdapter clientsAddedAdapter;
+    private ActivityResultLauncher<Intent> saveItineraryLauncher;
     private Popup popup;
     private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
@@ -129,6 +132,7 @@ public class AddItinerary extends AppCompatActivity {
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
 
         jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
+        saveItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromSaveItinerary);
     }
 
 
@@ -144,6 +148,21 @@ public class AddItinerary extends AppCompatActivity {
                 itineraryService.addItinerary(this, listClientsAdded);
             } catch (JSONException e) {
                 popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
+            }
+        }
+    }
+
+    private void returnFromSaveItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            // Load the clients if the creation was successful
+            if (result.getData() != null
+                    && result.getData().hasExtra(ITINERARY_ADDED_KEY)
+                    && result.getData().getBooleanExtra(ITINERARY_ADDED_KEY, false)) {
+
+                Intent intent = new Intent(this, Home.class);
+                setResult(AddItinerary.RESULT_OK, intent);
+                intent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, true);
+                finish();
             }
         }
     }
@@ -170,5 +189,9 @@ public class AddItinerary extends AppCompatActivity {
             listClientsToAdd.add(clientSelected);
         }
         return (super.onContextItemSelected(item));
+    }
+
+    public ActivityResultLauncher<Intent> getSaveItineraryLauncher() {
+        return saveItineraryLauncher;
     }
 }

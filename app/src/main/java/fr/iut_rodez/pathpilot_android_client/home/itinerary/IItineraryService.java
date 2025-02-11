@@ -59,4 +59,6 @@ public interface IItineraryService {
      * @param listItinerariesView The view where the itineraries will be displayed
      */
     void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView);
+
+    void deleteItineraryToCancelTheCreation(Context context, String idItinerary);
 }

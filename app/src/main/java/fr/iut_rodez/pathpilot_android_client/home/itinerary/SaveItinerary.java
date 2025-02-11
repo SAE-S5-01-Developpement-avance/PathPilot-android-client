@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
@@ -22,6 +24,7 @@ public class SaveItinerary extends AppCompatActivity {
     private ClientArrayAdapter orderedClientsListAdapter;
     private JWTToken jwtToken;
     private Itinerary itinerary;
+    private IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class SaveItinerary extends AppCompatActivity {
 
         Intent intent = getIntent();
         itinerary =(Itinerary) intent.getParcelableExtra(AddItinerary.KEY_ITINERARY_OBJECT);
-        jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
+        jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
         orderedClientsListView = findViewById(R.id.list_items_clients_ordered);
 
         clientsList = new ArrayList<>();
@@ -51,20 +54,18 @@ public class SaveItinerary extends AppCompatActivity {
     }
 
     public void saveItinerary() {
-        Intent returnIntent = new Intent(this, Home.class);
-        this.setResult(AddItinerary.RESULT_OK, returnIntent);
-        returnIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(returnIntent);
-        returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, true);
-        this.finish();
+        Intent intent = new Intent(this, AddItinerary.class);
+        setResult(AddItinerary.RESULT_OK, intent);
+        intent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, true);
+        finish();
     }
 
     public void cancelItineraryCreation() {
-        ItineraryService.deleteItineraryToCancelTheCreation(
+        itineraryService.deleteItineraryToCancelTheCreation(
                 this,itinerary.getId());
         Intent returnIntent = new Intent(this, AddItinerary.class);
         this.setResult(AddItinerary.RESULT_OK, returnIntent);
-        returnIntent.putExtra(AddItinerary.CLE_ITINERARY_ADDED, false);
+        returnIntent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, false);
         this.finish();
     }
 }

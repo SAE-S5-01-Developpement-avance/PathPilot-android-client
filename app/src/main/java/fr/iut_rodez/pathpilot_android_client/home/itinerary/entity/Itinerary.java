@@ -146,8 +146,8 @@ public class Itinerary implements Parcelable {
      */
     public static class ItineraryArrayAdapter extends ArrayAdapter<Itinerary> {
 
-        private final Context context;
-        private final List<Itinerary> itineraries;
+        private Context context;
+        private List<Itinerary> itineraries;
 
         public ItineraryArrayAdapter(@NonNull Context context, List<Itinerary> itineraries) {
             super(context, -1, itineraries);

@@ -1,5 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
@@ -48,6 +51,8 @@ public class FragmentItineraries extends Fragment {
     private ListView listItinerariesView;
     private boolean isLoading = false;
     private Home homeActivity;
+
+    private List<Itinerary> itineraries;
     private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
     public static FragmentItineraries newInstance() {
@@ -109,7 +114,6 @@ public class FragmentItineraries extends Fragment {
             intent.putExtra(TOKEN_KEY, homeActivity.getJWTToken());
             startActivity(intent);
         });
-
         return view;
     }
 
@@ -126,7 +130,7 @@ public class FragmentItineraries extends Fragment {
 
         if (optionSelected == R.id.delete_itinerary) {
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
-            ItineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
+            itineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
         } else if (optionSelected == R.id.create_route) {
             Log.d(TAG, "onContextItemSelected: Create route");
         } else {

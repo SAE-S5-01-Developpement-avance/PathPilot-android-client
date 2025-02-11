@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
@@ -132,7 +133,6 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
             if (result.getData() != null
                     && result.getData().hasExtra(ITINERARY_ADDED_KEY)
                     && result.getData().getBooleanExtra(ITINERARY_ADDED_KEY, false)) {
-
                 FragmentItineraries fragmentItineraries = (FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY);
                 fragmentItineraries.loadItineraries();
             }
