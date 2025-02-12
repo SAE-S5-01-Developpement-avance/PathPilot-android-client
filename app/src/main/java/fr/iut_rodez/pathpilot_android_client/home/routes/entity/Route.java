@@ -142,7 +142,7 @@ public class Route implements Parcelable {
      * @return The display name of the route date
      */
     public String getDateDisplayName() {
-        return dateDisplayName == null ? "" : dateDisplayName;
+        return dateDisplayName == null ? "None" : dateDisplayName;
     }
 
     /**

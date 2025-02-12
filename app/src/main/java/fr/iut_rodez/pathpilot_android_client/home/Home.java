@@ -147,7 +147,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
             // Goto the route fragment
             viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
 
-            // Load the clients if the creation was successful
+            // Load the routes if the creation was successful
             if (result.getData() != null
                     && result.getData().hasExtra(ADDED_ROUTE_KEY)
                     && result.getData().getBooleanExtra(ADDED_ROUTE_KEY, false)) {
@@ -218,6 +218,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     }
 
     public ArrayList<Itinerary> getItineraries() {
-        return ((FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY)).getListItineraries();
+        ArrayList<Itinerary> listItineraries = ((FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY)).getListItineraries();
+        Log.d(TAG, "getItineraries() returned: " + listItineraries);
+        return listItineraries;
     }
 }

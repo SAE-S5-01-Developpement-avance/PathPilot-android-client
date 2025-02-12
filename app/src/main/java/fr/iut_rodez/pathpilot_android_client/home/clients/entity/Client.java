@@ -120,7 +120,7 @@ public class Client implements Parcelable {
     }
 
     public String getCompanyName() {
-        return companyName;
+        return companyName != null ? companyName : "";
     }
 
     public void setCompanyName(String companyName) {

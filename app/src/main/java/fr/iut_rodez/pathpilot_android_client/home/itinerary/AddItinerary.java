@@ -63,13 +63,14 @@ public class AddItinerary extends AppCompatActivity {
         Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
 
         ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
+
         listClientsToAdd.addAll(clients);
 
-        clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
+        clientsToAddAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView textView = view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(R.id.spinner_item_text);
                 textView.setText(getItem(position).getCompanyName());
                 return view;
             }
@@ -77,19 +78,21 @@ public class AddItinerary extends AppCompatActivity {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
-                TextView textView = view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(R.id.spinner_item_text);
                 Client client = getItem(position);
                 if (position != 0) {
-                    textView.setText(client.getCompanyName() + " - " + client.getAddressDisplayName());
+                    textView.setText(client.getCompanyName() + (client.getAddressDisplayName() == "" ? "" : " - " + client.getAddressDisplayName()));
                 } else {
                     textView.setText(client.getCompanyName());
                 }
                 return view;
             }
         };
+        selectClientToAdd.setAdapter(clientsToAddAdapter);
+
         clientsAddedAdapter = new ClientArrayAdapter(this, listClientsAdded);
         listClientsAddedView.setAdapter(clientsAddedAdapter);
-        selectClientToAdd.setAdapter(clientsToAddAdapter);
+
 
         selectClientToAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -134,13 +134,12 @@ public class FragmentRoutes extends Fragment {
      */
     public void loadRoutes() {
         routeService.getRoutes(homeActivity, listRoutesView);
-
     }
 
     /**
      * Go to the {@link AddRoute} activity.
      * <p>
-     *     Pass the JWT token and the list of clients to the activity.
+     * Give the JWT token and the list of itineraries to the activity.
      */
     private void gotoCreateRoute() {
         Log.d(TAG, "gotoCreateRoute: Goto create route");
