@@ -1,12 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.login;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.android.volley.RequestQueue;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 
