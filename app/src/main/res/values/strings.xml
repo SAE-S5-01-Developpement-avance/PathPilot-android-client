@@ -158,7 +158,6 @@
     <string name="counter_visited_clients">Visited clients: %d/%d</string>
     <string name="error_while_drawing_the_road">Error while drawing the road</string>
     <string name="error_while_searching">Error during research:</string>
-    <string name="home">Home</string>
     <string name="no_itinerary_retrieve">No itinerary retrieved</string>
     <string name="no_token_retrieve">No token retrieved</string>
 
@@ -176,8 +175,6 @@
     <string name="progress_deleting_itinerary">Deleting itinerary…</string>
     <string name="progress_fetching_itineraries">Fetching itineraries…</string>
     <string name="progress_creating_itinerary">Creating itinerary…</string>
-    <string name="content_description_pathpilot_icon" translatable="false">PathPilot icon</string>
-    <string name="content_description_plus_icon" translatable="false">Plus icon</string>
 
 
     <!--

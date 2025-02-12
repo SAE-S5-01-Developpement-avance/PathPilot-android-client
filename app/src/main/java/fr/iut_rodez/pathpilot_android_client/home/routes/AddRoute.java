@@ -27,7 +27,7 @@ import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddRoute extends AppCompatActivity {
-    public static final String CLE_ROUTE_ADDED = "routeAdded";
+    public static final String ADDED_ROUTE_KEY = "routeAdded";
     private Spinner selectItinerary;
     private ArrayList<Itinerary> listItineraries;
     private JWTToken jwtToken;
@@ -88,7 +88,7 @@ public class AddRoute extends AppCompatActivity {
         });
 
         findViewById(R.id.button_create_route).setOnClickListener(v -> createRoute());
-        jwtToken = intent.getParcelableExtra(FragmentItineraries.CLE_TOKEN);
+        jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
     }
 
     public void createRoute() {

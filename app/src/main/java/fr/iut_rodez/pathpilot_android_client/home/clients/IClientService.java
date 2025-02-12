@@ -5,6 +5,8 @@ import android.widget.ListView;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 
 public interface IClientService {
     String API_BASE_URL = BuildConfig.API_BASE_URL + "clients";

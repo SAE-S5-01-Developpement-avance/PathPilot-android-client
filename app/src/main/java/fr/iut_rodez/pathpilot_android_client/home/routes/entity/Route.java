@@ -190,6 +190,7 @@ public class Route implements Parcelable {
 
             routeBeginDate.setText(MessageFormat.format("{0}{1}", context.getString(R.string.route_begin_date), route.getDateDisplayName()));
 
+            //TODO change this according the real route state in db
             String state = switch (route.getState()) {
                 case NOT_STARTED -> context.getString(R.string.route_state_not_started);
                 case PAUSED -> context.getString(R.string.route_state_paused);

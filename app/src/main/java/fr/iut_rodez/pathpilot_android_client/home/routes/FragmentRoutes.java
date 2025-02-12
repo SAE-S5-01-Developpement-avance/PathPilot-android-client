@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
-import static fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries.CLE_TOKEN;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -141,7 +139,6 @@ public class FragmentRoutes extends Fragment {
 
     /**
      * Go to the {@link AddRoute} activity.
-     * TODO make the AddRoute activity to be able to create a route (later)
      * <p>
      *     Pass the JWT token and the list of clients to the activity.
      */
@@ -149,7 +146,7 @@ public class FragmentRoutes extends Fragment {
         Log.d(TAG, "gotoCreateRoute: Goto create route");
 
         Intent intent = new Intent(getActivity(), AddRoute.class);
-        intent.putExtra(CLE_TOKEN, homeActivity.getJWTToken());
+        intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
         intent.putExtra(LIST_ITINERARIES_KEY, homeActivity.getItineraries());
         homeActivity.getAddRouteLauncher().launch(intent);
     }

@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -24,8 +23,8 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -204,12 +203,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      *
      * @param client The next client
      */
-    private void setNextClientInfo(Client client) {
+    private void setNextClientInfo(RouteClient client) {
         Log.d(TAG, client.toString());
-        client.setAddressDisplayName(this);
-        clientName.setText(client.getCompanyName());
-        clientAddress.setText(client.getAddressDisplayName());
-        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client)));
+        client.getClient().setAddressDisplayName(this);
+        clientName.setText(client.getClient().getCompanyName());
+        clientAddress.setText(client.getClient().getAddressDisplayName());
+        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client.getClient())));
         counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getNumberOfClientsExpected()));
     }
 

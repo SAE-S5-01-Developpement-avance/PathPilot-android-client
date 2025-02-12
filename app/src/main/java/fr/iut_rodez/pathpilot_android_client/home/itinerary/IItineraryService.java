@@ -9,7 +9,9 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.ItineraryArrayAdapter;
 
 public interface IItineraryService {
 
@@ -45,7 +47,7 @@ public interface IItineraryService {
      * @param nextPageUrl         The URL of the next page
      * @param adapter             The adapter to add the clients to
      */
-    void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, Itinerary.ItineraryArrayAdapter adapter);
+    void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter);
 
     /**
      * Request to the API to delete an itinerary.

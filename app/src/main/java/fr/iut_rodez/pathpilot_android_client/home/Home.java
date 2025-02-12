@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.home;
 
 import static fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.ADDED_CLIENT_KEY;
 import static fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary.ITINERARY_ADDED_KEY;
+import static fr.iut_rodez.pathpilot_android_client.home.routes.AddRoute.ADDED_ROUTE_KEY;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -148,8 +149,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
             // Load the clients if the creation was successful
             if (result.getData() != null
-                    && result.getData().hasExtra(CLE_ROUTE_ADDED)
-                    && result.getData().getBooleanExtra(CLE_ROUTE_ADDED, false)) {
+                    && result.getData().hasExtra(ADDED_ROUTE_KEY)
+                    && result.getData().getBooleanExtra(ADDED_ROUTE_KEY, false)) {
 
                 FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ROUTE);
                 fragmentRoutes.loadRoutes();

@@ -6,8 +6,6 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 import fr.iut_rodez.pathpilot_android_client.home.clients.IClientService;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.IItineraryService;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryService;
-import fr.iut_rodez.pathpilot_android_client.home.routes.IRouteService;
-import fr.iut_rodez.pathpilot_android_client.home.routes.RouteService;
 import fr.iut_rodez.pathpilot_android_client.login.ILoginService;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 import fr.iut_rodez.pathpilot_android_client.signup.ISignUpService;
