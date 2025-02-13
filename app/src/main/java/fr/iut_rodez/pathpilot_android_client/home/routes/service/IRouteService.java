@@ -35,8 +35,9 @@ public interface IRouteService {
      * @param listRoutesView The view where the clients will be displayed
      * @param nextPageUrl     The URL of the next page
      * @param adapter         The adapter to add the clients to
+     * @param callback        The callback to put the flag to false when finish loading the next page
      */
-    void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, Route.RouteArrayAdapter adapter);
+    void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, Route.RouteArrayAdapter adapter, Runnable callback);
 
     /**
      * Create a route from an itinerary.

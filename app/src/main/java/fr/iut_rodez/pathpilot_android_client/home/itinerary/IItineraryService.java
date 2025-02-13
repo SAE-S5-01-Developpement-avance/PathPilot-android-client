@@ -46,8 +46,9 @@ public interface IItineraryService {
      * @param listItinerariesView The view where the clients will be displayed
      * @param nextPageUrl         The URL of the next page
      * @param adapter             The adapter to add the clients to
+     * @param callback            The callback to put the flag to false when finish loading the next page
      */
-    void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter);
+    void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter, Runnable callback);
 
     /**
      * Request to the API to delete an itinerary.

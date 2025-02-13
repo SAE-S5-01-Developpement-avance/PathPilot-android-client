@@ -42,6 +42,7 @@ public class FragmentRoutes extends Fragment {
     public static final String ITINERARY_KEY = "route";
 
     private ListView listRoutesView;
+    private boolean isLoading = false;
     private Home homeActivity;
     private IRouteService routeService = ServiceFactory.getRouteService();
 
@@ -77,11 +78,12 @@ public class FragmentRoutes extends Fragment {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0 && !isLoading) {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getRoutePage().getNext();
                     if (nextLink != null) {
-                        routeService.getNextPageRoutes(homeActivity, listRoutesView, nextLink.href(), (RouteArrayAdapter) listRoutesView.getAdapter());
+                        isLoading = true;
+                        routeService.getNextPageRoutes(homeActivity, listRoutesView, nextLink.href(), (RouteArrayAdapter) listRoutesView.getAdapter(), () -> isLoading = false);
                     }
                 }
             }
