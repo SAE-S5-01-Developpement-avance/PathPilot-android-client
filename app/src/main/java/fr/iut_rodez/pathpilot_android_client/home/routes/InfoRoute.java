@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
@@ -36,11 +40,20 @@ public class InfoRoute extends AppCompatActivity {
     private Popup popup;
     private RecyclerView timelineRecyclerView;
     private JWTToken jwtToken;
+    private ActivityResultLauncher<Intent> playerItineraryLauncher;
+
+    private int indexFragmentWhereWasOpen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_info_route);
+
+        // Get the parameters from the intent
+        Intent intent = getIntent();
+        route = intent.getParcelableExtra(ROUTE_KEY);
+        indexFragmentWhereWasOpen = intent.getIntExtra(FragmentRoutes.INDEX_FRAGMENT_KEY,
+                Home.INDEX_FRAGMENT_ROUTE);
 
         // Initialize views
         timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
@@ -52,6 +65,9 @@ public class InfoRoute extends AppCompatActivity {
         // Set up RecyclerView
         timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        playerItineraryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                this::returnFromPlayerItinerary);
         setUpTimelineClients();
         setUpToken();
     }
@@ -64,9 +80,6 @@ public class InfoRoute extends AppCompatActivity {
      * </p>
      */
     private void setUpTimelineClients() {
-        Intent intent = getIntent();
-        route = intent.getParcelableExtra(ROUTE_KEY);
-
         if (route == null) {
             Log.e(TAG, "onCreate: No route found in the intent");
             popup.showAlertDialog(getString(R.string.error), getString(R.string.no_route_retrieved));
@@ -152,6 +165,27 @@ public class InfoRoute extends AppCompatActivity {
         intent.putExtra(ROUTE_KEY, route);
         intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
         startActivity(intent);
+    }
+
+    /**
+     * Data returned by the player itinerary
+     *
+     * @param result result returned by the intent
+     */
+    private void returnFromPlayerItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Player itinerary");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            if (result.getData() != null
+            && result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)) {
+                Intent intent = new Intent(this, Home.class);
+                setResult(RESULT_OK, intent);
+                intent.putExtra(PlayerItinerary.ROUTE_STOPPED_KEY, true);
+                intent.putExtra(FragmentRoutes.INDEX_FRAGMENT_KEY, indexFragmentWhereWasOpen);
+                finish();
+            }
+        }
     }
 
     public JWTToken getJwtToken() {

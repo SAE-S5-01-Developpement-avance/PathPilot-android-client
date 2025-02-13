@@ -34,9 +34,11 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.FragmentRouteActions;
+import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
+import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 
 /**
  * Handle the different fragments of the application and the JWT token.
@@ -57,6 +59,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     private ActivityResultLauncher<Intent> addClientLauncher;
     private ActivityResultLauncher<Intent> addItineraryLauncher;
     private ActivityResultLauncher<Intent> addRouteLauncher;
+    private ActivityResultLauncher<Intent> infoRouteLauncher;
 
     private ClientPage clientPage;
     private ItineraryPage itineraryPage;
@@ -96,6 +99,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         addClientLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddClient);
         addItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddItinerary);
         addRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddRoute);
+        infoRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromInfoRoute);
     }
 
     public JWTToken getJWTToken() {
@@ -158,6 +162,35 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         }
     }
 
+    private void returnFromInfoRoute(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Return from Info Route");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+
+            if (result.getData() != null
+                    && result.getData().hasExtra(FragmentRoutes.INDEX_FRAGMENT_KEY)
+                    && result.getData().getIntExtra(FragmentRoutes.INDEX_FRAGMENT_KEY,
+                    INDEX_FRAGMENT_ITINERARY) == INDEX_FRAGMENT_ROUTE) {
+
+                // Comeback at the right fragment : Route
+                viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
+
+                // Reload data if a route is stopped
+                if (result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)
+                    && result.getData().getBooleanExtra(PlayerItinerary.ROUTE_STOPPED_KEY,
+                    false)) {
+                    FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager()
+                            .getFragments().get(INDEX_FRAGMENT_ROUTE);
+                    fragmentRoutes.loadRoutes();
+                }
+            } else {
+                // Comeback at the right fragment : Itinerary
+                viewPager.setCurrentItem(INDEX_FRAGMENT_ITINERARY);
+            }
+        }
+    }
+
     public ActivityResultLauncher<Intent> getAddClientLauncher() {
         return addClientLauncher;
     }
@@ -211,6 +244,10 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
     public ActivityResultLauncher<Intent> getAddItineraryLauncher() {
         return addItineraryLauncher;
+    }
+
+    public ActivityResultLauncher<Intent> getInfoRouteLauncher() {
+        return infoRouteLauncher;
     }
 
     public ArrayList<Client> getClients() {

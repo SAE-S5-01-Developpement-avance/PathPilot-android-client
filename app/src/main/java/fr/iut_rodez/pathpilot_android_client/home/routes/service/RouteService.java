@@ -108,6 +108,16 @@ public class RouteService implements IRouteService {
     }
 
     /**
+     * Stop the route.
+     *
+     * @param context The context of the application
+     * @param route the route we have to stop
+     */
+    public void stopRoute(Context context, Route route) {
+        Log.d(TAG, "Next Page URL: ");
+    }
+
+    /**
      * Create a route from an itinerary.
      * <p>
      * Send a request to the server to create a route from an itinerary.<br>

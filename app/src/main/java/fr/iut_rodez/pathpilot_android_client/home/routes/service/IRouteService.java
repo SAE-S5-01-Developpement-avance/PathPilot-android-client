@@ -56,8 +56,12 @@ public interface IRouteService {
      */
     void createRoute(Context context, JWTToken jwtToken, Itinerary itinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
+
     /**
      * Update salesman position
      */
     void updateSalesmanPosition(Context context, JWTToken jwtToken, GeoPoint currentPosition, Route route, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
+
+    void stopRoute(Context context, Route route);
+
 }

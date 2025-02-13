@@ -32,12 +32,17 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.home.routes.service.RouteService;
+import fr.iut_rodez.pathpilot_android_client.login.Login;
+import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -50,6 +55,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     public static final String JWT_TOKEN_KEY = "Player_JWTToken";
     private static final int ICON_PLAY = R.drawable.icon_start;
     private static final int ICON_PAUSE = R.drawable.icon_pause;
+    public static final String ROUTE_STOPPED_KEY = "route_stopped";
     private final Popup popup = new Popup(this);
     private final IRouteService routeService = ServiceFactory.getRouteService();
     private TextView clientName;
@@ -357,7 +363,31 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         pauseBtn.setBackground(icon);
     }
 
-    private void stop() {
-        Log.d(TAG, "stop: ");
+    /**
+     * Stop the launched route.
+     */
+    private boolean stop() {
+        Log.d(TAG, "stop :" + route.toString());
+        // TODO move the strings in values files
+        popup.showAlertDialog("Stop the route", "Are you sure about to stop the route?",
+                new DialogButton("Confirm",(dialog, which) -> {
+                    dialog.dismiss();
+
+                    // TODO Check the conditions to stop the route before.
+
+                    routeService.stopRoute(this, route);
+
+                    // TODO stop the route.
+                    Intent intent = new Intent(this, InfoRoute.class);
+                    setResult(RESULT_OK, intent);
+                    intent.putExtra(ROUTE_STOPPED_KEY, true);
+                    finish();
+
+                }),
+                null,
+                new DialogButton("Cancel",(dialog, which) -> {
+                    dialog.dismiss();}));
+        // L'événement est consommé
+        return true;
     }
 }
