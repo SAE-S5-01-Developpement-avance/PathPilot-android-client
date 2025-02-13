@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary.entity;
 
-import static fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client.getClientsDisplay;
-
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -178,7 +176,7 @@ public class Itinerary implements Parcelable {
             String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + itinerary.getCoordinates();
             itineraryCoordinates.setText(itineraryCoordinatesString);
 
-            itineraryClientNames.setText(getClientsDisplay(itinerary.getClients()));
+            itineraryClientNames.setText(Client.getClientsDisplay(itinerary.getClients()));
             itineraryTotalStops.setText(MessageFormat.format("{0}{1}", context.getString(R.string.itinerary_total_stops), itinerary.getClients().size()));
 
             return rowView;

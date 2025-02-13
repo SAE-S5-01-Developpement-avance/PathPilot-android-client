@@ -4,14 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -107,26 +103,6 @@ public class FragmentRoutes extends Fragment {
         });
 
         return view;
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        new MenuInflater(getActivity()).inflate(R.menu.itineray_context_menu, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Route routeSelected = (Route) listRoutesView.getItemAtPosition(info.position);
-        int optionSelected = item.getItemId();
-
-//        if (optionSelected == R.id.delete_route) {
-//            Log.d(TAG, "onContextItemSelected: Delete route");
-//            RouteService.deleteRoute(homeActivity, routeSelected, listRoutesView);
-//        } else {
-//            Log.e(TAG, "onContextItemSelected: Unknown option selected");
-//        }
-        return (super.onContextItemSelected(item));
     }
 
     /**

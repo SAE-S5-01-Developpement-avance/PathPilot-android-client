@@ -166,7 +166,6 @@ public class FragmentItineraries extends Fragment {
         Log.d(TAG, "getListItineraries: Get list of itineraries");
         ArrayList<Itinerary> listItineraries = new ArrayList<>();
         for (int i = 0; listItinerariesView.getAdapter().getCount() > i; i++) {
-            Log.d(TAG, "getListItineraries: Itinerary: " + listItinerariesView.getAdapter().getItem(i));
             listItineraries.add((Itinerary) listItinerariesView.getAdapter().getItem(i));
         }
         Log.d(TAG, "getListItineraries: List of itineraries: " + listItineraries);

@@ -109,9 +109,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         requestPermissionAndCenter();
 
         ArrayList<Client> clients = new ArrayList<>();
-        for (int i = 0; i < route.getClients().size(); i++) {
-            clients.add(route.getClients().get(i).getClient());
-        }
+        route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));
         setExpectedClientMarker(clients, route.getNextClient().getClient());
         mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
         mapView.invalidate(); // Refresh the map
@@ -201,14 +199,16 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * <p>
      *     This method needs the current position to calculate the distance to the client
      *
-     * @param client The next client
+     * @param routeClient The next client
      */
-    private void setNextClientInfo(RouteClient client) {
-        Log.d(TAG, client.toString());
-        client.getClient().setAddressDisplayName(this);
-        clientName.setText(client.getClient().getCompanyName());
-        clientAddress.setText(client.getClient().getAddressDisplayName());
-        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client.getClient())));
+    private void setNextClientInfo(RouteClient routeClient) {
+        Log.d(TAG, routeClient.toString());
+        Client client = routeClient.getClient();
+
+        client.setAddressDisplayName(this);
+        clientName.setText(client.getCompanyName());
+        clientAddress.setText(client.getAddressDisplayName());
+        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client)));
         counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getNumberOfClientsExpected()));
     }
 

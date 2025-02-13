@@ -18,34 +18,30 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientService;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class RouteService implements IRouteService {
 
-    public static final String API_BASE_URL = BuildConfig.API_BASE_URL + "routes";
-    private static final String TAG = ClientService.class.getSimpleName();
-
     public void getRoutes(Context context, ListView listRoutesView) {
-        Log.d(TAG, "API URL: " + API_BASE_URL);
+        Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT);
 
         Home homeActivity = (Home) context;
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog();
 
-        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL, null, jwtToken,
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, ROUTES_API_ENDPOINT, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     RoutePage routePage = Parser.getRoutesPageable(response);
@@ -61,7 +57,7 @@ public class RouteService implements IRouteService {
                     ((Home) context).setRoutePage(routePage);
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
                 }
@@ -140,7 +136,7 @@ public class RouteService implements IRouteService {
             try {
                 json.put("itineraryId", itineraryId);
             } catch (Exception ignored) {
-                // This should never happen, has the valu isn't a Number
+                // This should never happen, has the value isn't a Number
             }
             return json;
         }

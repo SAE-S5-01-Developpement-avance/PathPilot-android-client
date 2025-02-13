@@ -67,8 +67,6 @@ public class AddRoute extends AppCompatActivity {
 
         listItineraries.addAll(itineraries);
 
-        Log.d(TAG, "list itineraries" + listItineraries);
-
         itinerariesArrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, listItineraries) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {

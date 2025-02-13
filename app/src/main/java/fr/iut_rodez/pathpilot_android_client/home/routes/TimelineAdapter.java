@@ -44,13 +44,13 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         TimelineItem item = items.get(position);
 
         // Set client name and type
-        String clientText = item.getClientName() + " (" + item.getClientType() + ")";
+        String clientText = item.clientName() + " (" + item.clientType() + ")";
         holder.clientInfo.setText(clientText);
 
         // Set address
-        holder.address.setText(item.getAddress().isBlank() ? "NULL" : item.getAddress());
+        holder.address.setText(item.address().isBlank() ? "NULL" : item.address());
 
-        switch (item.getState()) {
+        switch (item.state()) {
             case VISITED:
                 holder.timelineDot.setBackgroundResource(R.drawable.visited_dot);
                 break;

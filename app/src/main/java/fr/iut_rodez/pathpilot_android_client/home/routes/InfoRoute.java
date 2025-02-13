@@ -16,6 +16,7 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
@@ -73,19 +74,14 @@ public class InfoRoute extends AppCompatActivity {
             return;
         }
 
-        ArrayList<RouteClient> clients = new ArrayList<>(route.getClients());
-        for (RouteClient routeClient : clients) {
+        // Set up clients
+        ArrayList<RouteClient> clients = route.getClients().stream().peek(routeClient -> {
             routeClient.setState(getVisitStatus(routeClient));
             routeClient.getClient().setAddressDisplayName(this);
-        }
-        List<TimelineItem> timelineItems = new ArrayList<>();
+        }).collect(Collectors.toCollection(ArrayList::new));
 
         // Convert route stops to timeline items
-        for (RouteClient routeClient : clients) {
-            timelineItems.add(new TimelineItem(routeClient));
-            Log.d(TAG, "setUpTimelineClients: Client: " + routeClient);
-        }
-
+        List<TimelineItem> timelineItems = clients.stream().map(TimelineItem::new).collect(Collectors.toList());
         // Set up adapter
         TimelineAdapter timelineAdapter = new TimelineAdapter(this, timelineItems);
         timelineRecyclerView.setAdapter(timelineAdapter);
@@ -98,21 +94,17 @@ public class InfoRoute extends AppCompatActivity {
     }
 
     /**
-     * Get the visit status for a client in the route
-     * @param client The client to check
-     * @return Status string (VISITED/CURRENT/PENDING)
+     * Get the visit status of a client.
+     *
+     * @param client The client to get the status of
+     * @return The visit status of the client
      */
     private ClientState getVisitStatus(RouteClient client) {
-        int clientIndex = route.getClients().indexOf(client);
-        int currentIndex = route.getIndexCurrentClient();
-
-        if (clientIndex < currentIndex) {
-            return ClientState.VISITED;
-        } else if (clientIndex >= currentIndex) {
-            return ClientState.EXPECTED;
-        } else {
-            return ClientState.SKIPPED;
-        }
+        return switch (client.getState()) {
+            case VISITED -> ClientState.VISITED;
+            case EXPECTED -> ClientState.EXPECTED;
+            default -> ClientState.SKIPPED;
+        };
     }
 
     /**
@@ -149,6 +141,11 @@ public class InfoRoute extends AppCompatActivity {
         }
     }
 
+    /**
+     * Resume the route from the current client.
+     * <p>
+     *     Redirects the user to the player activity with the current route.
+     */
     private void resumeRoute() {
         Intent intent = new Intent(this, PlayerItinerary.class);
         intent.putExtra(ROUTE_KEY, route);

@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
@@ -120,7 +121,7 @@ public class Client implements Parcelable {
     }
 
     public String getCompanyName() {
-        return companyName != null ? companyName : "";
+        return companyName;
     }
 
     public void setCompanyName(String companyName) {
@@ -309,7 +310,7 @@ public class Client implements Parcelable {
     public static String getClientsDisplay(ArrayList<Client> clients) {
         StringBuilder clientNames = new StringBuilder();
         for (int i = 0; i < clients.size(); i++) {
-            clientNames.append(i + 1).append(". ").append(clients.get(i).toShortString());
+            clientNames.append(MessageFormat.format("{0}. {1}", i + 1, clients.get(i).toShortString()));
             if (i < clients.size() - 1) {
                 clientNames.append("\n");
             }

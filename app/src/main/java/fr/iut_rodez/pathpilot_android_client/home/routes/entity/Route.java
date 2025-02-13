@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes.entity;
 
-import static fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client.getClientsDisplay;
-
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -183,10 +181,9 @@ public class Route implements Parcelable {
             routeAdress.setText(routeCoordinatesString);
 
             ArrayList<Client> clients = new ArrayList<>();
-            for (int i = 0; i < route.getClients().size(); i++) {
-                clients.add(route.getClients().get(i).getClient());
-            }
-            routeClientNames.setText(getClientsDisplay(clients));
+            route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));
+
+            routeClientNames.setText(Client.getClientsDisplay(clients));
 
             routeBeginDate.setText(MessageFormat.format("{0}{1}", context.getString(R.string.route_begin_date), route.getDateDisplayName()));
 

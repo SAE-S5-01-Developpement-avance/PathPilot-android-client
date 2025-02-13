@@ -56,9 +56,6 @@ public class Login extends AppCompatActivity {
         if (intent != null && intent.hasExtra(EMAIL_KEY)) {
             emailInput.setText(intent.getStringExtra(EMAIL_KEY));
         }
-
-        emailInput.setText("t@t.tt");
-        passwordInput.setText("123456789");
     }
 
     /**
