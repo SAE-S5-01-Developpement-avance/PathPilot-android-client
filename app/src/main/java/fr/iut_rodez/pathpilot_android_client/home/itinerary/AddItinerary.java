@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -61,14 +61,16 @@ public class AddItinerary extends AppCompatActivity {
 
         Intent intent = getIntent();
         Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
+
         ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
+
         listClientsToAdd.addAll(clients);
 
-        clientsToAddAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listClientsToAdd) {
+        clientsToAddAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView textView = view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(R.id.spinner_item_text);
                 textView.setText(getItem(position).getCompanyName());
                 return view;
             }
@@ -76,25 +78,28 @@ public class AddItinerary extends AppCompatActivity {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
-                TextView textView = view.findViewById(android.R.id.text1);
+                TextView textView = view.findViewById(R.id.spinner_item_text);
                 Client client = getItem(position);
+                String spinnerItemText = client.getCompanyName();
                 if (position != 0) {
-                    textView.setText(client.getCompanyName() + " - " + client.getAddressDisplayName());
-                } else {
-                    textView.setText(client.getCompanyName());
+                    String addressDisplayName = client.getAddressDisplayName();
+                    spinnerItemText += addressDisplayName.isEmpty() ? "" : " - " + addressDisplayName;
                 }
+                textView.setText(spinnerItemText);
                 return view;
             }
         };
+        selectClientToAdd.setAdapter(clientsToAddAdapter);
+
         clientsAddedAdapter = new ClientArrayAdapter(this, listClientsAdded);
         listClientsAddedView.setAdapter(clientsAddedAdapter);
-        selectClientToAdd.setAdapter(clientsToAddAdapter);
+
 
         selectClientToAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (listClientsAdded.size() < 8) {
-                    if (position != AdapterView.INVALID_POSITION && position != 0) {
+                if (position != AdapterView.INVALID_POSITION && position != 0) {
+                    if (listClientsAdded.size() < 8) {
                         Client selectedClient = listClientsToAdd.get(position);
                         listClientsAdded.add(selectedClient);
                         clientsAddedAdapter.notifyDataSetChanged();
@@ -103,10 +108,10 @@ public class AddItinerary extends AppCompatActivity {
                         if (!listClientsToAdd.isEmpty()) {
                             selectClientToAdd.setSelection(0);
                         }
+                    } else {
+                        popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
+                        selectClientToAdd.setSelection(0);
                     }
-                } else if (position != 0) {
-                    popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
-                    selectClientToAdd.setSelection(0);
                 }
             }
 

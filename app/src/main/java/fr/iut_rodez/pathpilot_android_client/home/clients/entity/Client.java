@@ -1,6 +1,6 @@
-package fr.iut_rodez.pathpilot_android_client.home.clients;
+package fr.iut_rodez.pathpilot_android_client.home.clients.entity;
 
-import static fr.iut_rodez.pathpilot_android_client.home.clients.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
+import static fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
@@ -97,13 +100,13 @@ public class Client implements Parcelable {
     /**
      * Constructor for Itineraries clients
      *
-     * @param idCLient        id of the client
+     * @param idClient        id of the client
      * @param companyName     the client's companyName
      * @param latHomeAddress  the latitude of the client's home address
      * @param longHomeAddress the longitude of the client's home address
      */
-    public Client(int idCLient, String companyName, double latHomeAddress, double longHomeAddress) {
-        this.id = idCLient;
+    public Client(int idClient, String companyName, double latHomeAddress, double longHomeAddress) {
+        this.id = idClient;
         this.companyName = companyName;
         this.latHomeAddress = latHomeAddress;
         this.longHomeAddress = longHomeAddress;
@@ -229,21 +232,19 @@ public class Client implements Parcelable {
         return companyName;
     }
 
-    public JSONObject toJson() {
+    public JSONObject toJson() throws JSONException {
         JSONObject clientJson = new JSONObject();
-        try {
-            clientJson.put(COMPANY_NAME_JSON_KEY, companyName);
-            clientJson.put("latHomeAddress", latHomeAddress);
-            clientJson.put("longHomeAddress", longHomeAddress);
-            clientJson.put("clientCategory", clientCategory.category());
-            clientJson.put("description", description);
-            clientJson.put("contactLastName", contactLastName);
-            clientJson.put("contactFirstName", contactFirstName);
-            clientJson.put("phoneNumber", phoneNumber);
-            clientJson.put("salesman", salesman);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+
+        clientJson.put(COMPANY_NAME_JSON_KEY, companyName);
+        clientJson.put("latHomeAddress", latHomeAddress);
+        clientJson.put("longHomeAddress", longHomeAddress);
+        clientJson.put("clientCategory", clientCategory.category());
+        clientJson.put("description", description);
+        clientJson.put("contactLastName", contactLastName);
+        clientJson.put("contactFirstName", contactFirstName);
+        clientJson.put("phoneNumber", phoneNumber);
+        clientJson.put("salesman", salesman);
+
         return clientJson;
     }
 
@@ -281,6 +282,8 @@ public class Client implements Parcelable {
      *         <li>id</li>
      *         <li>companyName</li>
      *         <li>companyLocation</li>
+     *         <li>clientState</li>
+ *         </ul>
      * </p>
      *
      * @param clientJson the short JSON object
@@ -296,7 +299,28 @@ public class Client implements Parcelable {
         );
     }
 
+    /**
+     * Convert the list of clients to a string list used in route / itinerary.
+     *
+     * @param clients The list of clients
+     * @return The string representation of the list of clients
+     */
+    public static String getClientsDisplay(List<Client> clients) {
+        StringBuilder clientNames = new StringBuilder();
+        for (int i = 0; i < clients.size(); i++) {
+            clientNames.append(MessageFormat.format("{0}. {1}", i + 1, clients.get(i).toShortString()));
+            if (i < clients.size() - 1) {
+                clientNames.append("\n");
+            }
+        }
+        return clientNames.toString();
+    }
+
     static class ClientConstant {
+        //private constructor to prevent instantiation
+        private ClientConstant() {
+        }
+
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
     }
 }

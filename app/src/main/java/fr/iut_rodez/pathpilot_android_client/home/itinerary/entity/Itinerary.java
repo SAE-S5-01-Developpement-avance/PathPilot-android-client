@@ -1,4 +1,4 @@
-package fr.iut_rodez.pathpilot_android_client.home.itinerary;
+package fr.iut_rodez.pathpilot_android_client.home.itinerary.entity;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 
 /**
@@ -117,13 +117,9 @@ public class Itinerary implements Parcelable {
         this.displayName = displayName;
     }
 
-    public JSONObject toJson() {
+    public JSONObject toJson() throws JSONException {
         JSONObject itineraryJson = new JSONObject();
-        try {
-            itineraryJson.put("clients_schedule", clients);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        itineraryJson.put("clients_schedule", clients);
         return itineraryJson;
     }
 
@@ -176,28 +172,11 @@ public class Itinerary implements Parcelable {
             String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + itinerary.getCoordinates();
             itineraryCoordinates.setText(itineraryCoordinatesString);
 
-            itineraryClientNames.setText(itinerary.convertClients(itinerary.getClients()));
+            itineraryClientNames.setText(Client.getClientsDisplay(itinerary.getClients()));
             itineraryTotalStops.setText(MessageFormat.format("{0}{1}", context.getString(R.string.itinerary_total_stops), itinerary.getClients().size()));
 
             return rowView;
         }
-    }
-
-    /**
-     * Convert the list of clients to a string list used in itinerary.
-     *
-     * @param clients The list of clients
-     * @return The string representation of the list of clients
-     */
-    public String convertClients(ArrayList<Client> clients) {
-        StringBuilder clientNames = new StringBuilder();
-        for (int i = 0; i < clients.size(); i++) {
-            clientNames.append(i + 1).append(". ").append(clients.get(i).toShortString());
-            if (i < clients.size() - 1) {
-                clientNames.append("\n");
-            }
-        }
-        return clientNames.toString();
     }
 
     /**

@@ -19,9 +19,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
 /**
@@ -149,5 +153,22 @@ public class FragmentItineraries extends Fragment {
     public interface FragmentItineraryActions {
         ActivityResultLauncher<Intent> getAddItineraryLauncher();
         ItineraryPage getItineraryPage();
+    }
+
+    /**
+     * Get the list of itineraries displayed in the list view
+     * <p>
+     *     It's use in the {@link fr.iut_rodez.pathpilot_android_client.home.routes.AddRoute} activity
+     * </p>
+     * @return The list of itineraries displayed in the list view
+     */
+    public ArrayList<Itinerary> getListItineraries() {
+        Log.d(TAG, "getListItineraries: Get list of itineraries");
+        ArrayList<Itinerary> listItineraries = new ArrayList<>();
+        for (int i = 0; listItinerariesView.getAdapter().getCount() > i; i++) {
+            listItineraries.add((Itinerary) listItinerariesView.getAdapter().getItem(i));
+        }
+        Log.d(TAG, "getListItineraries: List of itineraries: " + listItineraries);
+        return listItineraries;
     }
 }

@@ -174,4 +174,34 @@ String for Login activity
     <string name="progress_fetching_itineraries">Récupération des itinéraires…</string>
     <string name="progress_deleting_client">Suppression du client…</string>
     <string name="progress_deleting_itinerary">Suppression de l\'itinéraire…</string>
+
+    <!--
+    Route Info
+    -->
+    <string name="no_route_retrieved">Aucune route reçue</string>
+    <string name="route_completed">Route terminée</string>
+    <string name="button_start_route">Commencer la route</string>
+    <string name="button_resume_route">Reprendre la route</string>
+
+    <!--
+    Route list
+    -->
+    <string name="header_routes_list">Routes</string>
+    <string name="route_address">"Départ : "</string>
+    <string name="route_begin_date">"Date de départ : "</string>
+    <string name="route_state_paused">"En pause"</string>
+    <string name="route_state_completed">"Fini"</string>
+    <string name="route_state_stopped">"Arrêté"</string>
+    <string name="route_state_not_started">"Pas commencé"</string>
+    <string name="delete_route">Delete</string>
+
+    <!--
+    Add Route
+    -->
+    <string name="title_select_itinerary">Sélectionner un itinéraire:</string>
+    <string name="select_itinerary">Sélection d\'un itinéraire pour créer une route</string>
+    <string name="button_create_route">Créer route</string>
+    <string name="select_itinerary_to_create_route">Sélectionner un itinéraire</string>
+    <string name="error_select_itinerary">Impossible de créer une route sans itinéraire sélectionné</string>
+    <string name="header_create_route">Création de routes</string>
 </resources>

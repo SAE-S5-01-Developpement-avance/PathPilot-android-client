@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.home;
 
 import static fr.iut_rodez.pathpilot_android_client.home.clients.AddClient.ADDED_CLIENT_KEY;
 import static fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary.ITINERARY_ADDED_KEY;
+import static fr.iut_rodez.pathpilot_android_client.home.routes.AddRoute.ADDED_ROUTE_KEY;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,13 +23,17 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
-import fr.iut_rodez.pathpilot_android_client.home.clients.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients.FragmentClientsActions;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries.FragmentItineraryActions;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.FragmentRouteActions;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
 
@@ -36,11 +41,12 @@ import fr.iut_rodez.pathpilot_android_client.login.LoginService;
  * Handle the different fragments of the application and the JWT token.
  * The JWT token is passed from the login activity to the home activity.
  */
-public class Home extends AppCompatActivity implements FragmentClientsActions, FragmentItineraryActions {
+public class Home extends AppCompatActivity implements FragmentClientsActions, FragmentItineraryActions, FragmentRouteActions {
 
     private static final String TAG = Home.class.getSimpleName();
     public static final int INDEX_FRAGMENT_CLIENT = 0;
     public static final int INDEX_FRAGMENT_ITINERARY = 1;
+    public static final int INDEX_FRAGMENT_ROUTE = 2;
 
     private ViewPager2 viewPager;
     private TabLayout tabManager;
@@ -49,9 +55,11 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
     private ActivityResultLauncher<Intent> addClientLauncher;
     private ActivityResultLauncher<Intent> addItineraryLauncher;
+    private ActivityResultLauncher<Intent> addRouteLauncher;
 
     private ClientPage clientPage;
     private ItineraryPage itineraryPage;
+    private RoutePage routePage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +73,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
         int[] icons = {
                 FragmentClients.ICON,
-                FragmentItineraries.ICON
+                FragmentItineraries.ICON,
+                FragmentRoutes.ICON
         };
 
         new TabLayoutMediator(tabManager, viewPager, (tab, position) -> {
@@ -85,6 +94,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
         addClientLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddClient);
         addItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddItinerary);
+        addRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddRoute);
     }
 
     public JWTToken getJWTToken() {
@@ -115,7 +125,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
             Log.d(TAG, "onCreate: Return From Add Itinerary");
             Log.d(TAG, "onCreate: " + result.getData());
 
-            // Goto the client fragment
+            // Goto the itinerary fragment
             viewPager.setCurrentItem(INDEX_FRAGMENT_ITINERARY);
 
             // Load the clients if the creation was successful
@@ -125,6 +135,25 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
                 FragmentItineraries fragmentItineraries = (FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY);
                 fragmentItineraries.loadItineraries();
+            }
+        }
+    }
+
+    private void returnFromAddRoute(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Return From Add Route");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            // Goto the route fragment
+            viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
+
+            // Load the routes if the creation was successful
+            if (result.getData() != null
+                    && result.getData().hasExtra(ADDED_ROUTE_KEY)
+                    && result.getData().getBooleanExtra(ADDED_ROUTE_KEY, false)) {
+
+                FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ROUTE);
+                fragmentRoutes.loadRoutes();
             }
         }
     }
@@ -151,6 +180,15 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         this.itineraryPage = itineraryPage;
     }
 
+    /**
+     * Set the routes page
+     *
+     * @param routePage The route page
+     */
+    public void setRoutePage(RoutePage routePage) {
+        this.routePage = routePage;
+    }
+
     @Override
     public ClientPage getClientPage() {
         return clientPage;
@@ -161,11 +199,27 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         return itineraryPage;
     }
 
+    @Override
+    public RoutePage getRoutePage() {
+        return routePage;
+    }
+
+    @Override
+    public ActivityResultLauncher<Intent> getAddRouteLauncher() {
+        return addRouteLauncher;
+    }
+
     public ActivityResultLauncher<Intent> getAddItineraryLauncher() {
         return addItineraryLauncher;
     }
 
     public ArrayList<Client> getClients() {
         return ((FragmentClients) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_CLIENT)).getListClients();
+    }
+
+    public ArrayList<Itinerary> getItineraries() {
+        ArrayList<Itinerary> listItineraries = ((FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY)).getListItineraries();
+        Log.d(TAG, "getItineraries() returned: " + listItineraries);
+        return listItineraries;
     }
 }

@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
@@ -21,11 +20,11 @@ import org.osmdroid.views.overlay.Polyline;
 import java.util.ArrayList;
 
 import fr.iut_rodez.pathpilot_android_client.R;
-import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
-import fr.iut_rodez.pathpilot_android_client.home.routes.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.util.map.CurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -109,7 +108,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         requestPermissionAndCenter();
 
-        setExpectedClientMarker(route.getExpectedClients(), route.getNextClient());
+        ArrayList<Client> clients = new ArrayList<>();
+        route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));
+        setExpectedClientMarker(clients, route.getNextClient().getClient());
         mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
         mapView.invalidate(); // Refresh the map
     }
@@ -170,7 +171,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             Log.e(TAG, "onCreate: No itinerary found in the intent");
             popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
         }
-        route.getExpectedClients().forEach(client -> client.setAddressDisplayName(this));
+        route.getClients().forEach(routeClient -> routeClient.getClient().setAddressDisplayName(this));
     }
 
     /**
@@ -198,10 +199,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * <p>
      *     This method needs the current position to calculate the distance to the client
      *
-     * @param client The next client
+     * @param routeClient The next client
      */
-    private void setNextClientInfo(Client client) {
-        Log.d(TAG, client.toString());
+    private void setNextClientInfo(RouteClient routeClient) {
+        Log.d(TAG, routeClient.toString());
+        Client client = routeClient.getClient();
+
         client.setAddressDisplayName(this);
         clientName.setText(client.getCompanyName());
         clientAddress.setText(client.getAddressDisplayName());

@@ -13,9 +13,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -122,7 +127,7 @@ public class ClientService implements IClientService {
      * @param client  The client to add
      */
     @Override
-    public void addClient(Context context, Client client) {
+    public void addClient(Context context, Client client) throws JSONException {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         AddClient addClientActivity = (AddClient) context;

@@ -3,8 +3,12 @@ package fr.iut_rodez.pathpilot_android_client.home.clients;
 import android.content.Context;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 
 public interface IClientService {
     String API_BASE_URL = BuildConfig.API_BASE_URL + "clients";
@@ -39,7 +43,7 @@ public interface IClientService {
      * @param context Context of the application
      * @param client  The client to add
      */
-    void addClient(Context context, Client client);
+    void addClient(Context context, Client client) throws JSONException;
 
     /**
      * Request to the API to delete a client.

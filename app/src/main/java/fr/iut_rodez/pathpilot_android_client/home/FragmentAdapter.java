@@ -6,10 +6,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 
 public class FragmentAdapter extends FragmentStateAdapter {
 
-    private static final int NUMBER_OF_FRAGMENT = 2;
+    private static final int NUMBER_OF_FRAGMENT = 3;
 
     public FragmentAdapter(FragmentActivity activity) {
         super(activity);
@@ -20,6 +21,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
         return switch (position) {
             case 0 -> FragmentClients.newInstance();
             case 1 -> FragmentItineraries.newInstance();
+            case 2 -> FragmentRoutes.newInstance();
             default -> null;
         };
     }

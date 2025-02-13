@@ -21,6 +21,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.Locale;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.MapSelection;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
@@ -84,7 +87,13 @@ public class AddClient extends AppCompatActivity {
         labelLastName = findViewById(R.id.label_last_name);
         labelPhoneNumber = findViewById(R.id.label_phone_number);
 
-        findViewById(R.id.create_client_button).setOnClickListener(v -> createAccount());
+        findViewById(R.id.create_client_button).setOnClickListener(v -> {
+            try {
+                createAccount();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
         findViewById(R.id.backButton).setOnClickListener(v -> gotoClient());
         findViewById(R.id.selection_map_button).setOnClickListener(v -> gotoMapSelection());
 
@@ -136,7 +145,7 @@ public class AddClient extends AppCompatActivity {
      * Checks that the parameters entered are valid.
      * Creates an account or notifies the user of input errors.
      */
-    public void createAccount() {
+    public void createAccount() throws JSONException {
         ArrayList<String> errorMessage = new ArrayList<>();
         // reset the style of the text field
         resetFieldStyle();
@@ -308,7 +317,7 @@ public class AddClient extends AppCompatActivity {
     /**
      * Send information to the API for sign in the user with the entered informations.
      */
-    public void sendInformationToCreateClient(String companyNameText, double latitudeValue, double longitudeValue, String descriptionText, Boolean isClient, String firstNameText, String lastNameText, String phoneNumberText) {
+    public void sendInformationToCreateClient(String companyNameText, double latitudeValue, double longitudeValue, String descriptionText, Boolean isClient, String firstNameText, String lastNameText, String phoneNumberText) throws JSONException {
         clientService.addClient(this, new Client(companyNameText, latitudeValue, longitudeValue, descriptionText, isClient, firstNameText, lastNameText, phoneNumberText));
     }
 
