@@ -4,20 +4,26 @@ public enum RouteState {
     /**
      * The route is not started yet
      */
-    NOT_STARTED,
+    NOT_STARTED("NOT_STARTED"),
 
     /**
      * The route is paused
      */
-    PAUSED,
+    PAUSED("PAUSED"),
 
     /**
      * The route is stopped
      */
-    STOPPED,
+    STOPPED("STOPPED"),
 
     /**
      * The route is finished
      */
-    FINISHED
+    FINISHED("FINISHED");
+
+    private final String value;
+
+    RouteState(String value) {
+        this.value = value;
+    }
 }
