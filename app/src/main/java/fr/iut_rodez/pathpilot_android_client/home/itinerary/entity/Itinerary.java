@@ -117,13 +117,9 @@ public class Itinerary implements Parcelable {
         this.displayName = displayName;
     }
 
-    public JSONObject toJson() {
+    public JSONObject toJson() throws JSONException {
         JSONObject itineraryJson = new JSONObject();
-        try {
-            itineraryJson.put("clients_schedule", clients);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        itineraryJson.put("clients_schedule", clients);
         return itineraryJson;
     }
 

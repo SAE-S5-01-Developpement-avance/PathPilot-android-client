@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
@@ -232,21 +232,19 @@ public class Client implements Parcelable {
         return companyName;
     }
 
-    public JSONObject toJson() {
+    public JSONObject toJson() throws JSONException {
         JSONObject clientJson = new JSONObject();
-        try {
-            clientJson.put(COMPANY_NAME_JSON_KEY, companyName);
-            clientJson.put("latHomeAddress", latHomeAddress);
-            clientJson.put("longHomeAddress", longHomeAddress);
-            clientJson.put("clientCategory", clientCategory.category());
-            clientJson.put("description", description);
-            clientJson.put("contactLastName", contactLastName);
-            clientJson.put("contactFirstName", contactFirstName);
-            clientJson.put("phoneNumber", phoneNumber);
-            clientJson.put("salesman", salesman);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+
+        clientJson.put(COMPANY_NAME_JSON_KEY, companyName);
+        clientJson.put("latHomeAddress", latHomeAddress);
+        clientJson.put("longHomeAddress", longHomeAddress);
+        clientJson.put("clientCategory", clientCategory.category());
+        clientJson.put("description", description);
+        clientJson.put("contactLastName", contactLastName);
+        clientJson.put("contactFirstName", contactFirstName);
+        clientJson.put("phoneNumber", phoneNumber);
+        clientJson.put("salesman", salesman);
+
         return clientJson;
     }
 
@@ -307,7 +305,7 @@ public class Client implements Parcelable {
      * @param clients The list of clients
      * @return The string representation of the list of clients
      */
-    public static String getClientsDisplay(ArrayList<Client> clients) {
+    public static String getClientsDisplay(List<Client> clients) {
         StringBuilder clientNames = new StringBuilder();
         for (int i = 0; i < clients.size(); i++) {
             clientNames.append(MessageFormat.format("{0}. {1}", i + 1, clients.get(i).toShortString()));
@@ -319,6 +317,10 @@ public class Client implements Parcelable {
     }
 
     static class ClientConstant {
+        //private constructor to prevent instantiation
+        private ClientConstant() {
+        }
+
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
     }
 }

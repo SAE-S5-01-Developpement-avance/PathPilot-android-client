@@ -80,11 +80,12 @@ public class AddItinerary extends AppCompatActivity {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textView = view.findViewById(R.id.spinner_item_text);
                 Client client = getItem(position);
+                String spinnerItemText = client.getCompanyName();
                 if (position != 0) {
-                    textView.setText(client.getCompanyName() + (client.getAddressDisplayName() == "" ? "" : " - " + client.getAddressDisplayName()));
-                } else {
-                    textView.setText(client.getCompanyName());
+                    String addressDisplayName = client.getAddressDisplayName();
+                    spinnerItemText += addressDisplayName.isEmpty() ? "" : " - " + addressDisplayName;
                 }
+                textView.setText(spinnerItemText);
                 return view;
             }
         };
@@ -97,8 +98,8 @@ public class AddItinerary extends AppCompatActivity {
         selectClientToAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (listClientsAdded.size() < 8) {
-                    if (position != AdapterView.INVALID_POSITION && position != 0) {
+                if (position != AdapterView.INVALID_POSITION && position != 0) {
+                    if (listClientsAdded.size() < 8) {
                         Client selectedClient = listClientsToAdd.get(position);
                         listClientsAdded.add(selectedClient);
                         clientsAddedAdapter.notifyDataSetChanged();
@@ -107,10 +108,10 @@ public class AddItinerary extends AppCompatActivity {
                         if (!listClientsToAdd.isEmpty()) {
                             selectClientToAdd.setSelection(0);
                         }
+                    } else {
+                        popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
+                        selectClientToAdd.setSelection(0);
                     }
-                } else if (position != 0) {
-                    popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
-                    selectClientToAdd.setSelection(0);
                 }
             }
 

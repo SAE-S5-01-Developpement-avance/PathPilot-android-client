@@ -75,9 +75,10 @@ public class InfoRoute extends AppCompatActivity {
         }
 
         // Set up clients
-        ArrayList<RouteClient> clients = route.getClients().stream().peek(routeClient -> {
+        ArrayList<RouteClient> clients = route.getClients().stream().map(routeClient -> { //Don't replace with peek, it can be skipped by stream
             routeClient.setState(getVisitStatus(routeClient));
             routeClient.getClient().setAddressDisplayName(this);
+            return routeClient;
         }).collect(Collectors.toCollection(ArrayList::new));
 
         // Convert route stops to timeline items

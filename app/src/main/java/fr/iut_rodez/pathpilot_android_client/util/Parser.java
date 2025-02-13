@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
@@ -119,7 +120,7 @@ public class Parser {
      * @param jsonArray the JSON array to parse
      * @return the list of RouteClient objects parsed from the JSON array
      */
-    public static ArrayList<RouteClient> getClientRoutes(JSONArray jsonArray) {
+    public static List<RouteClient> getClientRoutes(JSONArray jsonArray) {
         ArrayList<RouteClient> listRouteClients = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
