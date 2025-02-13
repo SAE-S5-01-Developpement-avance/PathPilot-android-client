@@ -82,7 +82,7 @@ public class FragmentItineraries extends Fragment {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0 && !isLoading) {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getItineraryPage().getNext();
                     if (nextLink != null) {
