@@ -169,7 +169,7 @@ public class Parser {
      * Parse the JSON response of the GET routes request and return a list of routes
      * <p>
      * Request URL example:
-     * <a href="http://localhost:8080/api/routes">/api/routes</a>
+     * <a href="http://localhost:8080/routes">/routes</a>
      *
      * @param response JSON response of the GET routes request
      * @return List of routes parsed from the JSON response. If an error occurs, an empty list is returned
