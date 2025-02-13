@@ -4,6 +4,9 @@ import android.content.Context;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 
+/**
+ * Interface to the SignUpService class.
+ */
 public interface ISignUpService {
 
     String LOGIN_URL = BuildConfig.API_BASE_URL + "auth/signup";

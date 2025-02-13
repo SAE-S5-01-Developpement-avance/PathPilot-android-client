@@ -18,6 +18,10 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 
+/**
+ * Class to save an itinerary that the salesman want to create.
+ * After check the itinerary he cans confirm or cancel the creation.
+ */
 public class SaveItinerary extends AppCompatActivity {
     private ListView orderedClientsListView;
     private List<Client> clientsList;
@@ -53,6 +57,10 @@ public class SaveItinerary extends AppCompatActivity {
         return jwtToken;
     }
 
+    /**
+     * The salesman confirm and save the itinerary and comeback to the itinerary list view.
+     * Close the activities save and add itinerary.
+     */
     public void saveItinerary() {
         Intent intent = new Intent(this, AddItinerary.class);
         setResult(AddItinerary.RESULT_OK, intent);
@@ -60,6 +68,10 @@ public class SaveItinerary extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * The salesman cancel the creation of the itinerary and comeback to the add itinerary view.
+     * Close the activity save itinerary.
+     */
     public void cancelItineraryCreation() {
         itineraryService.deleteItineraryToCancelTheCreation(
                 this,itinerary.getId());

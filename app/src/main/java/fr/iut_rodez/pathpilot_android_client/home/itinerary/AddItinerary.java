@@ -152,6 +152,12 @@ public class AddItinerary extends AppCompatActivity {
         }
     }
 
+    /**
+     * Return from Save Itinerary view.
+     * Check if the salesman had confirm or cancel the creation of the itinerary.
+     *
+     * @param result result of Save Itinerary activity.
+     */
     private void returnFromSaveItinerary(ActivityResult result) {
         if (result.getResultCode() == RESULT_OK) {
             // Load the clients if the creation was successful
@@ -191,6 +197,9 @@ public class AddItinerary extends AppCompatActivity {
         return (super.onContextItemSelected(item));
     }
 
+    /**
+     * @return the save itinerary launcher activity
+     */
     public ActivityResultLauncher<Intent> getSaveItineraryLauncher() {
         return saveItineraryLauncher;
     }
