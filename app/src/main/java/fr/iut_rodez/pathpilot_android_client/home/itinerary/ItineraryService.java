@@ -133,7 +133,7 @@ public class ItineraryService implements IItineraryService {
      * @param adapter         The adapter to add the clients to
      */
     @Override
-    public void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter) {
+    public void getNextPageItineraries(Context context, ListView listItinerariesView, String nextPageUrl, ItineraryArrayAdapter adapter, Runnable callback) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;
@@ -156,11 +156,17 @@ public class ItineraryService implements IItineraryService {
 
                     // Save the client page to the activity
                     ((Home) context).setItineraryPage(itineraryPage);
+
+                    // After fetching the next page, call the callback
+                    callback.run();
                 },
                 error -> {
                     popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
+
+                    // After fetching the next page, call the callback
+                    callback.run();
                 }
         );
 

@@ -85,7 +85,7 @@ public class ClientService implements IClientService {
      * @param adapter         The adapter to add the clients to
      */
     @Override
-    public void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter) {
+    public void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter, Runnable callback) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;
@@ -108,14 +108,19 @@ public class ClientService implements IClientService {
 
                     // Save the client page to the activity
                     ((Home) context).setClientPage(clientPage);
+
+                    // After fetching the next page, call the callback
+                    callback.run();
                 },
                 error -> {
                     popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
+
+                    // After fetching the next page, call the callback
+                    callback.run();
                 }
         );
-
         requestQueue.add(request);
     }
 

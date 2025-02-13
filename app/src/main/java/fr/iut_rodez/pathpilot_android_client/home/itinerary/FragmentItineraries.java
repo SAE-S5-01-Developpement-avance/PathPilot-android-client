@@ -46,6 +46,7 @@ public class FragmentItineraries extends Fragment {
     public static final String ITINERARY_KEY = "itinerary";
 
     private ListView listItinerariesView;
+    private boolean isLoading = false;
     private Home homeActivity;
     private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
@@ -85,7 +86,10 @@ public class FragmentItineraries extends Fragment {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getItineraryPage().getNext();
                     if (nextLink != null) {
-                        itineraryService.getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(), (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter());
+                        isLoading = true;
+                        itineraryService.getNextPageItineraries(homeActivity, listItinerariesView, nextLink.href(),
+                                (Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter(),
+                                () -> isLoading = false);
                     }
                 }
             }

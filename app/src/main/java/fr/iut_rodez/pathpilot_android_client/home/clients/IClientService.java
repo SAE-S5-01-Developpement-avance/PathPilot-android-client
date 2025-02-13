@@ -33,8 +33,9 @@ public interface IClientService {
      * @param listClientsView The view where the clients will be displayed
      * @param nextPageUrl     The URL of the next page
      * @param adapter         The adapter to add the clients to
+     * @param callback        The callback to put the flag to false when finish loading the next page
      */
-    void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter);
+    void getNextPageClients(Context context, ListView listClientsView, String nextPageUrl, ClientArrayAdapter adapter, Runnable callback);
 
     /**
      * Request to the API to add a client.

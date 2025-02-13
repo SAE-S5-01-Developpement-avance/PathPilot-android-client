@@ -44,6 +44,7 @@ public class FragmentClients extends Fragment {
     public static final String TOKEN_KEY = "token";
 
     private ListView listClientsView;
+    private boolean isLoading = false;
     private Home homeActivity;
     private final IClientService clientService = ServiceFactory.getClientService();
 
@@ -80,11 +81,12 @@ public class FragmentClients extends Fragment {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0) {
+                if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount > 0 && !isLoading) {
                     // Check if there is a next page link
                     Link nextLink = homeActivity.getClientPage().getNext();
                     if (nextLink != null) {
-                        clientService.getNextPageClients(homeActivity, listClientsView, nextLink.href(), (ClientArrayAdapter) listClientsView.getAdapter());
+                        isLoading = true;
+                        clientService.getNextPageClients(homeActivity, listClientsView, nextLink.href(), (ClientArrayAdapter) listClientsView.getAdapter(), () -> isLoading = false);
                     }
                 }
             }

@@ -4,7 +4,6 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ListView;
@@ -66,19 +65,19 @@ public class RouteService implements IRouteService {
         requestQueue.add(request);
     }
 
-    public void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, RouteArrayAdapter adapter) {
+    public void getNextPageRoutes(Context context, ListView listRoutesView, String nextPageUrl, RouteArrayAdapter adapter, Runnable callback) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        Popup popup = new Popup(context);
+        popup.showProgressDialog();
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, nextPageUrl, null, jwtToken,
                 response -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
 
                     RoutePage routePage = Parser.getRoutesPageable(response);
@@ -89,11 +88,17 @@ public class RouteService implements IRouteService {
 
                     // Save the client page to the activity
                     ((Home) context).setRoutePage(routePage);
+
+                    // After fetching the next page, call the callback
+                    callback.run();
                 },
                 error -> {
-                    progressDialog.dismiss();
+                    popup.dismissProgressDialog();
                     Log.e(TAG, "onErrorResponse: ", error);
                     handleError(context, error);
+
+                    // After fetching the next page, call the callback
+                    callback.run();
                 }
         );
 
