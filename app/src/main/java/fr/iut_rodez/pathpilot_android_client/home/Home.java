@@ -51,6 +51,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     public static final int INDEX_FRAGMENT_ITINERARY = 1;
     public static final int INDEX_FRAGMENT_ROUTE = 2;
 
+    public static final String INDEX_FRAGMENT_KEY = "fragment_index";
+
     private ViewPager2 viewPager;
     private TabLayout tabManager;
 
@@ -60,6 +62,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     private ActivityResultLauncher<Intent> addItineraryLauncher;
     private ActivityResultLauncher<Intent> addRouteLauncher;
     private ActivityResultLauncher<Intent> infoRouteLauncher;
+    private ActivityResultLauncher<Intent> infoItineraryLauncher;
 
     private ClientPage clientPage;
     private ItineraryPage itineraryPage;
@@ -100,6 +103,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         addItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddItinerary);
         addRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddRoute);
         infoRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromInfoRoute);
+        infoItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromInfoItinerary);
     }
 
     public JWTToken getJWTToken() {
@@ -167,27 +171,26 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
             Log.d(TAG, "onCreate: Return from Info Route");
             Log.d(TAG, "onCreate: " + result.getData());
 
-
-            if (result.getData() != null
-                    && result.getData().hasExtra(FragmentRoutes.INDEX_FRAGMENT_KEY)
-                    && result.getData().getIntExtra(FragmentRoutes.INDEX_FRAGMENT_KEY,
-                    INDEX_FRAGMENT_ITINERARY) == INDEX_FRAGMENT_ROUTE) {
-
-                // Comeback at the right fragment : Route
-                viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
-
-                // Reload data if a route is stopped
-                if (result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)
-                    && result.getData().getBooleanExtra(PlayerItinerary.ROUTE_STOPPED_KEY,
-                    false)) {
-                    FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager()
-                            .getFragments().get(INDEX_FRAGMENT_ROUTE);
-                    fragmentRoutes.loadRoutes();
-                }
-            } else {
-                // Comeback at the right fragment : Itinerary
-                viewPager.setCurrentItem(INDEX_FRAGMENT_ITINERARY);
+            // Comeback at the right fragment : Route
+            viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
+            // Reload data if a route is stopped
+            if (result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)
+                && result.getData().getBooleanExtra(PlayerItinerary.ROUTE_STOPPED_KEY,
+                false)) {
+                FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager()
+                        .getFragments().get(INDEX_FRAGMENT_ROUTE);
+                fragmentRoutes.loadRoutes();
             }
+        }
+    }
+
+    private void returnFromInfoItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Return from Info Route");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            // Comeback at the right fragment : Route
+            viewPager.setCurrentItem(INDEX_FRAGMENT_ITINERARY);
         }
     }
 
@@ -248,6 +251,10 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
     public ActivityResultLauncher<Intent> getInfoRouteLauncher() {
         return infoRouteLauncher;
+    }
+
+    public ActivityResultLauncher<Intent> getInfoItineraryLauncher() {
+        return infoItineraryLauncher;
     }
 
     public ArrayList<Client> getClients() {

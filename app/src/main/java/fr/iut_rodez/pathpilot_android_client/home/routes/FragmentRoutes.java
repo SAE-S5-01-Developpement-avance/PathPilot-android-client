@@ -40,7 +40,6 @@ public class FragmentRoutes extends Fragment {
     public static final String JWT_TOKEN_KEY = "token";
     public static final String LIST_ITINERARIES_KEY = "listItineraries";
     public static final String ROUTE_KEY = "route";
-    public static final String INDEX_FRAGMENT_KEY = "fragment_index";
 
     private ListView listRoutesView;
     private boolean isLoading = false;
@@ -101,7 +100,6 @@ public class FragmentRoutes extends Fragment {
             Log.d(TAG, "onItemClick: Route: " + route);
             Intent intent = new Intent(getActivity(), InfoRoute.class);
             intent.putExtra(ROUTE_KEY, route);
-            intent.putExtra(INDEX_FRAGMENT_KEY, Home.INDEX_FRAGMENT_ROUTE);
             intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
             homeActivity.getInfoRouteLauncher().launch(intent);
         });

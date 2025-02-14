@@ -30,8 +30,10 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
@@ -378,10 +380,21 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
                     routeService.stopRoute(this, route);
 
-                    Intent intent = new Intent(this, InfoRoute.class);
-                    setResult(RESULT_OK, intent);
-                    intent.putExtra(ROUTE_STOPPED_KEY, true);
-                    finish();
+                    // Return to the right activity
+                    if (indexOfActivityWhereOpen == Home.INDEX_FRAGMENT_ROUTE) {
+                        Intent intent = new Intent(this, InfoRoute.class);
+                        setResult(RESULT_OK, intent);
+                        intent.putExtra(ROUTE_STOPPED_KEY, true);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(this, InfoItinerary.class);
+                        setResult(RESULT_OK, intent);
+                        intent.putExtra(ROUTE_STOPPED_KEY, true);
+                        finish();
+                    }
+
+
+
                 }),
                 null,
                 new DialogButton("Cancel",(dialog, which) -> {

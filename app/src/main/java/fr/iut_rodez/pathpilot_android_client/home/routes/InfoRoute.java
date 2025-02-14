@@ -42,8 +42,6 @@ public class InfoRoute extends AppCompatActivity {
     private JWTToken jwtToken;
     private ActivityResultLauncher<Intent> playerItineraryLauncher;
 
-    private int indexFragmentWhereWasOpen;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +50,6 @@ public class InfoRoute extends AppCompatActivity {
         // Get the parameters from the intent
         Intent intent = getIntent();
         route = intent.getParcelableExtra(ROUTE_KEY);
-        indexFragmentWhereWasOpen = intent.getIntExtra(FragmentRoutes.INDEX_FRAGMENT_KEY,
-                Home.INDEX_FRAGMENT_ROUTE);
 
         // Initialize views
         timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
@@ -182,7 +178,7 @@ public class InfoRoute extends AppCompatActivity {
                 Intent intent = new Intent(this, Home.class);
                 setResult(RESULT_OK, intent);
                 intent.putExtra(PlayerItinerary.ROUTE_STOPPED_KEY, true);
-                intent.putExtra(FragmentRoutes.INDEX_FRAGMENT_KEY, indexFragmentWhereWasOpen);
+                intent.putExtra(Home.INDEX_FRAGMENT_KEY, Home.INDEX_FRAGMENT_ROUTE);
                 finish();
             }
         }

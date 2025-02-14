@@ -6,6 +6,9 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,9 +16,11 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -36,6 +41,7 @@ public class InfoItinerary extends AppCompatActivity {
     private Popup popup;
     private ListView listItemsClientsAdded;
     private JWTToken jwtToken;
+    private ActivityResultLauncher<Intent> playerItineraryLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +54,10 @@ public class InfoItinerary extends AppCompatActivity {
         listItemsClientsAdded = findViewById(R.id.list_items_clients_added);
 
         popup = new Popup(this);
+
+        playerItineraryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                this::returnFromPlayerItinerary);
 
         setUpListClient();
         setUpToken();
@@ -127,5 +137,29 @@ public class InfoItinerary extends AppCompatActivity {
         intent.putExtra(InfoItinerary.ROUTE_KEY, route);
         intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
         startActivity(intent);
+        intent.putExtra(InfoItinerary.JWT_TOKEN_KEY, jwtToken);
+        playerItineraryLauncher.launch(intent);
+    }
+
+    /**
+     * Data returned by the player itinerary
+     *
+     * @param result result returned by the intent
+     */
+    private void returnFromPlayerItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Player itinerary");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            Intent intent = new Intent(this, Home.class);
+            setResult(RESULT_OK, intent);
+            if (result.getData() != null
+                    && result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)) {
+
+                intent.putExtra(PlayerItinerary.ROUTE_STOPPED_KEY, true);
+            }
+            intent.putExtra(Home.INDEX_FRAGMENT_KEY, Home.INDEX_FRAGMENT_ITINERARY);
+            finish();
+        }
     }
 }
