@@ -45,7 +45,6 @@ public class Client implements Parcelable {
         this.contactLastName = contactLastName;
         this.contactFirstName = contactFirstName;
         this.phoneNumber = phoneNumber;
-        this.salesman = salesman;
     }
 
     public Client(JSONObject clientJson) throws JSONException {
@@ -322,5 +321,9 @@ public class Client implements Parcelable {
         }
 
         public static final String COMPANY_NAME_JSON_KEY = "companyName";
+    }
+
+    public String layoutClientItemList() {
+        return getCompanyName() + " - " + getAddressDisplayName();
     }
 }

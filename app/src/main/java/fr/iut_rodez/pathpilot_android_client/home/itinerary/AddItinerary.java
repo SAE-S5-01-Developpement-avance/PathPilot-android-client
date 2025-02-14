@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,15 +14,21 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -29,6 +36,7 @@ import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
     public static final String ITINERARY_ADDED_KEY = "itineraryAdded";
+    public static final String KEY_ITINERARY_OBJECT = "itineraryObjectAdded";
     private Spinner selectClientToAdd;
     private ListView listClientsAddedView;
     private ArrayList<Client> listClientsToAdd;
@@ -36,6 +44,7 @@ public class AddItinerary extends AppCompatActivity {
     private ArrayList<Client> listClientsAdded;
     private ArrayAdapter<Client> clientsToAddAdapter;
     private ClientArrayAdapter clientsAddedAdapter;
+    private ActivityResultLauncher<Intent> saveItineraryLauncher;
     private Popup popup;
     private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
 
@@ -82,8 +91,9 @@ public class AddItinerary extends AppCompatActivity {
                 Client client = getItem(position);
                 String spinnerItemText = client.getCompanyName();
                 if (position != 0) {
-                    String addressDisplayName = client.getAddressDisplayName();
-                    spinnerItemText += addressDisplayName.isEmpty() ? "" : " - " + addressDisplayName;
+                    textView.setText(client.layoutClientItemList());
+                } else {
+                    textView.setText(client.getCompanyName());
                 }
                 textView.setText(spinnerItemText);
                 return view;
@@ -121,9 +131,9 @@ public class AddItinerary extends AppCompatActivity {
             }
         });
         findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
         jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
+        saveItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromSaveItinerary);
     }
 
 
@@ -139,6 +149,27 @@ public class AddItinerary extends AppCompatActivity {
                 itineraryService.addItinerary(this, listClientsAdded);
             } catch (JSONException e) {
                 popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
+            }
+        }
+    }
+
+    /**
+     * Return from Save Itinerary view.
+     * Check if the salesman had confirm or cancel the creation of the itinerary.
+     *
+     * @param result result of Save Itinerary activity.
+     */
+    private void returnFromSaveItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            // Load the clients if the creation was successful
+            if (result.getData() != null
+                    && result.getData().hasExtra(ITINERARY_ADDED_KEY)
+                    && result.getData().getBooleanExtra(ITINERARY_ADDED_KEY, false)) {
+
+                Intent intent = new Intent(this, Home.class);
+                setResult(AddItinerary.RESULT_OK, intent);
+                intent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, true);
+                finish();
             }
         }
     }
@@ -165,5 +196,12 @@ public class AddItinerary extends AppCompatActivity {
             listClientsToAdd.add(clientSelected);
         }
         return (super.onContextItemSelected(item));
+    }
+
+    /**
+     * @return the save itinerary launcher activity
+     */
+    public ActivityResultLauncher<Intent> getSaveItineraryLauncher() {
+        return saveItineraryLauncher;
     }
 }

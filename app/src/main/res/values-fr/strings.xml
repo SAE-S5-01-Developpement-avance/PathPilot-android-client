@@ -123,6 +123,7 @@ String for Login activity
     <!--
     Itinerary info
     -->
+    <string name="save_itinerary_popup_content">L\'ordre de visit des clients</string>
     <string name="button_create_and_start_itinerary">Créer et démarrer un nouveau parcours</string>
 
     <!--
@@ -130,6 +131,9 @@ String for Login activity
     -->
     <string name="address_unknown">Adresse inconnue</string>
     <string name="validate">Valider</string>
+    <string name="address_not_found">A</string>
+    <string name="create_route_on_itinerary_menu">Créer un parcours</string>
+    <string name="validate_selected_position">Valider la position sélectionnée</string>
     <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
     <string name="search">Rechercher</string>
 
@@ -204,4 +208,11 @@ String for Login activity
     <string name="select_itinerary_to_create_route">Sélectionner un itinéraire</string>
     <string name="error_select_itinerary">Impossible de créer une route sans itinéraire sélectionné</string>
     <string name="header_create_route">Création de routes</string>
+    <string name="cancel_creation_itinerary">Annuler</string>
+    <string name="confirm_creation_itinerary">Confirmer</string>
+    <string name="save_itinerary_title">Sauvegarder l\'itinéraire</string>
+    <string name="header_save_itinerary">Sauvegarder un itinéraire</string>
+    <string name="title_save_itinerary">L\'ordre des clients à visiter</string>
+    <string name="btn_cancel_itinerary_creation">Annuler</string>
+    <string name="btn_save_itinerary">Sauvegarder</string>
 </resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Header fixe -->
+    <include layout="@layout/component_header_back_icon" />
+
+    <!-- Fix footer -->
+    <include layout="@layout/component_footer" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/no_dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toTopOf="@id/footer">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/form_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_min="wrap"
+            android:layout_marginHorizontal="@dimen/form_margin">
+
+            <TextView
+                android:id="@+id/save_itinerary_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_gap"
+                android:textSize="@dimen/big_text"
+                android:text="@string/title_save_itinerary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <ListView
+                android:id="@+id/list_items_clients_ordered"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scrollbars="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/save_itinerary_title"
+                app:layout_constraintBottom_toTopOf="@+id/button_save_itinerary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <Button
+                android:id="@+id/button_cancel_itinerary_creation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_cancel_itinerary_creation"
+                android:layout_marginTop="@dimen/normal_gap"
+                android:layout_marginBottom="@dimen/normal_gap"
+                android:textSize="@dimen/normal_text"
+                android:backgroundTint="@color/orange"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/list_items_clients_ordered"
+                app:layout_constraintEnd_toEndOf="parent"/>
+            <Button
+                android:id="@+id/button_save_itinerary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_save_itinerary"
+                android:layout_marginTop="@dimen/normal_gap"
+                android:layout_marginBottom="@dimen/normal_gap"
+                android:textSize="@dimen/normal_text"
+                android:backgroundTint="@color/blue_0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_cancel_itinerary_creation"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

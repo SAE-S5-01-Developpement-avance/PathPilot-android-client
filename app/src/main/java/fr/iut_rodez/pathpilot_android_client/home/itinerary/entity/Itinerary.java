@@ -32,6 +32,7 @@ public class Itinerary implements Parcelable {
     private String displayName;
     private String id;
     private ArrayList<Client> clients;
+
     private final GeoPoint salesmanHome;
 
     public Itinerary(ArrayList<Client> clients, double salesmanLatitude, double salesmanLongitude) {
@@ -83,6 +84,10 @@ public class Itinerary implements Parcelable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setClients(ArrayList<Client> clients) {
+        this.clients = clients;
     }
 
     public void setSalesmanLongitude(double salesmanLongitude) {
@@ -141,8 +146,8 @@ public class Itinerary implements Parcelable {
      */
     public static class ItineraryArrayAdapter extends ArrayAdapter<Itinerary> {
 
-        private final Context context;
-        private final List<Itinerary> itineraries;
+        private Context context;
+        private List<Itinerary> itineraries;
 
         public ItineraryArrayAdapter(@NonNull Context context, List<Itinerary> itineraries) {
             super(context, -1, itineraries);

@@ -13,6 +13,9 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.ItineraryArrayAdapter;
 
+/**
+ * Interface for ItineraryService class.
+ */
 public interface IItineraryService {
 
     String API_BASE_URL = BuildConfig.API_BASE_URL + "itineraries";
@@ -59,4 +62,6 @@ public interface IItineraryService {
      * @param listItinerariesView The view where the itineraries will be displayed
      */
     void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView);
+
+    void deleteItineraryToCancelTheCreation(Context context, String idItinerary);
 }
