@@ -218,7 +218,7 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     }
 
     public ArrayList<Itinerary> getItineraries() {
-        ArrayList<Itinerary> listItineraries = ((FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY)).loadItineraries();
+        ArrayList<Itinerary> listItineraries = ((FragmentItineraries) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ITINERARY)).getListItineraries();
         Log.d(TAG, "getItineraries() returned: " + listItineraries);
         return listItineraries;
     }
