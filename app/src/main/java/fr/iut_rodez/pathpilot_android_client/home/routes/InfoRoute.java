@@ -50,8 +50,7 @@ public class InfoRoute extends AppCompatActivity {
 
         // Get the parameters from the intent
         Intent intent = getIntent();
-        route = intent.getParcelableExtra(ROUTE_KEY);
-
+        route = intent.getParcelableExtra(FragmentRoutes.ROUTE_KEY);
         // Initialize views
         timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
         findViewById(R.id.resume_button).setOnClickListener(v -> resumeRoute());

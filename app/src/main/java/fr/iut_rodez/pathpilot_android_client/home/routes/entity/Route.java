@@ -3,6 +3,7 @@ package fr.iut_rodez.pathpilot_android_client.home.routes.entity;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +101,7 @@ public class Route implements Parcelable {
         salesmanHome = in.readParcelable(GeoPoint.class.getClassLoader());
         clients = in.createTypedArrayList(RouteClient.CREATOR);
         long timeInMillis = in.readLong();
-        startDate = LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
+        startDate = timeInMillis == Long.MIN_VALUE ? null : LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
         indexCurrentClient = in.readInt();
         state = RouteState.NOT_STARTED;
         currentSalesmanPosition = in.readParcelable(GeoPoint.class.getClassLoader());
@@ -125,8 +126,8 @@ public class Route implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        long timeInMillis = startDate.toEpochSecond(ZONE_OFFSET) * RATIO_MILLI_SECOND;
         dest.writeString(id);
+        long timeInMillis = startDate == null ? Long.MIN_VALUE : startDate.toEpochSecond(ZONE_OFFSET) * RATIO_MILLI_SECOND;
         dest.writeParcelable(salesmanHome, flags);
         dest.writeTypedList(clients);
         dest.writeLong(timeInMillis);
@@ -143,7 +144,7 @@ public class Route implements Parcelable {
         DateTimeFormatter localeFormatter = DateTimeFormatter
                 .ofPattern("dd/MM/yyyy hh:mm")
                 .withLocale(currentLocale);
-        this.dateDisplayName = startDate.format(localeFormatter);
+        this.dateDisplayName = startDate == null ? null : startDate.format(localeFormatter);
     }
 
     /**

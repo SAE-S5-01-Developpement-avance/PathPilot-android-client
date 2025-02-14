@@ -32,6 +32,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
@@ -43,6 +44,7 @@ import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.home.routes.service.RouteService;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.Login;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
@@ -88,6 +90,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         return jwtTokenFind;
     }
+    private int indexOfActivityWhereOpen;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -387,12 +391,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 new DialogButton(getString(R.string.stop_route_confirm_dialog_btn),(dialog, which) -> {
                     dialog.dismiss();
                     currentPosition.stopLocationUpdates();
-                    // TODO Check the conditions to stop the route before.
                     Log.d(TAG, "State : " + RouteState.STOPPED);
                     route.setState(RouteState.STOPPED);
-
                     routeService.stopRoute(this, route);
-
                     Intent intent = new Intent();
                     // Return to the right activity
                     if (indexOfActivityWhereOpen == Home.INDEX_FRAGMENT_ROUTE) {
@@ -410,5 +411,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     dialog.dismiss();}));
         // L'événement est consommé
         return true;
+    }
+
+    public JWTToken getJWTToken() {
+        return jwtToken;
     }
 }

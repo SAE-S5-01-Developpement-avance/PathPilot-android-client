@@ -24,6 +24,7 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
@@ -114,7 +115,28 @@ public class RouteService implements IRouteService {
      * @param route the route we have to stop
      */
     public void stopRoute(Context context, Route route) {
-        Log.d(TAG, "Next Page URL: ");
+        Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop");
+
+        PlayerItinerary playerItinerary = (PlayerItinerary) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+        String jwtToken = playerItinerary.getJWTToken().getToken();
+
+        Popup popup = new Popup(context);
+        popup.showProgressDialog();
+
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.PATCH,
+                ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop", null, jwtToken,
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "onResponse: " + response);
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        );
+        requestQueue.add(request);
     }
 
     /**
