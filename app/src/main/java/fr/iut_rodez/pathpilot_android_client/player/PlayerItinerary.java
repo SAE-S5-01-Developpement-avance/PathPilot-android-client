@@ -380,21 +380,17 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
                     routeService.stopRoute(this, route);
 
+                    Intent intent = new Intent();
                     // Return to the right activity
                     if (indexOfActivityWhereOpen == Home.INDEX_FRAGMENT_ROUTE) {
-                        Intent intent = new Intent(this, InfoRoute.class);
+                        intent.setClass(this, InfoRoute.class);
                         setResult(RESULT_OK, intent);
-                        intent.putExtra(ROUTE_STOPPED_KEY, true);
-                        finish();
                     } else {
-                        Intent intent = new Intent(this, InfoItinerary.class);
+                        intent.setClass(this, InfoItinerary.class);
                         setResult(RESULT_OK, intent);
-                        intent.putExtra(ROUTE_STOPPED_KEY, true);
-                        finish();
                     }
-
-
-
+                    intent.putExtra(ROUTE_STOPPED_KEY, true);
+                    finish();
                 }),
                 null,
                 new DialogButton("Cancel",(dialog, which) -> {
