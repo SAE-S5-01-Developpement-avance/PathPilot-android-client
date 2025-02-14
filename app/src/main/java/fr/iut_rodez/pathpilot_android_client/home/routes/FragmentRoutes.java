@@ -124,6 +124,7 @@ public class FragmentRoutes extends Fragment {
 
         Intent intent = new Intent(getActivity(), AddRoute.class);
         intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
+        intent.putExtra(LIST_ITINERARIES_KEY, homeActivity.getItineraries());
         homeActivity.getAddRouteLauncher().launch(intent);
     }
 
