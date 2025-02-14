@@ -4,6 +4,7 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -29,6 +30,7 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.Iti
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Service to handle all itinerary related requests
@@ -59,7 +61,8 @@ public class ItineraryService implements IItineraryService {
             listIdClient.put(client.getId());
         }
         itinerariesInput.put("clients_schedule", listIdClient);
-
+        Popup popup = new Popup(context);
+        popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();
         ArrayList<Client> listClientsOrdered = new ArrayList<>();
@@ -147,7 +150,8 @@ public class ItineraryService implements IItineraryService {
      */
     @Override
     public void getNextPageItineraries(Context context, ListView listItinerariesView,
-                                              String nextPageUrl, ItineraryArrayAdapter adapter) {
+                                              String nextPageUrl, ItineraryArrayAdapter adapter,
+                                       Runnable callback) {
         Log.d(TAG, "Next Page URL: " + nextPageUrl);
 
         Home homeActivity = (Home) context;
