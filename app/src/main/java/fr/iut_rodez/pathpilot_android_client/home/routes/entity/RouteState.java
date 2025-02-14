@@ -19,7 +19,12 @@ public enum RouteState {
     /**
      * The route is finished
      */
-    FINISHED("FINISHED");
+    FINISHED("FINISHED"),
+
+    /**
+     * The route is running
+     */
+    IN_PROGRESS("IN_PROGRESS");
 
     private final String value;
 

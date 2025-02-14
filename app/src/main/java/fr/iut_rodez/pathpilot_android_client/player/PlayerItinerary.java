@@ -37,6 +37,7 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
@@ -363,19 +364,32 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void updateRouteStatusIcon() {
         Drawable icon = AppCompatResources.getDrawable(this, route.isPaused() ? ICON_PLAY : ICON_PAUSE);
         pauseBtn.setBackground(icon);
+        if (route.getState().equals(RouteState.PAUSED)) {
+            Log.d(TAG, "State: " + RouteState.IN_PROGRESS);
+            // Toggle the icon
+            Drawable icon = AppCompatResources.getDrawable(this, ICON_PLAY);
+            pauseBtn.setBackground(icon);
+            route.setState(RouteState.IN_PROGRESS);
+        } else {
+            Log.d(TAG, "State: " + RouteState.PAUSED);
+            // Toggle the icon
+            Drawable icon = AppCompatResources.getDrawable(this, ICON_PLAY);
+            pauseBtn.setBackground(icon);
+            route.setState(RouteState.PAUSED);
+        }
     }
 
     /**
      * Stop the launched route.
      */
     private boolean stop() {
-        Log.d(TAG, "stop :" + route.toString());
         popup.showAlertDialog(getString(R.string.stop_route_popup_title), getString(R.string.stop_route_popup_text),
                 new DialogButton(getString(R.string.stop_route_confirm_dialog_btn),(dialog, which) -> {
                     dialog.dismiss();
                     currentPosition.stopLocationUpdates();
                     // TODO Check the conditions to stop the route before.
-                    // TODO stop the route.
+                    Log.d(TAG, "State : " + RouteState.STOPPED);
+                    route.setState(RouteState.STOPPED);
 
                     routeService.stopRoute(this, route);
 

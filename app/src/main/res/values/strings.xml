@@ -226,4 +226,6 @@
     <string name="stop_route_popup_text">Are you sure you want to stop the course?</string>
     <string name="stop_route_confirm_dialog_btn">Confirm</string>
     <string name="stop_route_cancel_dialog_btn">Cancel</string>
+
+    <string name="create_route_on_itinerary_menu">Create route</string>
 </resources>

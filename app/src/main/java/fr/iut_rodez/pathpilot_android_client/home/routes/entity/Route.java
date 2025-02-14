@@ -61,11 +61,6 @@ public class Route implements Parcelable {
     private int indexCurrentClient;
 
     /**
-     * Tell if the route is paused
-     */
-    private boolean isPaused;
-
-    /**
      * The current position of the salesman
      */
     private GeoPoint currentSalesmanPosition;
@@ -74,6 +69,14 @@ public class Route implements Parcelable {
      * The display name of the route date
      */
     private String dateDisplayName;
+
+    /**
+     * State of the route
+     * <p>
+     * The state of the route is determined by the start date, the pause state and the completion state.
+     * </p>
+     */
+    private RouteState state;
 
     public Route(JSONObject routeJson) throws JSONException {
         // Parse the JSON object and create a route
@@ -87,6 +90,9 @@ public class Route implements Parcelable {
         if (salesmanCurrentPosition != null) {
             currentSalesmanPosition = Parser.getGeoPointFromGeoJSONPoint(salesmanCurrentPosition);
         }
+
+        // TODO take the real from the API
+        state = RouteState.NOT_STARTED;
     }
 
     protected Route(Parcel in) {
@@ -96,7 +102,7 @@ public class Route implements Parcelable {
         long timeInMillis = in.readLong();
         startDate = LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
         indexCurrentClient = in.readInt();
-        isPaused = in.readByte() != 0;
+        state = RouteState.NOT_STARTED;
         currentSalesmanPosition = in.readParcelable(GeoPoint.class.getClassLoader());
     }
 
@@ -125,7 +131,6 @@ public class Route implements Parcelable {
         dest.writeTypedList(clients);
         dest.writeLong(timeInMillis);
         dest.writeInt(indexCurrentClient);
-        dest.writeByte((byte) (isPaused ? 1 : 0));
         dest.writeParcelable(currentSalesmanPosition, flags);
     }
 
@@ -200,6 +205,8 @@ public class Route implements Parcelable {
                 case PAUSED -> context.getString(R.string.route_state_paused);
                 case FINISHED -> context.getString(R.string.route_state_completed);
                 case STOPPED -> context.getString(R.string.route_state_stopped);
+                case IN_PROGRESS -> "In progress";
+                default -> context.getString(R.string.route_state_not_started);
             };
             routeState.setText(state);
 
@@ -215,16 +222,12 @@ public class Route implements Parcelable {
      *
      * @return The state of the route
      */
-    private RouteState getState() {
-        if (!isStarted()) {
-            return RouteState.NOT_STARTED;
-        } else if (isPaused()) {
-            return RouteState.PAUSED;
-        } else if (isCompleted()) {
-            return RouteState.FINISHED;
-        } else {
-            return RouteState.STOPPED;
-        }
+    public RouteState getState() {
+        return state;
+    }
+
+    public void setState(RouteState state) {
+        this.state = state;
     }
 
     /**
@@ -251,14 +254,6 @@ public class Route implements Parcelable {
 
     public int getIndexCurrentClient() {
         return indexCurrentClient;
-    }
-
-    public boolean isPaused() {
-        return isPaused;
-    }
-
-    public void setPaused(boolean paused) {
-        isPaused = paused;
     }
 
     public GeoPoint getCurrentSalesmanPosition() {

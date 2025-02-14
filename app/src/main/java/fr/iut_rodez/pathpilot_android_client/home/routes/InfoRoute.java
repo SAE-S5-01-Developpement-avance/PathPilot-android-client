@@ -26,6 +26,7 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -157,6 +158,8 @@ public class InfoRoute extends AppCompatActivity {
      *     Redirects the user to the player activity with the current route.
      */
     private void resumeRoute() {
+        Log.d(TAG, "State : " + RouteState.IN_PROGRESS);
+        route.setState(RouteState.IN_PROGRESS);
         Intent intent = new Intent(this, PlayerItinerary.class);
         intent.putExtra(ROUTE_KEY, route);
         intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
