@@ -370,9 +370,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private boolean stop() {
         Log.d(TAG, "stop :" + route.toString());
-        // TODO move the strings in values files
-        popup.showAlertDialog("Stop the route", "Are you sure about to stop the route?",
-                new DialogButton("Confirm",(dialog, which) -> {
+        popup.showAlertDialog(getString(R.string.stop_route_popup_title), getString(R.string.stop_route_popup_text),
+                new DialogButton(getString(R.string.stop_route_confirm_dialog_btn),(dialog, which) -> {
                     dialog.dismiss();
                     currentPosition.stopLocationUpdates();
                     // TODO Check the conditions to stop the route before.
@@ -393,7 +392,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     finish();
                 }),
                 null,
-                new DialogButton("Cancel",(dialog, which) -> {
+                new DialogButton(getString(R.string.stop_route_cancel_dialog_btn),(dialog, which) -> {
                     dialog.dismiss();}));
         // L'événement est consommé
         return true;
