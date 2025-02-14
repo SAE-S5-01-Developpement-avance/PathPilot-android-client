@@ -29,6 +29,7 @@ public class CurrentPosition {
     private Runnable permissionGrantedCallback;
     private Runnable permissionDeniedCallback;
     private LocationManager locationManager;
+    private LocationListener locationListener;
 
     /**
      * Create a new CurrentPosition object
@@ -218,7 +219,7 @@ public class CurrentPosition {
     @SuppressLint("MissingPermission") // We check the permission with isLocationPermissionGranted
     public void startLocationUpdates(LocationCallback callback) {
         Log.d(TAG, "startLocationUpdates: Starting location updates");
-        LocationListener locationListener = location -> {
+        locationListener = location -> {
             Log.d(TAG, "startLocationUpdates: Location changed");
             Log.d(TAG, "startLocationUpdates: " + location);
             callback.onLocationChanged(location);
@@ -242,5 +243,12 @@ public class CurrentPosition {
     @FunctionalInterface
     public interface LocationCallback {
         void onLocationChanged(Location location);
+    }
+
+    /**
+     * Stop the location updates.
+     */
+    public void stopLocationUpdates() {
+        locationManager.removeUpdates(locationListener);
     }
 }

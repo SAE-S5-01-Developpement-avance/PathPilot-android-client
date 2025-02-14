@@ -372,17 +372,16 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         popup.showAlertDialog("Stop the route", "Are you sure about to stop the route?",
                 new DialogButton("Confirm",(dialog, which) -> {
                     dialog.dismiss();
-
+                    currentPosition.stopLocationUpdates();
                     // TODO Check the conditions to stop the route before.
+                    // TODO stop the route.
 
                     routeService.stopRoute(this, route);
 
-                    // TODO stop the route.
                     Intent intent = new Intent(this, InfoRoute.class);
                     setResult(RESULT_OK, intent);
                     intent.putExtra(ROUTE_STOPPED_KEY, true);
                     finish();
-
                 }),
                 null,
                 new DialogButton("Cancel",(dialog, which) -> {
