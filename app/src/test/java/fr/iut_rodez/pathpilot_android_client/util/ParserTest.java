@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -299,6 +300,64 @@ public class ParserTest {
         RouteClient firstClient = route.getClients().get(0);
         assertEquals(1, firstClient.getClient().getId());
         assertEquals("hp", firstClient.getClient().getCompanyName());
+        assertEquals(48.8566, firstClient.getClient().getLatHomeAddress());
+        assertEquals(2.3522, firstClient.getClient().getLongHomeAddress());
+    }
+
+    @Test
+    @DisplayName("Parse route when current position is null")
+    public void testGetRouteCurrentPositionNull() throws JSONException {
+        String routeResponseJson = """
+                {
+                "id": "67d5ac5a88283415862bfa10",
+                "salesman_home": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "type": "Point",
+                    "coordinates": [1.0, 0.0]
+                },
+                "clients": [
+                    {
+                        "client": {
+                            "id": 1,
+                            "companyLocation": {
+                                "x": 2.3522,
+                                "y": 48.8566,
+                                "type": "Point",
+                                "coordinates": [2.3522, 48.8566]
+                            },
+                            "companyName": "Client"
+                        },
+                        "state": "EXPECTED"
+                    }
+                ],
+                "startDate": "2025-03-15T16:35:38.221+00:00",
+                "salesman_current_position": null,
+                "state": "NOT_STARTED",
+                "_links": {
+                    "self": {
+                        "href": "http://localhost:8080/routes/67d5ac5a88283415862bfa10"
+                    }
+                }
+                }
+                """;
+
+        JSONObject response = new JSONObject(routeResponseJson);
+
+        Route route = Parser.getRoute(response);
+
+        assertNotNull(route);
+        assertEquals("67d5ac5a88283415862bfa10", route.getId());
+        assertEquals(0.0, route.getSalesmanHome().getLatitude());
+        assertEquals(1.0, route.getSalesmanHome().getLongitude());
+        LocalDateTime expectedStartDate = LocalDateTime.of(2025, 3, 15, 16, 35, 38, 221 * 1_000_000);
+        assertEquals(expectedStartDate, route.getStartDate());
+        assertEquals(1, route.getClients().size());
+        assertNull(route.getCurrentSalesmanPosition());
+
+        RouteClient firstClient = route.getClients().get(0);
+        assertEquals(1, firstClient.getClient().getId());
+        assertEquals("Client", firstClient.getClient().getCompanyName());
         assertEquals(48.8566, firstClient.getClient().getLatHomeAddress());
         assertEquals(2.3522, firstClient.getClient().getLongHomeAddress());
     }
