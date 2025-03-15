@@ -55,34 +55,61 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         setContentView(R.layout.view_player_itinerary);
         super.onCreate(savedInstanceState);
 
-        mapMarker = new MapMarker(this);
-
-        ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
-        clientName = findViewById(R.id.client_name);
-        clientAddress = findViewById(R.id.client_address);
-        clientDistance = findViewById(R.id.client_distance);
-        counterVisitedClients = findViewById(R.id.counter_visited_clients);
-        ImageButton stopBtn = findViewById(R.id.stop_btn);
-        pauseBtn = findViewById(R.id.pause_btn);
-        ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
-        ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
-
-        // Set onClickListener
-        detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
-        findViewById(R.id.back_btn).setOnClickListener(v -> finish());
-        stopBtn.setOnClickListener(v -> stop());
-        pauseBtn.setOnClickListener(v -> pauseResume());
-        clientVisitedBtn.setOnClickListener(v -> clientVisited());
-        listClientsBtn.setOnClickListener(v -> listClients());
-
-        // Show a loading popup.
-        popup.showProgressDialog();
-
         setRouteInformation();
-        initialiseMap();
-        popup.dismissProgressDialog();
+
+        if (route == null) {
+            popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
+        } else {
+            mapMarker = new MapMarker(this);
+
+            ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
+            clientName = findViewById(R.id.client_name);
+            clientAddress = findViewById(R.id.client_address);
+            clientDistance = findViewById(R.id.client_distance);
+            counterVisitedClients = findViewById(R.id.counter_visited_clients);
+            ImageButton stopBtn = findViewById(R.id.stop_btn);
+            pauseBtn = findViewById(R.id.pause_btn);
+            ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
+            ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
+                updateRouteStatusIcon();
+
+
+            // Set onClickListener
+            detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
+            findViewById(R.id.back_btn).setOnClickListener(v -> finish());
+            stopBtn.setOnClickListener(v -> stop());
+            pauseBtn.setOnClickListener(v -> pauseResume());
+            clientVisitedBtn.setOnClickListener(v -> clientVisited());
+            listClientsBtn.setOnClickListener(v -> listClients());
+
+            // Show a loading popup.
+            popup.showProgressDialog();
+
+            initialiseMap();
+            enableTracer();
+            popup.dismissProgressDialog();
+        }
     }
 
+    /**
+     * Retrieve the route from the intent and set the information, like :
+     * <ul>
+     *     <li>The next client</li>
+     *     <li>The distance to the next client</li>
+     *     <li>The address to the next client</li>
+     * </ul>
+     */
+    private void setRouteInformation() {
+        Intent intent = getIntent();
+        route = intent.getParcelableExtra(InfoItinerary.ROUTE_KEY);
+
+        if (route == null) {
+            Log.e(TAG, "onCreate: No itinerary found in the intent");
+            popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
+        } else {
+            route.getClients().forEach(routeClient -> routeClient.getClient().setAddressDisplayName(this));
+        }
+    }
 
     /**
      * Initialise the map
@@ -156,22 +183,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     /**
-     * Retrieve the route from the intent and set the information, like :
-     * <ul>
-     *     <li>The next client</li>
-     *     <li>The distance to the next client</li>
-     *     <li>The address to the next client</li>
-     * </ul>
+     * 
      */
-    private void setRouteInformation() {
-        Intent intent = getIntent();
-        route = intent.getParcelableExtra(InfoItinerary.ROUTE_KEY);
-
-        if (route == null) {
-            Log.e(TAG, "onCreate: No itinerary found in the intent");
-            popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
-        }
-        route.getClients().forEach(routeClient -> routeClient.getClient().setAddressDisplayName(this));
+    private void enableTracer() {
     }
 
     /**
@@ -240,9 +254,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void pauseResume() {
         Log.d(TAG, "pause: ");
         // Toggle the icon
+        updateRouteStatusIcon();
+        route.setPaused(!route.isPaused());
+    }
+
+    private void updateRouteStatusIcon() {
         Drawable icon = AppCompatResources.getDrawable(this, route.isPaused() ? ICON_PLAY : ICON_PAUSE);
         pauseBtn.setBackground(icon);
-        route.setPaused(!route.isPaused());
     }
 
     private void stop() {
