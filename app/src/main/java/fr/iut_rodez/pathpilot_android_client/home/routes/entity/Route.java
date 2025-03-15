@@ -81,7 +81,12 @@ public class Route implements Parcelable {
         salesmanHome = Parser.getGeoPointFromGeoJSONPoint(routeJson.getJSONObject("salesman_home"));
         startDate = Parser.getLocalDateTimeFromString(routeJson.getString("startDate"));
         clients = (ArrayList<RouteClient>) Parser.getClientRoutes(routeJson.getJSONArray("clients"));
-        currentSalesmanPosition = Parser.getGeoPointFromGeoJSONPoint(routeJson.getJSONObject("salesman_current_position"));
+
+        // When a route have just been create, then there is no salesman position to track
+        JSONObject salesmanCurrentPosition = routeJson.optJSONObject("salesman_current_position");
+        if (salesmanCurrentPosition != null) {
+            currentSalesmanPosition = Parser.getGeoPointFromGeoJSONPoint(salesmanCurrentPosition);
+        }
     }
 
     protected Route(Parcel in) {
