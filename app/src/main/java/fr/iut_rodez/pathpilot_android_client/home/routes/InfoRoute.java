@@ -150,7 +150,7 @@ public class InfoRoute extends AppCompatActivity {
     private void resumeRoute() {
         Intent intent = new Intent(this, PlayerItinerary.class);
         intent.putExtra(ROUTE_KEY, route);
-        intent.putExtra(JWT_TOKEN_KEY, jwtToken);
+        intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
         startActivity(intent);
     }
 

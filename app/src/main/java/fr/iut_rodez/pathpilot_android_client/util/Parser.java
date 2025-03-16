@@ -276,7 +276,8 @@ public class Parser {
     /**
      * Parse an JSON array of clients and return a list of clients
      * <p>
-     * Here an example of the JSON object:
+     *     Accept a JSON array of clients. Each client is represented by a JSON object.
+     * Here an example of the JSON object representing a client:
      * <pre>
      * {@code
      * {

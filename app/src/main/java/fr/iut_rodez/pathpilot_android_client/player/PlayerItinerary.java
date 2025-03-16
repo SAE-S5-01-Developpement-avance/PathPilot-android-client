@@ -34,6 +34,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private static final String TAG = PlayerItinerary.class.getSimpleName();
 
+    public static final String JWT_TOKEN_KEY = "Player_JWTToken";
     private static final int ICON_PLAY = R.drawable.icon_start;
     private static final int ICON_PAUSE = R.drawable.icon_pause;
     private final Popup popup = new Popup(this);
@@ -47,6 +48,22 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private IMapController mapController;
     private GeoPoint startTrace;
     private Polyline salesmanTrace;
+    private JWTToken jwtToken;
+    /**
+     * This list contains the clients that have already been notified to the salesman.
+     */
+    private final ArrayList<Client> clientAlreadyNotified = new ArrayList<>();
+
+    private JWTToken getJwtTokenFromIntent() {
+        JWTToken jwtTokenFind = null;
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(JWT_TOKEN_KEY)) {
+            jwtTokenFind = intent.getParcelableExtra(JWT_TOKEN_KEY);
+        }
+
+        return jwtTokenFind;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +73,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         super.onCreate(savedInstanceState);
 
         setRouteInformation();
+        jwtToken = getJwtTokenFromIntent();
 
         if (route == null) {
             popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
+        } else if (jwtToken == null) {
+            popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this));
         } else {
             mapMarker = new MapMarker(this);
 
