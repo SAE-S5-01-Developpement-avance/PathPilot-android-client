@@ -78,7 +78,7 @@ public class ParserTest {
         JSONObject response = new JSONObject(clientsResponseJson);
 
         ClientPage clientPage = Parser.getClientsPageable(response);
-        ArrayList<Client> clients = clientPage.clients();
+        List<Client> clients = clientPage.clients();
 
         assertNotNull(clients);
         assertEquals(2, clients.size());
