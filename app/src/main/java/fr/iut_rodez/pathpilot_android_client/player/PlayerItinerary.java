@@ -1,30 +1,43 @@
 package fr.iut_rodez.pathpilot_android_client.player;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.icu.text.MessageFormat;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
+import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -38,6 +51,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private static final int ICON_PLAY = R.drawable.icon_start;
     private static final int ICON_PAUSE = R.drawable.icon_pause;
     private final Popup popup = new Popup(this);
+    private final IRouteService routeService = ServiceFactory.getRouteService();
     private TextView clientName;
     private TextView clientAddress;
     private TextView clientDistance;
@@ -53,6 +67,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * This list contains the clients that have already been notified to the salesman.
      */
     private final ArrayList<Client> clientAlreadyNotified = new ArrayList<>();
+    private Vibrator vibrator;
 
     private JWTToken getJwtTokenFromIntent() {
         JWTToken jwtTokenFind = null;
@@ -81,6 +96,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this));
         } else {
             mapMarker = new MapMarker(this);
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
             ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
             clientName = findViewById(R.id.client_name);
@@ -106,7 +122,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             popup.showProgressDialog();
 
             initialiseMap();
-            enableTracer();
             popup.dismissProgressDialog();
         }
     }
@@ -183,13 +198,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     salesmanTrace.addPoint(startTrace);
                     mapView.getOverlayManager().add(salesmanTrace);
 
-                    currentPosition.startLocationUpdates(location -> {
-                        GeoPoint currentPoint = new GeoPoint(location);
-                        Log.d(TAG, "requestPermissionAndCenter: " + currentPoint);
-                        salesmanTrace.addPoint(currentPoint);
-                        mapView.invalidate();
-                        setNextClientInfo(route.getNextClient());
-                    });
+                    enableTracer();
                     setNextClientInfo(route.getNextClient());
                 },
                 // If the permission is denied,
@@ -203,9 +212,74 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     /**
-     * 
+     *
      */
     private void enableTracer() {
+        currentPosition.startLocationUpdates(location -> {
+            GeoPoint currentPoint = new GeoPoint(location);
+
+            Log.d(TAG, "update position: " + currentPoint);
+
+            routeService.updateSalesmanPosition(
+                    this,
+                    jwtToken,
+                    currentPoint,
+                    route,
+                    response -> {
+                        Log.d(TAG, "updateSalesmanPosition: " + response);
+                        // Update the salesman trace
+                        salesmanTrace.addPoint(currentPoint);
+                        mapView.invalidate();
+
+                        // Get client near the salesman if any
+                        List<Client> clientNearSalesman = Collections.emptyList();
+                        if (response.has("._embedded.clientResponseModelList")) {
+                            try {
+                                clientNearSalesman = Parser.getClient(response.getJSONArray("._embedded.clientResponseModelList"));
+                                clientNearSalesman.forEach(client -> client.setAddressDisplayName(this));
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        notifyIfClientNearSalesman(clientNearSalesman);
+                    },
+                    error -> Log.e(TAG, "updateSalesmanPosition: ", error)
+            );
+        });
+    }
+
+    /**
+     * Send a push notification to the salesman if a client is near.
+     * <p>
+     *     The notification will show the name of the client and the distance to the client
+     *     <br>
+     *     Then the client will be added to the list of clients that have already been notified
+     * </p>
+     * @param clientNearSalesman The list of client near the salesman
+     */
+    private void notifyIfClientNearSalesman(List<Client> clientNearSalesman) {
+        if (!clientNearSalesman.isEmpty()) {
+            clientNearSalesman.stream()
+                    .filter(client -> !clientAlreadyNotified.contains(client))
+                    .findFirst()
+                    .ifPresent(client -> {
+
+                        if (vibrator != null && vibrator.hasVibrator()) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(
+                                    200,
+                                    VibrationEffect.DEFAULT_AMPLITUDE
+                            ));
+                        }
+
+                        popup.showAutoDismissAlertDialog(
+                                getString(R.string.client_near_you, client.getCompanyName()),
+                                getString(R.string.client_near_you_description, client.getCompanyName(), client.getAddressDisplayName(), distanceToClient(client) * 1000),
+                                Duration.ofSeconds(5)
+                        );
+
+                        clientAlreadyNotified.add(client);
+                    });
+        }
     }
 
     /**

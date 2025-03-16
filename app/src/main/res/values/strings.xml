@@ -166,6 +166,8 @@
     <string name="error_while_searching">Error during research:</string>
     <string name="no_itinerary_retrieve">No itinerary retrieved</string>
     <string name="no_token_retrieve">No token retrieved</string>
+    <string name="client_near_you">%s is near you</string>
+    <string name="client_near_you_description">%s at %s is at %.2f m from you</string>
 
 
     <!--

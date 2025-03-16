@@ -6,6 +6,10 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.Nls;
 
+import java.time.Duration;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import fr.iut_rodez.pathpilot_android_client.R;
 
 /**
@@ -71,16 +75,17 @@ public class Popup {
      * Show an alert dialog with the given title, message and onClickOKListener.
      * If an onClickOKListener is provided, the dialog will have an OK button that dismisses the dialog.
      *
-     * @param title          the title of the dialog
-     * @param message        the message of the dialog
+     * @param title                the title of the dialog
+     * @param message              the message of the dialog
      * @param positiveDialogButton the button to display
-     *                       with the text and the onClickListener
+     *                             with the text and the onClickListener
      * @param neutralDialogButton  the button to display
-     *                       with the text and the onClickListener
+     *                             with the text and the onClickListener
      * @param negativeDialogButton the button to display
-     *                       with the text and the onClickListener
+     *                             with the text and the onClickListener
+     * @return the AlertDialog shown
      */
-    public void showAlertDialog(@Nls String title, @Nls String message, DialogButton positiveDialogButton, DialogButton neutralDialogButton, DialogButton negativeDialogButton) {
+    public AlertDialog showAlertDialog(@Nls String title, @Nls String message, DialogButton positiveDialogButton, DialogButton neutralDialogButton, DialogButton negativeDialogButton) {
         AlertDialog.Builder dialog =
                 new AlertDialog.Builder(context)
                         .setTitle(title)
@@ -102,7 +107,7 @@ public class Popup {
             dialog.setPositiveButton(okButton.text(), okButton.onClickListener());
         }
 
-        dialog.show();
+        return dialog.show();
     }
 
     public void showErrorDialog(@Nls String message) {
@@ -111,5 +116,25 @@ public class Popup {
 
     public void showAlertDialogOK(@Nls String title, @Nls String message, DialogButton positiveDialogButton) {
         showAlertDialog(title, message, positiveDialogButton, null, null);
+    }
+
+    /**
+     * Show an alert dialog with the given title, message and dismiss after a certain duration.
+     * @param title The title of the dialog
+     * @param message The message of the dialog
+     * @param dismissAfter The duration after which the dialog will be dismissed
+     */
+    public void showAutoDismissAlertDialog(@Nls String title, @Nls String message, Duration dismissAfter) {
+        AlertDialog dialog = showAlertDialog(title, message, DialogButton.okDismiss(context), null, null);
+        Timer timer = new Timer();
+        timer.schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            },
+            dismissAfter.getSeconds() * 1000
+        );
     }
 }
