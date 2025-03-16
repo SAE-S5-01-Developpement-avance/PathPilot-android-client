@@ -16,9 +16,11 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -142,6 +144,45 @@ public class RouteService implements IRouteService {
                 json.put("itineraryId", itineraryId);
             } catch (Exception ignored) {
                 // This should never happen, has the value isn't a Number
+            }
+            return json;
+        }
+    }
+
+    /**
+     * Update salesman position
+     *
+     * @param context
+     * @param jwtToken
+     * @param currentPosition
+     * @param route
+     * @param onResponse
+     * @param onErrorResponse
+     */
+    @Override
+    public void updateSalesmanPosition(Context context, JWTToken jwtToken, GeoPoint currentPosition, Route route, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        RequestQueue requestQueue = NetworkUtils.getRequestQueue(context);
+        UpdateSalesmanPositionRequestModel updateSalesmanPositionRequestModel = new UpdateSalesmanPositionRequestModel(currentPosition);
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(
+                Request.Method.PUT,
+                ROUTES_API_ENDPOINT + "/" + route.getId() + "/updateSalesmanPosition",
+                updateSalesmanPositionRequestModel.toJson(),
+                jwtToken.getToken(),
+                onResponse,
+                onErrorResponse
+        );
+        requestQueue.add(request);
+    }
+
+    record UpdateSalesmanPositionRequestModel(@NonNull GeoPoint currentPosition) {
+        public JSONObject toJson() {
+            JSONObject json = new JSONObject();
+            try {
+                json.put("latitude", currentPosition.getLatitude());
+                json.put("longitude", currentPosition.getLongitude());
+            } catch (Exception ignored) {
+                // Ignored
             }
             return json;
         }
