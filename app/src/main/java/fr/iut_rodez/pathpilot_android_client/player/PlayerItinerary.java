@@ -123,10 +123,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 finish();
             });
             stopBtn.setOnLongClickListener(v -> stop());
-            stopBtn.setOnClickListener(v -> {
-                //TODO I18N
-                popup.showToastLong("Long click to stop the route");
-            });
+            stopBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.long_click_to_stop_the_route)));
             pauseBtn.setOnClickListener(v -> pauseResume());
             clientVisitedBtn.setOnClickListener(v -> clientVisited());
             listClientsBtn.setOnClickListener(v -> listClients());
