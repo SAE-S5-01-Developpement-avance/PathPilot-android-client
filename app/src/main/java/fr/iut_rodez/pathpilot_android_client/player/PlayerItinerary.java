@@ -126,7 +126,11 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             // Set onClickListener
             detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
             findViewById(R.id.back_btn).setOnClickListener(v -> finish());
-            stopBtn.setOnClickListener(v -> stop());
+            stopBtn.setOnLongClickListener(v -> stop());
+            stopBtn.setOnClickListener(v -> {
+                //TODO I18N
+                popup.showToastLong("Long click to stop the route");
+            });
             pauseBtn.setOnClickListener(v -> pauseResume());
             clientVisitedBtn.setOnClickListener(v -> clientVisited());
             listClientsBtn.setOnClickListener(v -> listClients());
