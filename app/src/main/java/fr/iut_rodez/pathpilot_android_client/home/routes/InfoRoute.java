@@ -3,8 +3,6 @@ package fr.iut_rodez.pathpilot_android_client.home.routes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -63,7 +61,7 @@ public class InfoRoute extends AppCompatActivity {
         } else {
             // Initialize views
             timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
-            findViewById(R.id.state_route_update_button).setOnClickListener(v -> resumeRoute());
+            findViewById(R.id.state_route_update_button).setOnClickListener(v -> redirectToPlayer());
             findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
             popup = new Popup(this);
@@ -150,12 +148,18 @@ public class InfoRoute extends AppCompatActivity {
      * <p>
      *     Redirects the user to the player activity with the current route.
      */
-    private void resumeRoute() {
-        Log.d(TAG, "State : " + RouteState.IN_PROGRESS);
-        route.setState(RouteState.IN_PROGRESS);
+    private void redirectToPlayer() {
+        if (route.getState() == RouteState.NOT_STARTED || route.getState() == RouteState.PAUSED) {
+            Log.d(TAG, "Update route state to IN_PROGRESSE");
+            route.setState(RouteState.IN_PROGRESS);
+            // TODO API call to update route state
+        }
+        
         Intent intent = new Intent(this, PlayerItinerary.class);
+
         intent.putExtra(ROUTE_KEY, route);
         intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
+
         startActivity(intent);
     }
 

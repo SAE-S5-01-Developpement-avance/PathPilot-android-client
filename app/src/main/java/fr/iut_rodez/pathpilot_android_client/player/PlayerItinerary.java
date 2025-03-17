@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -23,7 +22,6 @@ import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,9 +30,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
-import fr.iut_rodez.pathpilot_android_client.home.itinerary.FragmentItineraries;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
-import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
@@ -43,11 +39,6 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
-import fr.iut_rodez.pathpilot_android_client.home.routes.service.RouteService;
-import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.login.Login;
-import fr.iut_rodez.pathpilot_android_client.map.ActivityWithCurrentPosition;
-import fr.iut_rodez.pathpilot_android_client.signup.SignUpService;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.map.MapMarker;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
@@ -79,6 +70,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      */
     private final ArrayList<Client> clientAlreadyNotified = new ArrayList<>();
     private Vibrator vibrator;
+    private ImageButton stopBtn;
+    private ImageButton clientVisitedBtn;
 
     private JWTToken getJwtTokenFromIntent() {
         JWTToken jwtTokenFind = null;
@@ -116,9 +109,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             clientAddress = findViewById(R.id.client_address);
             clientDistance = findViewById(R.id.client_distance);
             counterVisitedClients = findViewById(R.id.counter_visited_clients);
-            ImageButton stopBtn = findViewById(R.id.stop_btn);
+            stopBtn = findViewById(R.id.stop_btn);
             pauseBtn = findViewById(R.id.pause_btn);
-            ImageButton clientVisitedBtn = findViewById(R.id.client_visited_btn);
+            clientVisitedBtn = findViewById(R.id.client_visited_btn);
             ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
                 updateRouteStatusIcon();
 
@@ -138,8 +131,19 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             // Show a loading popup.
             popup.showProgressDialog();
 
+            salesmanTrace = new Polyline();
+            salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
+            salesmanTrace.getOutlinePaint().setStrokeWidth(5);
+
             initialiseMap();
             popup.dismissProgressDialog();
+
+            // update buttons with the route state
+            if (route.getState() == RouteState.STOPPED || route.getState() == RouteState.FINISHED) {
+                stopBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_available)));
+                pauseBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_available)));
+                clientVisitedBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_available)));
+            }
         }
     }
 
@@ -208,12 +212,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     currentPosition.followLocation(true);
                     startTrace = currentPosition.getCurrentGeoPoint();
                     mapController.setCenter(startTrace);
-
-                    salesmanTrace = new Polyline();
-                    salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
-                    salesmanTrace.getOutlinePaint().setStrokeWidth(5);
-                    salesmanTrace.addPoint(startTrace);
-                    mapView.getOverlayManager().add(salesmanTrace);
 
                     enableTracer();
                     setNextClientInfo(route.getNextClient());
@@ -369,15 +367,12 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     }
 
     private void updateRouteStatusIcon() {
+        Log.d(TAG, "State: " + route.getState());
         if (route.getState().equals(RouteState.PAUSED)) {
-            Log.d(TAG, "State: " + RouteState.IN_PROGRESS);
-            // Toggle the icon
             Drawable icon = AppCompatResources.getDrawable(this, ICON_PLAY);
             pauseBtn.setBackground(icon);
             route.setState(RouteState.IN_PROGRESS);
-        } else {
-            Log.d(TAG, "State: " + RouteState.PAUSED);
-            // Toggle the icon
+        } else if (route.getState().equals(RouteState.IN_PROGRESS)){
             Drawable icon = AppCompatResources.getDrawable(this, ICON_PLAY);
             pauseBtn.setBackground(icon);
             route.setState(RouteState.PAUSED);
@@ -408,13 +403,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     finish();
                 }),
                 null,
-                new DialogButton(getString(R.string.stop_route_cancel_dialog_btn),(dialog, which) -> {
-                    dialog.dismiss();}));
-        // L'événement est consommé
+                DialogButton.okDismiss(this));
         return true;
     }
 
     public JWTToken getJWTToken() {
         return jwtToken;
     }
+
+    // TODO when quit the application, pause the route
 }

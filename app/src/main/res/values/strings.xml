@@ -162,6 +162,8 @@
     <string name="no_token_retrieve">No token retrieved</string>
     <string name="client_near_you">%s is near you</string>
     <string name="client_near_you_description">%s at %s is at %.2f m from you</string>
+    <string name="route_is_stopped_action_available">The route is stopped, action unavailable</string>
+
 
 
     <!--
