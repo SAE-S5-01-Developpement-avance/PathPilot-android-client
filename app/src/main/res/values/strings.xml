@@ -183,7 +183,7 @@
     Route Info
     -->
     <string name="no_route_retrieved">No Route retrieved</string>
-    <string name="route_completed">Route finished</string>
+    <string name="route_completed">Route finished, see the map</string>
     <string name="button_start_route">Start route</string>
     <string name="button_resume_route">Resume route</string>
 

@@ -22,12 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/normal_gap"
-            app:layout_constraintBottom_toTopOf="@id/resume_button"
+            app:layout_constraintBottom_toTopOf="@id/state_route_update_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Resume Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/resume_button"
+            android:id="@+id/state_route_update_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/normal_gap"

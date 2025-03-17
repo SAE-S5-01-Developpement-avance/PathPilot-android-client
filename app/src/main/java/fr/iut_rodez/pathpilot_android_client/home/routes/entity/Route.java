@@ -102,8 +102,11 @@ public class Route implements Parcelable {
         long timeInMillis = in.readLong();
         startDate = timeInMillis == Long.MIN_VALUE ? null : LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
         indexCurrentClient = in.readInt();
-        state = RouteState.NOT_STARTED;
         currentSalesmanPosition = in.readParcelable(GeoPoint.class.getClassLoader());
+        String state = in.readString();
+        if (state != null) {
+            this.state = RouteState.fromString(state);
+        }
     }
 
     public static final Creator<Route> CREATOR = new Creator<>() {
@@ -132,6 +135,7 @@ public class Route implements Parcelable {
         dest.writeLong(timeInMillis);
         dest.writeInt(indexCurrentClient);
         dest.writeParcelable(currentSalesmanPosition, flags);
+        dest.writeString(state.getValue());
     }
 
    /**

@@ -3,6 +3,8 @@ package fr.iut_rodez.pathpilot_android_client.home.routes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -61,7 +63,7 @@ public class InfoRoute extends AppCompatActivity {
         } else {
             // Initialize views
             timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
-            findViewById(R.id.resume_button).setOnClickListener(v -> resumeRoute());
+            findViewById(R.id.state_route_update_button).setOnClickListener(v -> resumeRoute());
             findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
             popup = new Popup(this);
@@ -73,6 +75,9 @@ public class InfoRoute extends AppCompatActivity {
                     new ActivityResultContracts.StartActivityForResult(),
                     this::returnFromPlayerItinerary);
             setUpTimelineClients();
+
+            // Update resume button text based on route status
+            updateResumeButtonText();
         }
     }
 
@@ -106,9 +111,6 @@ public class InfoRoute extends AppCompatActivity {
 
         // Set header text to route ID
         ((TextView) findViewById(R.id.header_text)).setText(route.getId());
-
-        // Update resume button text based on route status
-        updateResumeButtonText();
     }
 
     /**
@@ -129,15 +131,18 @@ public class InfoRoute extends AppCompatActivity {
      * Update the resume button text based on route status
      */
     private void updateResumeButtonText() {
-        MaterialButton resumeButton = findViewById(R.id.resume_button);
-        if (route.isCompleted()) {
-            resumeButton.setText(R.string.route_completed);
-            resumeButton.setEnabled(false);
-        } else if (route.getIndexCurrentClient() == 0) {
-            resumeButton.setText(R.string.button_start_route);
-        } else {
-            resumeButton.setText(R.string.button_resume_route);
+        MaterialButton materialButton = findViewById(R.id.state_route_update_button);
+        String textToDisplay = getString(R.string.button_resume_route);
+        switch (route.getState()) {
+            case NOT_STARTED -> {
+                textToDisplay = getString(R.string.button_start_route);
+            }
+            case STOPPED, FINISHED -> {
+                textToDisplay = getString(R.string.route_completed);
+            }
+            // default (IN_PROGRESS, PAUSED) -> "Resume the route"
         }
+        materialButton.setText(textToDisplay);
     }
 
     /**

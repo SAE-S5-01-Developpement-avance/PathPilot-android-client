@@ -30,6 +30,10 @@ public enum RouteState {
 
     private final String value;
 
+    public String getValue() {
+        return value;
+    }
+
     RouteState(String value) {
         this.value = value;
     }

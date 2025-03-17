@@ -185,7 +185,7 @@ String for Login activity
     Route Info
     -->
     <string name="no_route_retrieved">Aucune route reçue</string>
-    <string name="route_completed">Route terminée</string>
+    <string name="route_completed">Route terminée, voir la map</string>
     <string name="button_start_route">Commencer la route</string>
     <string name="button_resume_route">Reprendre la route</string>
 
