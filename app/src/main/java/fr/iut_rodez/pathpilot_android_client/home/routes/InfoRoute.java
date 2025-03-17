@@ -20,13 +20,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
+import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
+import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -37,6 +40,7 @@ public class InfoRoute extends AppCompatActivity {
     public static final String JWT_TOKEN_KEY = "InfoRoute_jwttoken";
 
 
+    private IRouteService routeService = ServiceFactory.getRouteService();
     private Route route;
     private Popup popup;
     private RecyclerView timelineRecyclerView;
@@ -59,12 +63,14 @@ public class InfoRoute extends AppCompatActivity {
             Log.e(TAG, "setUpToken: No token found in the intent");
             popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this));
         } else {
+            popup = new Popup(this);
+
             // Initialize views
             timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
-            findViewById(R.id.state_route_update_button).setOnClickListener(v -> redirectToPlayer());
             findViewById(R.id.backButton).setOnClickListener(v -> finish());
+            findViewById(R.id.state_route_update_button).setOnClickListener(v -> redirectToPlayer());
 
-            popup = new Popup(this);
+
 
             // Set up RecyclerView
             timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -149,12 +155,6 @@ public class InfoRoute extends AppCompatActivity {
      *     Redirects the user to the player activity with the current route.
      */
     private void redirectToPlayer() {
-        if (route.getState() == RouteState.NOT_STARTED || route.getState() == RouteState.PAUSED) {
-            Log.d(TAG, "Update route state to IN_PROGRESSE");
-            route.setState(RouteState.IN_PROGRESS);
-            // TODO API call to update route state
-        }
-        
         Intent intent = new Intent(this, PlayerItinerary.class);
 
         intent.putExtra(ROUTE_KEY, route);

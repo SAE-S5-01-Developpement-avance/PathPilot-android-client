@@ -69,4 +69,31 @@ public interface IRouteService {
      * @param route                    the route we have to stop
      */
     void stopRoute(Context context, Route route, JWTToken jwtToken);
+
+    /**
+     * Start the route.
+     *
+     * @param context         The context of the application
+     * @param route           the route we have to start
+     * @param currentPosition the current position of the salesman
+     */
+    void startRoute(Context context, Route route, GeoPoint currentPosition, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
+
+    /**
+     * Pause the route.
+     *
+     * @param context The context of the application
+     * @param route   the route we have to pause
+     */
+    void pauseRoute(Context context, Route route, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
+
+    /**
+     * Resume the route.
+     *
+     * @param context         The context of the application
+     * @param route           the route we have to resume
+     * @param currentPosition the current position of the salesman
+     */
+    void resumeRoute(Context context, Route route, GeoPoint currentPosition, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
+
 }
