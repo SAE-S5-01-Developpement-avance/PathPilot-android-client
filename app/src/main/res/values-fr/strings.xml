@@ -124,7 +124,7 @@ String for Login activity
     Itinerary info
     -->
     <string name="cancel_creation_itinerary">Annuler</string>
-    <string name="button_create_and_start_itinerary">Créer et démarrer un nouveau parcours</string>
+    <string name="button_create_new_route">Créer une nouvelle route</string>
 
     <!--
     Map selection

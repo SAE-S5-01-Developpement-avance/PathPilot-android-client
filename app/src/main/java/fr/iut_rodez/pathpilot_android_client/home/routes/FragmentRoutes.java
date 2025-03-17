@@ -99,8 +99,9 @@ public class FragmentRoutes extends Fragment {
             Route route = (Route) parent.getItemAtPosition(position);
             Log.d(TAG, "onItemClick: Route: " + route);
             Intent intent = new Intent(getActivity(), InfoRoute.class);
-            intent.putExtra(ROUTE_KEY, route);
-            intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
+            intent.putExtra(InfoRoute.ROUTE_KEY, route);
+            intent.putExtra(InfoRoute.JWT_TOKEN_KEY, homeActivity.getJWTToken());
+
             homeActivity.getInfoRouteLauncher().launch(intent);
         });
 

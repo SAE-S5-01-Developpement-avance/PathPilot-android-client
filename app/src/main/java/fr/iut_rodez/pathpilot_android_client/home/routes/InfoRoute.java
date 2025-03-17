@@ -1,7 +1,5 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
-import static fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.JWT_TOKEN_KEY;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +34,8 @@ public class InfoRoute extends AppCompatActivity {
 
     private static final String TAG = InfoRoute.class.getSimpleName();
     public static final String ROUTE_KEY = "route";
+    public static final String JWT_TOKEN_KEY = "InfoRoute_jwttoken";
+
 
     private Route route;
     private Popup popup;
@@ -50,22 +50,30 @@ public class InfoRoute extends AppCompatActivity {
 
         // Get the parameters from the intent
         Intent intent = getIntent();
-        route = intent.getParcelableExtra(FragmentRoutes.ROUTE_KEY);
-        // Initialize views
-        timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
-        findViewById(R.id.resume_button).setOnClickListener(v -> resumeRoute());
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        route = intent.getParcelableExtra(ROUTE_KEY);
+        if (intent.hasExtra(JWT_TOKEN_KEY)) {
+            jwtToken = intent.getParcelableExtra(JWT_TOKEN_KEY);
+        }
 
-        popup = new Popup(this);
+        if (jwtToken == null) {
+            Log.e(TAG, "setUpToken: No token found in the intent");
+            popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this));
+        } else {
+            // Initialize views
+            timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
+            findViewById(R.id.resume_button).setOnClickListener(v -> resumeRoute());
+            findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
-        // Set up RecyclerView
-        timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            popup = new Popup(this);
 
-        playerItineraryLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                this::returnFromPlayerItinerary);
-        setUpTimelineClients();
-        setUpToken();
+            // Set up RecyclerView
+            timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            playerItineraryLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    this::returnFromPlayerItinerary);
+            setUpTimelineClients();
+        }
     }
 
     /**
@@ -129,25 +137,6 @@ public class InfoRoute extends AppCompatActivity {
             resumeButton.setText(R.string.button_start_route);
         } else {
             resumeButton.setText(R.string.button_resume_route);
-        }
-    }
-
-    /**
-     * Set up the token of the user.
-     */
-    private void setUpToken() {
-        Intent intent = getIntent();
-        if (intent.hasExtra(JWT_TOKEN_KEY)) {
-            jwtToken = intent.getParcelableExtra(JWT_TOKEN_KEY);
-        } else {
-            Log.e(TAG, "setUpToken: No token found in the intent");
-            popup.showAlertDialog(
-                    getString(R.string.error),
-                    getString(R.string.no_token_retrieve),
-                    DialogButton.okFinish(this),
-                    null,
-                    null
-            );
         }
     }
 
