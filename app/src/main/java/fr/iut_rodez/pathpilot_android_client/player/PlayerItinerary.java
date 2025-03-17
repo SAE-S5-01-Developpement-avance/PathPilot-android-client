@@ -362,12 +362,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         Log.d(TAG, "pause: ");
         // Toggle the icon
         updateRouteStatusIcon();
-        route.setPaused(!route.isPaused());
     }
 
     private void updateRouteStatusIcon() {
-        Drawable icon = AppCompatResources.getDrawable(this, route.isPaused() ? ICON_PLAY : ICON_PAUSE);
-        pauseBtn.setBackground(icon);
         if (route.getState().equals(RouteState.PAUSED)) {
             Log.d(TAG, "State: " + RouteState.IN_PROGRESS);
             // Toggle the icon
@@ -393,7 +390,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     currentPosition.stopLocationUpdates();
                     Log.d(TAG, "State : " + RouteState.STOPPED);
                     route.setState(RouteState.STOPPED);
-                    routeService.stopRoute(this, route);
+                    routeService.stopRoute(this, route, jwtToken);
                     Intent intent = new Intent();
                     // Return to the right activity
                     if (indexOfActivityWhereOpen == Home.INDEX_FRAGMENT_ROUTE) {

@@ -332,7 +332,7 @@ public class Route implements Parcelable {
                 ", clients=" + clients +
                 ", startDate=" + startDate +
                 ", indexCurrentClient=" + indexCurrentClient +
-                ", isPaused=" + isPaused +
+                ", state=" + state +
                 ", currentSalesmanPosition=" + currentSalesmanPosition +
                 ", dateDisplayName='" + dateDisplayName + '\'' +
                 '}';

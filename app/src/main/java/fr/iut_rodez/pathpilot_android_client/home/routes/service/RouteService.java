@@ -117,7 +117,7 @@ public class RouteService implements IRouteService {
      * @param context The context of the application
      * @param route the route we have to stop
      */
-    public void stopRoute(Context context, Route route, int indexOfActivityWhereOpen, JWTToken jwtToken) {
+    public void stopRoute(Context context, Route route, JWTToken jwtToken) {
         Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop");
 
         PlayerItinerary playerItinerary = (PlayerItinerary) context;

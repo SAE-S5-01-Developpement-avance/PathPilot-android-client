@@ -67,7 +67,6 @@ public interface IRouteService {
      *
      * @param context                  The context of the application
      * @param route                    the route we have to stop
-     * @param indexOfActivityWhereOpen
      */
-    void stopRoute(Context context, Route route, int indexOfActivityWhereOpen, JWTToken jwtToken);
+    void stopRoute(Context context, Route route, JWTToken jwtToken);
 }
