@@ -5,6 +5,7 @@ import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.cr
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -19,7 +20,9 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
@@ -114,21 +117,22 @@ public class RouteService implements IRouteService {
      * @param context The context of the application
      * @param route the route we have to stop
      */
-    public void stopRoute(Context context, Route route) {
+    public void stopRoute(Context context, Route route, int indexOfActivityWhereOpen, JWTToken jwtToken) {
         Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop");
 
         PlayerItinerary playerItinerary = (PlayerItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = playerItinerary.getJWTToken().getToken();
 
         Popup popup = new Popup(context);
         popup.showProgressDialog();
 
         JsonObjectRequest request = createAuthenticatedRequest(Request.Method.PATCH,
-                ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop", null, jwtToken,
+                ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop", null, jwtToken.getToken(),
                 response -> {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "onResponse: " + response);
+                    // Return to the right activity
+                    playerItinerary.finish();
                 },
                 error -> {
                     popup.dismissProgressDialog();

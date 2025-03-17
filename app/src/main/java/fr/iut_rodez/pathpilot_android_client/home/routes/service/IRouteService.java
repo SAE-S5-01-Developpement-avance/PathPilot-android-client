@@ -62,6 +62,12 @@ public interface IRouteService {
      */
     void updateSalesmanPosition(Context context, JWTToken jwtToken, GeoPoint currentPosition, Route route, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
-    void stopRoute(Context context, Route route);
-
+    /**
+     * Stop the route.
+     *
+     * @param context                  The context of the application
+     * @param route                    the route we have to stop
+     * @param indexOfActivityWhereOpen
+     */
+    void stopRoute(Context context, Route route, int indexOfActivityWhereOpen, JWTToken jwtToken);
 }
