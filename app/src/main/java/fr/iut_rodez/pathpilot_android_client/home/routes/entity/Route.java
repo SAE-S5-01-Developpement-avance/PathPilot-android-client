@@ -90,6 +90,7 @@ public class Route implements Parcelable {
     }
 
     protected Route(Parcel in) {
+        id = in.readString();
         salesmanHome = in.readParcelable(GeoPoint.class.getClassLoader());
         clients = in.createTypedArrayList(RouteClient.CREATOR);
         long timeInMillis = in.readLong();
@@ -119,6 +120,7 @@ public class Route implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         long timeInMillis = startDate.toEpochSecond(ZONE_OFFSET) * RATIO_MILLI_SECOND;
+        dest.writeString(id);
         dest.writeParcelable(salesmanHome, flags);
         dest.writeTypedList(clients);
         dest.writeLong(timeInMillis);
@@ -323,5 +325,20 @@ public class Route implements Parcelable {
 
     public void setClients(ArrayList<RouteClient> clients) {
         this.clients = clients;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Route{" +
+                "id='" + id + '\'' +
+                ", salesmanHome=" + salesmanHome +
+                ", clients=" + clients +
+                ", startDate=" + startDate +
+                ", indexCurrentClient=" + indexCurrentClient +
+                ", isPaused=" + isPaused +
+                ", currentSalesmanPosition=" + currentSalesmanPosition +
+                ", dateDisplayName='" + dateDisplayName + '\'' +
+                '}';
     }
 }
