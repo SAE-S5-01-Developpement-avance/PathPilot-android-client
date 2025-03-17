@@ -114,12 +114,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             pauseBtn = findViewById(R.id.pause_btn);
             clientVisitedBtn = findViewById(R.id.client_visited_btn);
             ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
-                updateRouteStatusIcon();
 
 
             // Set onClickListener
             detailClientBtn.setOnClickListener(v -> Log.d(TAG, "onCreate: detailClientBtn"));
-            findViewById(R.id.back_btn).setOnClickListener(v -> finish());
+            findViewById(R.id.back_btn).setOnClickListener(v -> {
+                tryPauseRoute();
+                finish();
+            });
             stopBtn.setOnLongClickListener(v -> stop());
             stopBtn.setOnClickListener(v -> {
                 //TODO I18N
@@ -128,6 +130,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             pauseBtn.setOnClickListener(v -> pauseResume());
             clientVisitedBtn.setOnClickListener(v -> clientVisited());
             listClientsBtn.setOnClickListener(v -> listClients());
+
 
             // Show a loading popup.
             popup.showProgressDialog();
@@ -165,8 +168,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_itinerary_retrieve), DialogButton.okFinish(this));
         } else {
             route.getClients().forEach(routeClient -> routeClient.getClient().setAddressDisplayName(this));
-
-
         }
     }
 
@@ -218,7 +219,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
                     enableTracer();
                     setNextClientInfo(route.getNextClient());
-                    startRouteIfNotStarted();
+                    startOrResumeRouteIfNeeded();
                 },
                 // If the permission is denied,
                 // show a popup to ask the user to allow the location permission
@@ -230,9 +231,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         );
     }
 
-    private void startRouteIfNotStarted() {
-        if (route.getState() == RouteState.NOT_STARTED || route.getState() == RouteState.PAUSED) {
-            Log.d(TAG, "Update route state to IN_PROGRESSE");
+    private void startOrResumeRouteIfNeeded() {
+        if (route.getState() == RouteState.NOT_STARTED) {
+            Log.d(TAG, "Start route");
             popup.showProgressDialog();
 
             routeService.startRoute(this, route, currentPosition.getCurrentGeoPoint(), jwtToken,
@@ -245,6 +246,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                         VolleyErrorHandler.handleError(this, error);
                     }
             );
+        } else if (route.getState() == RouteState.PAUSED) {
+            resumeRoute();
         }
     }
 
@@ -385,41 +388,59 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void pauseResume() {
         Log.d(TAG, "pause: ");
         // Toggle the icon
-        updateRouteStatusIcon();
-    }
-
-    private void updateRouteStatusIcon() {
         Log.d(TAG, "State: " + route.getState());
         if (route.getState().equals(RouteState.PAUSED)) {
-            popup.showProgressDialog();
-            routeService.resumeRoute(this, route, currentPosition.getCurrentGeoPoint(), jwtToken,
-                    response -> {
-                        popup.dismissProgressDialog();
-                        Log.d(TAG, "resumeRoute: " + response);
-                        route.setState(RouteState.IN_PROGRESS);
-                        pauseBtn.setBackground(AppCompatResources.getDrawable(this, ICON_PAUSE));
-                    }, error -> {
-                        popup.dismissProgressDialog();
-                        Log.e(TAG, "resumeRoute: ", error);
-                        VolleyErrorHandler.handleError(this, error);
-                    });
+            resumeRoute();
         } else if (route.getState().equals(RouteState.IN_PROGRESS)){
-            popup.showProgressDialog();
+            pauseRoute();
+        }
+    }
+
+    private void pauseRoute() {
+        popup.showProgressDialog();
+        routeService.pauseRoute(this, route, jwtToken,
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "pauseRoute: " + response);
+                    route.setState(RouteState.PAUSED);
+                    Drawable icon = AppCompatResources.getDrawable(this, ICON_PLAY);
+                    pauseBtn.setBackground(icon);
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "pauseRoute: ", error);
+                    VolleyErrorHandler.handleError(this, error);
+                });
+    }
+
+    private void tryPauseRoute() {
+        if (route.getState() == RouteState.IN_PROGRESS) {
+            Log.d(TAG, "tryPauseRoute");
             routeService.pauseRoute(this, route, jwtToken,
                     response -> {
-                        popup.dismissProgressDialog();
-                        Log.d(TAG, "pauseRoute: " + response);
-                        route.setState(RouteState.PAUSED);
-                        Drawable icon = AppCompatResources.getDrawable(this, ICON_PLAY);
-                        pauseBtn.setBackground(icon);
+                        Log.d(TAG, "tryPauseRoute: " + response);
                     },
                     error -> {
-                        popup.dismissProgressDialog();
-                        Log.e(TAG, "pauseRoute: ", error);
-                        VolleyErrorHandler.handleError(this, error);
-                    });
-
+                        Log.e(TAG, "tryPauseRoute: ", error);
+                    }
+            );
+            route.setState(RouteState.PAUSED);
         }
+    }
+
+    private void resumeRoute() {
+        popup.showProgressDialog();
+        routeService.resumeRoute(this, route, currentPosition.getCurrentGeoPoint(), jwtToken,
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "resumeRoute: " + response);
+                    route.setState(RouteState.IN_PROGRESS);
+                    pauseBtn.setBackground(AppCompatResources.getDrawable(this, ICON_PAUSE));
+                }, error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "resumeRoute: ", error);
+                    VolleyErrorHandler.handleError(this, error);
+                });
     }
 
     /**
@@ -454,5 +475,26 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         return jwtToken;
     }
 
-    // TODO when quit the application, pause the route
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: Route state " + route.getState());
+        if (route.getState() == RouteState.PAUSED) {
+            resumeRoute();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Route state" + route.getState());
+        tryPauseRoute();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: Route state " + route.getState());
+        tryPauseRoute();
+    }
 }
