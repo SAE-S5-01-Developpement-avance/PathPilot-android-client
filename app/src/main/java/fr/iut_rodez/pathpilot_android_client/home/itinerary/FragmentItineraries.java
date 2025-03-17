@@ -113,7 +113,7 @@ public class FragmentItineraries extends Fragment {
             Intent intent = new Intent(getActivity(), InfoItinerary.class);
             intent.putExtra(ITINERARY_KEY, itinerary);
             intent.putExtra(TOKEN_KEY, homeActivity.getJWTToken());
-            startActivity(intent);
+            homeActivity.getInfoItineraryLauncher().launch(intent);
         });
         return view;
     }

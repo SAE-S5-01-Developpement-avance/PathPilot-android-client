@@ -24,6 +24,7 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
@@ -108,6 +109,95 @@ public class RouteService implements IRouteService {
     }
 
     /**
+     * Stop the route.
+     *
+     * @param context The context of the application
+     * @param route the route we have to stop
+     */
+    public void stopRoute(Context context, Route route, JWTToken jwtToken) {
+        Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop");
+
+        PlayerItinerary playerItinerary = (PlayerItinerary) context;
+        RequestQueue requestQueue = getRequestQueue(context);
+
+        Popup popup = new Popup(context);
+        popup.showProgressDialog();
+
+        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.PATCH,
+                ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop", null, jwtToken.getToken(),
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "onResponse: " + response);
+                    // Return to the right activity
+                    playerItinerary.finish();
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(context, error);
+                }
+        );
+        requestQueue.add(request);
+    }
+
+    @Override
+    public void startRoute(Context context, Route route, GeoPoint currentPosition, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        String url = ROUTES_API_ENDPOINT + "/" + route.getId() + "/start";
+        Log.d(TAG, "API URL: " + url);
+
+        RequestQueue requestQueue = getRequestQueue(context);
+        PositionRequestModel positionRequestModel = new PositionRequestModel(currentPosition);
+
+        JsonObjectRequest request = createAuthenticatedRequest(
+            Request.Method.PATCH,
+            url,
+            positionRequestModel.toJson(),
+            jwtToken.getToken(),
+            onResponse,
+            onErrorResponse
+        );
+        requestQueue.add(request);
+    }
+
+    @Override
+    public void pauseRoute(Context context, Route route, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        String url = ROUTES_API_ENDPOINT + "/" + route.getId() + "/pause";
+        Log.d(TAG, "API URL: " + url);
+
+        RequestQueue requestQueue = getRequestQueue(context);
+
+        JsonObjectRequest request = createAuthenticatedRequest(
+                Request.Method.PATCH,
+                url,
+                null,
+                jwtToken.getToken(),
+                onResponse,
+                onErrorResponse
+        );
+        requestQueue.add(request);
+    }
+
+    @Override
+    public void resumeRoute(Context context, Route route, GeoPoint currentPosition, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        String url = ROUTES_API_ENDPOINT + "/" + route.getId() + "/resume";
+        Log.d(TAG, "API URL: " + url);
+
+        RequestQueue requestQueue = getRequestQueue(context);
+        PositionRequestModel positionRequestModel = new PositionRequestModel(currentPosition);
+
+        JsonObjectRequest request = createAuthenticatedRequest(
+                Request.Method.PATCH,
+                url,
+                positionRequestModel.toJson(),
+                jwtToken.getToken(),
+                onResponse,
+                onErrorResponse
+        );
+        requestQueue.add(request);
+    }
+
+
+    /**
      * Create a route from an itinerary.
      * <p>
      * Send a request to the server to create a route from an itinerary.<br>
@@ -162,12 +252,12 @@ public class RouteService implements IRouteService {
     @Override
     public void updateSalesmanPosition(Context context, JWTToken jwtToken, GeoPoint currentPosition, Route route, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
         RequestQueue requestQueue = NetworkUtils.getRequestQueue(context);
-        UpdateSalesmanPositionRequestModel updateSalesmanPositionRequestModel = new UpdateSalesmanPositionRequestModel(currentPosition);
+        PositionRequestModel positionRequestModel = new PositionRequestModel(currentPosition);
 
         JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(
                 Request.Method.PUT,
                 ROUTES_API_ENDPOINT + "/" + route.getId() + "/updateSalesmanPosition",
-                updateSalesmanPositionRequestModel.toJson(),
+                positionRequestModel.toJson(),
                 jwtToken.getToken(),
                 onResponse,
                 onErrorResponse
@@ -175,7 +265,7 @@ public class RouteService implements IRouteService {
         requestQueue.add(request);
     }
 
-    record UpdateSalesmanPositionRequestModel(@NonNull GeoPoint currentPosition) {
+    record PositionRequestModel(@NonNull GeoPoint currentPosition) {
         public JSONObject toJson() {
             JSONObject json = new JSONObject();
             try {

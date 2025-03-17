@@ -1,12 +1,13 @@
 package fr.iut_rodez.pathpilot_android_client.home.routes;
 
-import static fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.JWT_TOKEN_KEY;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,11 +20,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
+import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
+import fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler;
 import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
@@ -31,29 +37,52 @@ public class InfoRoute extends AppCompatActivity {
 
     private static final String TAG = InfoRoute.class.getSimpleName();
     public static final String ROUTE_KEY = "route";
+    public static final String JWT_TOKEN_KEY = "InfoRoute_jwttoken";
 
+
+    private IRouteService routeService = ServiceFactory.getRouteService();
     private Route route;
     private Popup popup;
     private RecyclerView timelineRecyclerView;
     private JWTToken jwtToken;
+    private ActivityResultLauncher<Intent> playerItineraryLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_info_route);
 
-        // Initialize views
-        timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
-        findViewById(R.id.resume_button).setOnClickListener(v -> resumeRoute());
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        // Get the parameters from the intent
+        Intent intent = getIntent();
+        route = intent.getParcelableExtra(ROUTE_KEY);
+        if (intent.hasExtra(JWT_TOKEN_KEY)) {
+            jwtToken = intent.getParcelableExtra(JWT_TOKEN_KEY);
+        }
 
-        popup = new Popup(this);
+        if (jwtToken == null) {
+            Log.e(TAG, "setUpToken: No token found in the intent");
+            popup.showAlertDialogOK(getString(R.string.error), getString(R.string.no_token_retrieve), DialogButton.okFinish(this));
+        } else {
+            popup = new Popup(this);
 
-        // Set up RecyclerView
-        timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            // Initialize views
+            timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
+            findViewById(R.id.backButton).setOnClickListener(v -> finish());
+            findViewById(R.id.state_route_update_button).setOnClickListener(v -> redirectToPlayer());
 
-        setUpTimelineClients();
-        setUpToken();
+
+
+            // Set up RecyclerView
+            timelineRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+            playerItineraryLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    this::returnFromPlayerItinerary);
+            setUpTimelineClients();
+
+            // Update resume button text based on route status
+            updateResumeButtonText();
+        }
     }
 
     /**
@@ -64,9 +93,6 @@ public class InfoRoute extends AppCompatActivity {
      * </p>
      */
     private void setUpTimelineClients() {
-        Intent intent = getIntent();
-        route = intent.getParcelableExtra(ROUTE_KEY);
-
         if (route == null) {
             Log.e(TAG, "onCreate: No route found in the intent");
             popup.showAlertDialog(getString(R.string.error), getString(R.string.no_route_retrieved));
@@ -89,9 +115,6 @@ public class InfoRoute extends AppCompatActivity {
 
         // Set header text to route ID
         ((TextView) findViewById(R.id.header_text)).setText(route.getId());
-
-        // Update resume button text based on route status
-        updateResumeButtonText();
     }
 
     /**
@@ -112,34 +135,14 @@ public class InfoRoute extends AppCompatActivity {
      * Update the resume button text based on route status
      */
     private void updateResumeButtonText() {
-        MaterialButton resumeButton = findViewById(R.id.resume_button);
-        if (route.isCompleted()) {
-            resumeButton.setText(R.string.route_completed);
-            resumeButton.setEnabled(false);
-        } else if (route.getIndexCurrentClient() == 0) {
-            resumeButton.setText(R.string.button_start_route);
-        } else {
-            resumeButton.setText(R.string.button_resume_route);
+        MaterialButton materialButton = findViewById(R.id.state_route_update_button);
+        String textToDisplay = getString(R.string.button_resume_route);
+        switch (route.getState()) {
+            case NOT_STARTED -> textToDisplay = getString(R.string.button_start_route);
+            case STOPPED, FINISHED -> textToDisplay = getString(R.string.route_completed);
+            // default (IN_PROGRESS, PAUSED) -> "Resume the route"
         }
-    }
-
-    /**
-     * Set up the token of the user.
-     */
-    private void setUpToken() {
-        Intent intent = getIntent();
-        if (intent.hasExtra(JWT_TOKEN_KEY)) {
-            jwtToken = intent.getParcelableExtra(JWT_TOKEN_KEY);
-        } else {
-            Log.e(TAG, "setUpToken: No token found in the intent");
-            popup.showAlertDialog(
-                    getString(R.string.error),
-                    getString(R.string.no_token_retrieve),
-                    DialogButton.okFinish(this),
-                    null,
-                    null
-            );
-        }
+        materialButton.setText(textToDisplay);
     }
 
     /**
@@ -147,11 +150,34 @@ public class InfoRoute extends AppCompatActivity {
      * <p>
      *     Redirects the user to the player activity with the current route.
      */
-    private void resumeRoute() {
+    private void redirectToPlayer() {
         Intent intent = new Intent(this, PlayerItinerary.class);
+
         intent.putExtra(ROUTE_KEY, route);
         intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
+
         startActivity(intent);
+    }
+
+    /**
+     * Data returned by the player itinerary
+     *
+     * @param result result returned by the intent
+     */
+    private void returnFromPlayerItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Player itinerary");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            if (result.getData() != null
+            && result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)) {
+                Intent intent = new Intent(this, Home.class);
+                setResult(RESULT_OK, intent);
+                intent.putExtra(PlayerItinerary.ROUTE_STOPPED_KEY, true);
+                intent.putExtra(Home.INDEX_FRAGMENT_KEY, Home.INDEX_FRAGMENT_ROUTE);
+                finish();
+            }
+        }
     }
 
     public JWTToken getJwtToken() {

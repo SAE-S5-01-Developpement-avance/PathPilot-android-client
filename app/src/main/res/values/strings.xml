@@ -127,17 +127,11 @@
     <string name="client_address_not_found">Address not found</string>
     <string name="delete_itinerary">Delete</string>
     <string name="cancel_creation_itinerary">Cancel</string>
-    <string name="confirm_creation_itinerary">Confirm</string>
-    <string name="save_itinerary_title">Save the itinerary</string>
-    <string name="save_itinerary_popup_content">The order of the clients to visit for this itinerary</string>
-
 
     <!--
     Itinerary info
     -->
-    <string name="button_create_and_start_itinerary">Create and start a new route</string>
-    <string name="create_route_on_itinerary_menu">Create route</string>
-
+    <string name="button_create_new_route">Create a new route</string>
     <!--
     Map selection
     -->
@@ -168,8 +162,9 @@
     <string name="no_token_retrieve">No token retrieved</string>
     <string name="client_near_you">%s is near you</string>
     <string name="client_near_you_description">%s at %s is at %.2f m from you</string>
-
-
+    <string name="route_is_stopped_action_available">The route is stopped, action unavailable</string>
+    <string name="long_click_to_stop_the_route">Long click to stop the route</string>
+    
     <!--
     Loading messages
     -->
@@ -189,7 +184,7 @@
     Route Info
     -->
     <string name="no_route_retrieved">No Route retrieved</string>
-    <string name="route_completed">Route finished</string>
+    <string name="route_completed">Route finished, see the map</string>
     <string name="button_start_route">Start route</string>
     <string name="button_resume_route">Resume route</string>
 
@@ -204,6 +199,7 @@
     <string name="route_state_stopped">"Stopped"</string>
     <string name="route_state_not_started">"Not started"</string>
     <string name="delete_route">Delete</string>
+    <string name="refresh">Refresh</string>
 
     <string name="home">Home</string>
 
@@ -216,6 +212,7 @@
     <string name="select_itinerary_to_create_route">Select an itinerary</string>
     <string name="error_select_itinerary">Cannot create a route without an itinerary selected</string>
     <string name="header_create_route">Create route</string>
+    
     <!--
     Save Itinerary
     -->
@@ -223,4 +220,14 @@
     <string name="title_save_itinerary">Order of clients to visit</string>
     <string name="btn_cancel_itinerary_creation">Cancel</string>
     <string name="btn_save_itinerary">Save</string>
+    
+    <!--
+    Stopping Route
+    -->
+    <string name="stop_route_popup_title">Stop the route</string>
+    <string name="stop_route_popup_text">Are you sure you want to stop the course?</string>
+    <string name="stop_route_confirm_dialog_btn">Confirm</string>
+    <string name="stop_route_cancel_dialog_btn">Cancel</string>
+
+    <string name="create_route_on_itinerary_menu">Create route</string>
 </resources>

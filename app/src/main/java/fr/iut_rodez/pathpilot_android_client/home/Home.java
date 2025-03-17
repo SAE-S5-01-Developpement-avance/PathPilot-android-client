@@ -34,9 +34,11 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.FragmentRouteActions;
+import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
+import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 
 /**
  * Handle the different fragments of the application and the JWT token.
@@ -49,6 +51,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     public static final int INDEX_FRAGMENT_ITINERARY = 1;
     public static final int INDEX_FRAGMENT_ROUTE = 2;
 
+    public static final String INDEX_FRAGMENT_KEY = "fragment_index";
+
     private ViewPager2 viewPager;
     private TabLayout tabManager;
 
@@ -57,6 +61,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
     private ActivityResultLauncher<Intent> addClientLauncher;
     private ActivityResultLauncher<Intent> addItineraryLauncher;
     private ActivityResultLauncher<Intent> addRouteLauncher;
+    private ActivityResultLauncher<Intent> infoRouteLauncher;
+    private ActivityResultLauncher<Intent> infoItineraryLauncher;
 
     private ClientPage clientPage;
     private ItineraryPage itineraryPage;
@@ -96,6 +102,8 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         addClientLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddClient);
         addItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddItinerary);
         addRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromAddRoute);
+        infoRouteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromInfoRoute);
+        infoItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromInfoItinerary);
     }
 
     public JWTToken getJWTToken() {
@@ -158,6 +166,34 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
         }
     }
 
+    private void returnFromInfoRoute(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Return from Info Route");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            // Comeback at the right fragment : Route
+            viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
+            // Reload data if a route is stopped
+            if (result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)
+                && result.getData().getBooleanExtra(PlayerItinerary.ROUTE_STOPPED_KEY,
+                false)) {
+                FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager()
+                        .getFragments().get(INDEX_FRAGMENT_ROUTE);
+                fragmentRoutes.loadRoutes();
+            }
+        }
+    }
+
+    private void returnFromInfoItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Log.d(TAG, "onCreate: Return from Info Route");
+            Log.d(TAG, "onCreate: " + result.getData());
+
+            // Comeback at the right fragment : Route
+            viewPager.setCurrentItem(INDEX_FRAGMENT_ITINERARY);
+        }
+    }
+
     public ActivityResultLauncher<Intent> getAddClientLauncher() {
         return addClientLauncher;
     }
@@ -211,6 +247,14 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
     public ActivityResultLauncher<Intent> getAddItineraryLauncher() {
         return addItineraryLauncher;
+    }
+
+    public ActivityResultLauncher<Intent> getInfoRouteLauncher() {
+        return infoRouteLauncher;
+    }
+
+    public ActivityResultLauncher<Intent> getInfoItineraryLauncher() {
+        return infoItineraryLauncher;
     }
 
     public ArrayList<Client> getClients() {

@@ -39,7 +39,7 @@ public class FragmentRoutes extends Fragment {
     private static final String TAG = FragmentRoutes.class.getSimpleName();
     public static final String JWT_TOKEN_KEY = "token";
     public static final String LIST_ITINERARIES_KEY = "listItineraries";
-    public static final String ITINERARY_KEY = "route";
+    public static final String ROUTE_KEY = "route";
 
     private ListView listRoutesView;
     private boolean isLoading = false;
@@ -68,6 +68,9 @@ public class FragmentRoutes extends Fragment {
         ((TextView) view.findViewById(R.id.header_text)).setText(R.string.header_routes_list);
 
         listRoutesView = view.findViewById(R.id.routes_list);
+        view.findViewById(R.id.refresh_routes_btn).setOnClickListener(v -> {
+            refreshRoutes();
+        });
 
         // Set OnScrollListener to load more routes when reaching the bottom
         listRoutesView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -99,12 +102,18 @@ public class FragmentRoutes extends Fragment {
             Route route = (Route) parent.getItemAtPosition(position);
             Log.d(TAG, "onItemClick: Route: " + route);
             Intent intent = new Intent(getActivity(), InfoRoute.class);
-            intent.putExtra(ITINERARY_KEY, route);
-            intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
-            startActivity(intent);
+            intent.putExtra(InfoRoute.ROUTE_KEY, route);
+            intent.putExtra(InfoRoute.JWT_TOKEN_KEY, homeActivity.getJWTToken());
+
+            homeActivity.getInfoRouteLauncher().launch(intent);
         });
 
         return view;
+    }
+
+    private void refreshRoutes() {
+        ((RouteArrayAdapter) listRoutesView.getAdapter()).clear();
+        routeService.getRoutes(homeActivity, listRoutesView);
     }
 
     /**

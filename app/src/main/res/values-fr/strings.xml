@@ -123,8 +123,8 @@ String for Login activity
     <!--
     Itinerary info
     -->
-    <string name="save_itinerary_popup_content">L\'ordre de visit des clients</string>
-    <string name="button_create_and_start_itinerary">Créer et démarrer un nouveau parcours</string>
+    <string name="cancel_creation_itinerary">Annuler</string>
+    <string name="button_create_new_route">Créer une nouvelle route</string>
 
     <!--
     Map selection
@@ -166,6 +166,8 @@ String for Login activity
     <string name="home">Maison</string>
     <string name="client_near_you">%s est près de vous</string>
     <string name="client_near_you_description">%s au %s est à %.2f m de vous</string>
+    <string name="route_is_stopped_action_available">La route est terminée, action impossible</string>
+    <string name="long_click_to_stop_the_route">Appuie long pour arreter la route</string>
 
     <!--
     Loading messages
@@ -185,7 +187,7 @@ String for Login activity
     Route Info
     -->
     <string name="no_route_retrieved">Aucune route reçue</string>
-    <string name="route_completed">Route terminée</string>
+    <string name="route_completed">Route terminée, voir la map</string>
     <string name="button_start_route">Commencer la route</string>
     <string name="button_resume_route">Reprendre la route</string>
 
@@ -199,7 +201,9 @@ String for Login activity
     <string name="route_state_completed">"Fini"</string>
     <string name="route_state_stopped">"Arrêté"</string>
     <string name="route_state_not_started">"Pas commencé"</string>
-    <string name="delete_route">Delete</string>
+    <string name="delete_route">Supprimer</string>
+    <string name="refresh">Rafraichir</string>
+
 
     <!--
     Add Route
@@ -210,11 +214,16 @@ String for Login activity
     <string name="select_itinerary_to_create_route">Sélectionner un itinéraire</string>
     <string name="error_select_itinerary">Impossible de créer une route sans itinéraire sélectionné</string>
     <string name="header_create_route">Création de routes</string>
-    <string name="cancel_creation_itinerary">Annuler</string>
-    <string name="confirm_creation_itinerary">Confirmer</string>
-    <string name="save_itinerary_title">Sauvegarder l\'itinéraire</string>
+
+    <!--
+    Save Itinerary
+    -->
     <string name="header_save_itinerary">Sauvegarder un itinéraire</string>
     <string name="title_save_itinerary">L\'ordre des clients à visiter</string>
     <string name="btn_cancel_itinerary_creation">Annuler</string>
     <string name="btn_save_itinerary">Sauvegarder</string>
+    <string name="stop_route_popup_title">Arrêter le parcours</string>
+    <string name="stop_route_popup_text">Êtes-vous sûre de vouloir arrêter le parcours?</string>
+    <string name="stop_route_confirm_dialog_btn">Confirmer</string>
+    <string name="stop_route_cancel_dialog_btn">Annuler</string>
 </resources>

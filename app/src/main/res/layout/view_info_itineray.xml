@@ -46,7 +46,7 @@
             android:layout_marginBottom="@dimen/normal_gap"
             android:backgroundTint="@color/blue_0"
             app:icon="@drawable/icon_start"
-            android:text="@string/button_create_and_start_itinerary"
+            android:text="@string/button_create_new_route"
             android:textSize="@dimen/normal_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
