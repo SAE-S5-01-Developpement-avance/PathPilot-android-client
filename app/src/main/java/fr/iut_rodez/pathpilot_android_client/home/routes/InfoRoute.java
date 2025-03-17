@@ -138,12 +138,8 @@ public class InfoRoute extends AppCompatActivity {
         MaterialButton materialButton = findViewById(R.id.state_route_update_button);
         String textToDisplay = getString(R.string.button_resume_route);
         switch (route.getState()) {
-            case NOT_STARTED -> {
-                textToDisplay = getString(R.string.button_start_route);
-            }
-            case STOPPED, FINISHED -> {
-                textToDisplay = getString(R.string.route_completed);
-            }
+            case NOT_STARTED -> textToDisplay = getString(R.string.button_start_route);
+            case STOPPED, FINISHED -> textToDisplay = getString(R.string.route_completed);
             // default (IN_PROGRESS, PAUSED) -> "Resume the route"
         }
         materialButton.setText(textToDisplay);
