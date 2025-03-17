@@ -200,7 +200,9 @@ String for Login activity
     <string name="route_state_completed">"Fini"</string>
     <string name="route_state_stopped">"Arrêté"</string>
     <string name="route_state_not_started">"Pas commencé"</string>
-    <string name="delete_route">Delete</string>
+    <string name="delete_route">Supprimer</string>
+    <string name="refresh">Rafraichir</string>
+
 
     <!--
     Add Route

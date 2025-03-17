@@ -68,6 +68,9 @@ public class FragmentRoutes extends Fragment {
         ((TextView) view.findViewById(R.id.header_text)).setText(R.string.header_routes_list);
 
         listRoutesView = view.findViewById(R.id.routes_list);
+        view.findViewById(R.id.refresh_routes_btn).setOnClickListener(v -> {
+            refreshRoutes();
+        });
 
         // Set OnScrollListener to load more routes when reaching the bottom
         listRoutesView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -106,6 +109,11 @@ public class FragmentRoutes extends Fragment {
         });
 
         return view;
+    }
+
+    private void refreshRoutes() {
+        ((RouteArrayAdapter) listRoutesView.getAdapter()).clear();
+        routeService.getRoutes(homeActivity, listRoutesView);
     }
 
     /**
