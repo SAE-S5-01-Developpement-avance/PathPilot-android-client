@@ -92,8 +92,7 @@ public class Route implements Parcelable {
             currentSalesmanPosition = Parser.getGeoPointFromGeoJSONPoint(salesmanCurrentPosition);
         }
 
-        // TODO take the real from the API
-        state = RouteState.NOT_STARTED;
+        state = RouteState.fromString(routeJson.getString("state"));
     }
 
     protected Route(Parcel in) {
