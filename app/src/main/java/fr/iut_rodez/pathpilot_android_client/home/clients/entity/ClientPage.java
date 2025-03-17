@@ -2,14 +2,14 @@ package fr.iut_rodez.pathpilot_android_client.home.clients.entity;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
 /**
  * Represents a page of clients with links to other pages
  */
-public record ClientPage(@NonNull ArrayList<Client> clients, @NonNull ArrayList<Link> links) {
+public record ClientPage(@NonNull List<Client> clients, @NonNull List<Link> links) {
     /**
      * Get the link to the next page of clients
      *

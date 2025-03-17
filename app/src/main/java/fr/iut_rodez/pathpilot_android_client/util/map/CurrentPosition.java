@@ -231,6 +231,8 @@ public class CurrentPosition {
                     LOCATION_UPDATE_MIN_DISTANCE_METERS,
                     locationListener
             );
+        } else {
+            Log.e(TAG, "startLocationUpdates: Location permission not granted");
         }
     }
 

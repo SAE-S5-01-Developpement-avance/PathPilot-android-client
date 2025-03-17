@@ -14,6 +14,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Objects;
 
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
@@ -325,5 +326,16 @@ public class Client implements Parcelable {
 
     public String layoutClientItemList() {
         return getCompanyName() + " - " + getAddressDisplayName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Client client)) return false;
+        return id == client.id && Double.compare(latHomeAddress, client.latHomeAddress) == 0 && Double.compare(longHomeAddress, client.longHomeAddress) == 0 && Objects.equals(companyName, client.companyName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, companyName, latHomeAddress, longHomeAddress);
     }
 }

@@ -6,6 +6,7 @@ import android.widget.ListView;
 import com.android.volley.Response;
 
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
@@ -54,4 +55,9 @@ public interface IRouteService {
      * @param onErrorResponse The error listener
      */
     void createRoute(Context context, JWTToken jwtToken, Itinerary itinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
+
+    /**
+     * Update salesman position
+     */
+    void updateSalesmanPosition(Context context, JWTToken jwtToken, GeoPoint currentPosition, Route route, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 }

@@ -164,6 +164,8 @@ String for Login activity
     <string name="no_itinerary_retrieve">Aucun itinéraire reçu</string>
     <string name="no_token_retrieve">Aucun jeton reçu</string>
     <string name="home">Maison</string>
+    <string name="client_near_you">%s est près de vous</string>
+    <string name="client_near_you_description">%s au %s est à %.2f m de vous</string>
 
     <!--
     Loading messages

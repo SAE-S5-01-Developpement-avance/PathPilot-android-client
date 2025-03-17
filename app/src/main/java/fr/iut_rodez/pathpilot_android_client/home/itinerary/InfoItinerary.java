@@ -125,7 +125,7 @@ public class InfoItinerary extends AppCompatActivity {
     public void redirectToPlayerActivity(Route route) {
         Intent intent = new Intent(this, PlayerItinerary.class);
         intent.putExtra(InfoItinerary.ROUTE_KEY, route);
-        intent.putExtra(InfoItinerary.JWT_TOKEN_KEY, jwtToken);
+        intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
         startActivity(intent);
     }
 }

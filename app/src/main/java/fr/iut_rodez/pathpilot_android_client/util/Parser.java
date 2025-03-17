@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
@@ -42,8 +43,8 @@ public class Parser {
      */
     @NonNull
     public static ClientPage getClientsPageable(JSONObject response) {
-        ArrayList<Client> listClients = new ArrayList<>();
-        ArrayList<Link> listLinks = new ArrayList<>();
+        List<Client> listClients = Collections.emptyList();
+        List<Link> listLinks = Collections.emptyList();
 
         // Parse the JSON response and create a list of clients
         try {
@@ -51,11 +52,9 @@ public class Parser {
                     .getJSONObject("_embedded")
                     .getJSONArray("clientResponseModelList");
 
-            for (int i = 0; i < embeddedListClients.length(); i++) {
-                JSONObject clientJson = embeddedListClients.getJSONObject(i);
-                listClients.add(new Client(clientJson));
-            }
-            getPaginationLinks(response, listLinks);
+            listClients = getClient(embeddedListClients);
+
+            listLinks = getPaginationLinks(response);
 
         } catch (JSONException e) {
             Log.e(TAG, "Error while parsing the JSON response", e);
@@ -146,7 +145,7 @@ public class Parser {
      */
     public static ItineraryPage getItinerariesPageable(JSONObject response) {
         ArrayList<Itinerary> listItineraries = new ArrayList<>();
-        ArrayList<Link> listLinks = new ArrayList<>();
+        List<Link> listLinks = Collections.emptyList();
 
         try {
             JSONArray embeddedListItineraries = response
@@ -157,7 +156,7 @@ public class Parser {
                 JSONObject itineraryJson = embeddedListItineraries.getJSONObject(i);
                 listItineraries.add(new Itinerary(itineraryJson));
             }
-            getPaginationLinks(response, listLinks);
+            listLinks = getPaginationLinks(response);
 
         } catch (JSONException e) {
             Log.e(TAG, "Error while parsing the JSON response", e);
@@ -177,7 +176,7 @@ public class Parser {
      */
     public static RoutePage getRoutesPageable(JSONObject response) {
         ArrayList<Route> listRoutes = new ArrayList<>();
-        ArrayList<Link> listLinks = new ArrayList<>();
+        List<Link> listLinks = Collections.emptyList();
 
         try {
             JSONArray embeddedListRoutes = response
@@ -188,7 +187,7 @@ public class Parser {
                 JSONObject routeJson = embeddedListRoutes.getJSONObject(i);
                 listRoutes.add(new Route(routeJson));
             }
-            getPaginationLinks(response, listLinks);
+            listLinks = getPaginationLinks(response);
 
         } catch (JSONException e) {
             Log.e(TAG, "Error while parsing the JSON response", e);
@@ -254,14 +253,14 @@ public class Parser {
     /**
      * Parse the JSON response of a page of objects requests and return a list of links
      * <p>
-     *     Request URL example:
-     *     <a href="http://localhost:8080/api/clients?page=1&size=10">/api/clients?page=1&size=10</a>
+     * Request URL example:
+     * <a href="http://localhost:8080/api/clients?page=1&size=10">/api/clients?page=1&size=10</a>
      *
      * @param response JSON response of the GET object request
-     * @param listLinks List of links to be filled with the pagination links
      * @throws JSONException If an error occurs while parsing the JSON response
      */
-    private static void getPaginationLinks(JSONObject response, ArrayList<Link> listLinks) throws JSONException {
+    private static List<Link> getPaginationLinks(JSONObject response) throws JSONException {
+        ArrayList<Link> listLinks = new ArrayList<>();
         // Retrieve pagination links
         JSONObject links = response.getJSONObject("_links");
         if (links.has("next")) {
@@ -271,6 +270,44 @@ public class Parser {
             listLinks.add(new Link( "prev", links.getJSONObject("prev").getString("href")));
         }
         Log.d(TAG, "Page links: " + Arrays.toString(listLinks.toArray()));
+        return listLinks;
+    }
+
+    /**
+     * Parse an JSON array of clients and return a list of clients
+     * <p>
+     *     Accept a JSON array of clients. Each client is represented by a JSON object.
+     * Here an example of the JSON object representing a client:
+     * <pre>
+     * {@code
+     * {
+     *    "id": 1,
+     *    "companyName": "IKEA",
+     *    "latHomeAddress": 48.8566,
+     *    "longHomeAddress": 2.3522,
+     *    "clientCategory": {
+     *      "id": 1,
+     *      "name": "CLIENT"
+     *    },
+     *    "description": "Description A",
+     *    "contactLastName": "Doe",
+     *    "contactFirstName": "John",
+     *    "phoneNumber": "0123456789",
+     * }
+     * }
+     * </pre>
+     * @param embeddedListClients the JSON array to parse
+     * @return the list of clients parsed from the JSON array
+     */
+    public static List<Client> getClient(JSONArray embeddedListClients) throws JSONException {
+        ArrayList<Client> listClients = new ArrayList<>();
+
+        for (int i = 0; i < embeddedListClients.length(); i++) {
+            JSONObject clientJson = embeddedListClients.getJSONObject(i);
+            listClients.add(new Client(clientJson));
+        }
+
+        return listClients;
     }
 
     /**
