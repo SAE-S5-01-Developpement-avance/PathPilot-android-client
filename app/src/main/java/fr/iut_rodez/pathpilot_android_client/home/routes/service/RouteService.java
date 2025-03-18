@@ -115,28 +115,18 @@ public class RouteService implements IRouteService {
      * @param context The context of the application
      * @param route the route we have to stop
      */
-    public void stopRoute(Context context, Route route, JWTToken jwtToken) {
+    public void stopRoute(Context context, Route route, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
         Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop");
 
-        PlayerItinerary playerItinerary = (PlayerItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
 
-        Popup popup = new Popup(context);
-        popup.showProgressDialog();
-
-        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.PATCH,
-                ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop", null, jwtToken.getToken(),
-                response -> {
-                    popup.dismissProgressDialog();
-                    Log.d(TAG, "onResponse: " + response);
-                    // Return to the right activity
-                    playerItinerary.finish();
-                },
-                error -> {
-                    popup.dismissProgressDialog();
-                    Log.e(TAG, "onErrorResponse: ", error);
-                    handleError(context, error);
-                }
+        JsonObjectRequest request = createAuthenticatedRequest(
+                Request.Method.PATCH,
+                ROUTES_API_ENDPOINT + "/" + route.getId() + "/stop",
+                null,
+                jwtToken.getToken(),
+                onResponse,
+                onErrorResponse
         );
         requestQueue.add(request);
     }
@@ -190,6 +180,34 @@ public class RouteService implements IRouteService {
                 Request.Method.PATCH,
                 url,
                 positionRequestModel.toJson(),
+                jwtToken.getToken(),
+                onResponse,
+                onErrorResponse
+        );
+        requestQueue.add(request);
+    }
+
+    /**
+     * Set a client to visited
+     *
+     * @param context         The context of the application
+     * @param route           The route
+     * @param clientId        The client id
+     * @param jwtToken        The JWT token
+     * @param onResponse      The response listener
+     * @param onErrorResponse The error listener
+     */
+    @Override
+    public void clientVisited(Context context, Route route, int clientId, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        String url = ROUTES_API_ENDPOINT + "/" + route.getId() + "/clients/" + clientId + "/visited";
+        Log.d(TAG, "API URL: " + url);
+
+        RequestQueue requestQueue = getRequestQueue(context);
+
+        JsonObjectRequest request = createAuthenticatedRequest(
+                Request.Method.PUT,
+                url,
+                null,
                 jwtToken.getToken(),
                 onResponse,
                 onErrorResponse

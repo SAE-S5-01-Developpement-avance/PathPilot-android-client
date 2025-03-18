@@ -106,7 +106,7 @@ public class MapMarker {
     }
 
     public void removeAllMarkers() {
-        mapView.getOverlays().clear();
+        mapView.getOverlays().removeIf(overlay -> overlay instanceof Marker);
     }
 
     /**

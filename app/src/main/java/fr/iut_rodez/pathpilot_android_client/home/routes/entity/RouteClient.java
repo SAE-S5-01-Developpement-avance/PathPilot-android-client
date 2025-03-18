@@ -3,6 +3,8 @@ package fr.iut_rodez.pathpilot_android_client.home.routes.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 
@@ -59,5 +61,22 @@ public class RouteClient implements Parcelable {
         this.state = state;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof RouteClient that)) return false;
+        return Objects.equals(client, that.client) && state == that.state;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(client);
+    }
+
+    @Override
+    public String toString() {
+        return "RouteClient{" +
+                "client=" + client +
+                ", state=" + state +
+                '}';
+    }
 }
