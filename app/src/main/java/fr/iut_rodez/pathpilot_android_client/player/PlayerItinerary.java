@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -144,6 +147,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             if (route.getState() == RouteState.STOPPED || route.getState() == RouteState.FINISHED) {
                 disableRouteActions();
             }
+
+            registerForContextMenu(listClientsBtn);
         }
     }
 
@@ -151,6 +156,11 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         stopBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
         pauseBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
         clientVisitedBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(this).inflate(R.menu.list_client_from_route_context_menu, menu);
     }
 
     /**
@@ -399,6 +409,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         return distance;
     }
 
+
+
     private void listClients(View view) {
         Log.d(TAG, "PopupMenu listClients");
         PopupMenu popupMenu = new PopupMenu(this, view);
@@ -421,12 +433,19 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             int clientId = client.getItemId();
             String selectedItem = routeClientList.get(clientId).getClient().getCompanyName();
             Log.d(TAG, "PopupMenu select client : " + selectedItem);
+            openContextMenu(view);
             return true;
         });
-
         popupMenu.show();
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.skip_client) {
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
 
     private void clientVisited() {
         Log.d(TAG, "clientVisited: ");
