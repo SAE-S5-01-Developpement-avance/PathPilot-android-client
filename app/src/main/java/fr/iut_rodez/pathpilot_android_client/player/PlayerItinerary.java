@@ -2,6 +2,7 @@ package fr.iut_rodez.pathpilot_android_client.player;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.icu.text.MessageFormat;
 import android.os.Bundle;
@@ -132,10 +133,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             // Show a loading popup.
             popup.showProgressDialog();
 
-            salesmanTrace = new Polyline();
-            salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
-            salesmanTrace.getOutlinePaint().setStrokeWidth(5);
-
             initialiseMap();
             popup.dismissProgressDialog();
 
@@ -252,6 +249,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      *
      */
     private void enableTracer() {
+
+        salesmanTrace = new Polyline();
+        salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
+        salesmanTrace.getOutlinePaint().setStrokeWidth(5);
+        mapView.getOverlays().add(salesmanTrace);
+        route.getSalesmanPositions().forEach(position -> salesmanTrace.addPoint(position));
+        Log.d(TAG, "enableTracer: " + route.getSalesmanPositions());
+
         currentPosition.startLocationUpdates(location -> {
             GeoPoint currentPoint = new GeoPoint(location);
 
