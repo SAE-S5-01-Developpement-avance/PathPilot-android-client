@@ -315,4 +315,22 @@ public class Parser {
      */
     private Parser() {
     }
+
+    public static List<GeoPoint> getGeoLineFromGeoJSONLine(JSONObject geoLine) {
+        ArrayList<GeoPoint> result = new ArrayList<>();
+        if (geoLine.has("coordinates")) {
+            try {
+                JSONArray coordinates = geoLine.getJSONArray("coordinates");
+                if (coordinates.length() > 0) {
+                    for (int i = 0; i < coordinates.length(); i++) {
+                        JSONObject point = coordinates.getJSONObject(i);
+                        result.add(getGeoPointFromGeoJSONPoint(point));
+                    }
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Error while parsing the JSON response", e);
+            }
+        }
+        return result;
+    }
 }

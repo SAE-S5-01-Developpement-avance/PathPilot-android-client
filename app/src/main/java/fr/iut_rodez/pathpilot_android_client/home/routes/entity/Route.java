@@ -3,7 +3,6 @@ package fr.iut_rodez.pathpilot_android_client.home.routes.entity;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,11 +61,6 @@ public class Route implements Parcelable {
     private int indexCurrentClient;
 
     /**
-     * The current position of the salesman
-     */
-    private GeoPoint currentSalesmanPosition;
-
-    /**
      * The display name of the route date
      */
     private String dateDisplayName;
@@ -79,6 +73,8 @@ public class Route implements Parcelable {
      */
     private RouteState state;
 
+    private List<GeoPoint> salesmanPositions;
+
     public Route(JSONObject routeJson) throws JSONException {
         // Parse the JSON object and create a route
         id = routeJson.getString("id");
@@ -87,9 +83,9 @@ public class Route implements Parcelable {
         clients = (ArrayList<RouteClient>) Parser.getClientRoutes(routeJson.getJSONArray("clients"));
 
         // When a route have just been create, then there is no salesman position to track
-        JSONObject salesmanCurrentPosition = routeJson.optJSONObject("salesman_current_position");
+        JSONObject salesmanCurrentPosition = routeJson.optJSONObject("salesmanPositions");
         if (salesmanCurrentPosition != null) {
-            currentSalesmanPosition = Parser.getGeoPointFromGeoJSONPoint(salesmanCurrentPosition);
+            salesmanPositions = Parser.getGeoLineFromGeoJSONLine(salesmanCurrentPosition);
         }
 
         state = RouteState.fromString(routeJson.getString("state"));
@@ -102,7 +98,7 @@ public class Route implements Parcelable {
         long timeInMillis = in.readLong();
         startDate = timeInMillis == Long.MIN_VALUE ? null : LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
         indexCurrentClient = in.readInt();
-        currentSalesmanPosition = in.readParcelable(GeoPoint.class.getClassLoader());
+        salesmanPositions = in.createTypedArrayList(GeoPoint.CREATOR);
         String state = in.readString();
         if (state != null) {
             this.state = RouteState.fromString(state);
@@ -134,7 +130,7 @@ public class Route implements Parcelable {
         dest.writeTypedList(clients);
         dest.writeLong(timeInMillis);
         dest.writeInt(indexCurrentClient);
-        dest.writeParcelable(currentSalesmanPosition, flags);
+        dest.writeTypedList(salesmanPositions);
         dest.writeString(state.getValue());
     }
 
@@ -157,6 +153,10 @@ public class Route implements Parcelable {
      */
     public String getDateDisplayName() {
         return dateDisplayName == null ? "None" : dateDisplayName;
+    }
+
+    public List<GeoPoint> getSalesmanPositions() {
+        return salesmanPositions;
     }
 
     /**
@@ -261,7 +261,11 @@ public class Route implements Parcelable {
     }
 
     public GeoPoint getCurrentSalesmanPosition() {
-        return currentSalesmanPosition;
+        GeoPoint geoPoint = null;
+        if (salesmanPositions != null) {
+            geoPoint = salesmanPositions.get(salesmanPositions.size() - 1);
+        }
+        return geoPoint;
     }
 
     public RouteClient getCurrentClient() {
@@ -336,7 +340,7 @@ public class Route implements Parcelable {
                 ", startDate=" + startDate +
                 ", indexCurrentClient=" + indexCurrentClient +
                 ", state=" + state +
-                ", currentSalesmanPosition=" + currentSalesmanPosition +
+                ", salesmanPositions=" + salesmanPositions +
                 ", dateDisplayName='" + dateDisplayName + '\'' +
                 '}';
     }

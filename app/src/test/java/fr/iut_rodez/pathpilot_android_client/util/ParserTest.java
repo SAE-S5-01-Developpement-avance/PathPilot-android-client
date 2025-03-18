@@ -301,6 +301,7 @@ public class ParserTest {
         LocalDateTime expectedStartDate = LocalDateTime.of(2025, 2, 11, 8, 47, 03, 298 * 1_000_000);
         assertEquals(expectedStartDate, route.getStartDate());
         assertEquals(3, route.getClients().size());
+        assertEquals(1, route.getSalesmanPositions().size());
         assertEquals(44.3567919190388, route.getCurrentSalesmanPosition().getLatitude());
         assertEquals(2.552994367575849, route.getCurrentSalesmanPosition().getLongitude());
         assertEquals(RouteState.NOT_STARTED, route.getState());
