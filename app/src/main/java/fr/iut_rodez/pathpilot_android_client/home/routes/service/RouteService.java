@@ -20,6 +20,7 @@ import org.osmdroid.util.GeoPoint;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
@@ -281,6 +282,17 @@ public class RouteService implements IRouteService {
                     handleError(homeActivity, error);
                 }
         );
+        requestQueue.add(request);
+    }
+
+    @Override
+    public void skipAClientFromARoute(Context context, JWTToken jwtToken, Client client, Route route,
+                                      Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
+        String apiURLSkip = ROUTES_API_ENDPOINT + "/" + route.getId() + "/clients/"
+                + client.getId() + "/skipped";
+        RequestQueue requestQueue = getRequestQueue(context);
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.PUT,
+                apiURLSkip, null, jwtToken.getToken(), onResponse, onErrorResponse);
         requestQueue.add(request);
     }
 

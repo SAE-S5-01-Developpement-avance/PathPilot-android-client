@@ -10,6 +10,7 @@ import org.osmdroid.util.GeoPoint;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -57,6 +58,8 @@ public interface IRouteService {
      */
     void createRoute(Context context, JWTToken jwtToken, Itinerary itinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
+
+    void skipAClientFromARoute(Context context, JWTToken jwtToken, Client client, Route route, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
     /**
      * Update salesman position

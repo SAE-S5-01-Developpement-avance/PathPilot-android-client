@@ -24,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
@@ -179,6 +178,23 @@ public class Route implements Parcelable {
         return salesmanPositions;
     }
 
+    public void setIndexCurrentClient(int indexCurrentClient) {
+        this.indexCurrentClient = indexCurrentClient;
+    }
+
+    /**
+     * Skip the client.
+     * @param routeClient the client that we want skipped.
+     */
+    public void skippedClient(RouteClient routeClient) {
+        clients.stream()
+                .filter(client -> client.equals(routeClient))
+                .findFirst()
+                .ifPresent(client -> {
+                    client.setState(ClientState.SKIPPED);
+                });
+    }
+
     /**
      * Adapter to display the routes in a ListView.
      */
@@ -310,9 +326,8 @@ public class Route implements Parcelable {
      */
     public RouteClient getNextClient() {
         RouteClient routeClient = null;
-        if (indexCurrentClient < clients.size()) {
+        if (indexCurrentClient < clients.size() && !state.equals(RouteState.STOPPED)) {
             routeClient = clients.get(indexCurrentClient);
-        } else {
         }
         return routeClient;
     }
@@ -322,8 +337,9 @@ public class Route implements Parcelable {
      *
      * @return The number of clients expected
      */
-    public int getNumberOfClientsExpected() {
-        return clients.size();
+    public int countClientsExpected() {
+        Log.d("Route", "countClientsExpected() returned: " + clients.stream().filter(client -> client.getState() == ClientState.EXPECTED).count());
+        return (int) clients.stream().filter(client -> client.getState() == ClientState.EXPECTED).count();
     }
 
     /**
@@ -331,7 +347,7 @@ public class Route implements Parcelable {
      *
      * @return The number of clients visited
      */
-    public int getNumberOfClientsVisited() {
+    public int countClientsVisited() {
         return (int) clients.stream().filter(client -> client.getState() == ClientState.VISITED).count();
     }
 
