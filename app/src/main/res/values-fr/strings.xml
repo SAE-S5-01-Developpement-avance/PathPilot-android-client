@@ -178,6 +178,7 @@ String for Login activity
     <!--
     Loading messages
     -->
+    <string name="item_menu_title_skip_client">Passer</string>
     <string name="loading">Chargement…</string>
     <string name="logging_in">Connexion…</string>
     <string name="creating_account">Création du compte…</string>

@@ -169,7 +169,8 @@
     <string name="long_click_to_stop_the_route">Long click to stop the route</string>
     <string name="route_stopped">Route terminée</string>
     <string name="route_stopped_description">La route est terminée, vous avez visité tous les clients</string>
-    
+    <string name="item_menu_title_skip_client">Skip</string>
+
     <!--
     Loading messages
     -->
