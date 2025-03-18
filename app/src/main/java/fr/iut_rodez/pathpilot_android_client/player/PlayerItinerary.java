@@ -14,7 +14,6 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -32,10 +31,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
@@ -80,6 +81,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private ImageButton clientVisitedBtn;
     private ImageButton detailClientBtn;
     private ImageButton listClientsBtn;
+    private RouteClient selectedClient;
 
     private JWTToken getJwtTokenFromIntent() {
         JWTToken jwtTokenFind = null;
@@ -386,13 +388,13 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             clientName.setText(client.getCompanyName());
             clientAddress.setText(client.getAddressDisplayName());
             clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client)));
-            counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getNumberOfClientsExpected()));
         } else {
             clientAddress.setText("-");
             clientName.setText("-");
             clientDistance.setText("");
             detailClientBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
         }
+        counterVisitedClients.setText(getString(R.string.counter_visited_clients, route.countClientsVisited(), route.countClientsExpected()));
     }
 
     /**
@@ -434,9 +436,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         popupMenu.setOnMenuItemClickListener(client -> {
             int clientId = client.getItemId();
-            String selectedItem = routeClientList.get(clientId).getClient().getCompanyName();
-            Log.d(TAG, "PopupMenu select client : " + selectedItem);
-            openContextMenu(view);
+            selectedClient = routeClientList.get(clientId);
+            if (selectedClient.getState() == ClientState.EXPECTED) {
+                Log.d(TAG, "PopupMenu select client : " + selectedClient.getClient().getCompanyName());
+                openContextMenu(view);
+            } else {
+                // TODO I18N
+                popup.showToastShort("You can't open the menu on a visited or skipped client.");
+            }
             return true;
         });
         popupMenu.show();
@@ -445,17 +452,57 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.skip_client) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            int position = info.position;
             routeService.skipAClientFromARoute(this, jwtToken,
-                    routeClientList.get(position).getClient(), route,
+                    selectedClient.getClient(), route,
                     response -> {
-                        mapMarker.removeAllMarkers();
-                        
+                        route.skippedClient(selectedClient);
+                        Log.d(TAG, "onContextItemSelected: " + route.getClients().stream().map(routeClient -> routeClient.getState().value).collect(Collectors.joining(", ")));
+                        updateRouteWithNextClient();
                     }, error -> {});
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    /**
+     * Find the next client not skipped. If there is no client left stop the route.
+     */
+    private void updateRouteWithNextClient() {
+        int foundNextClient = -1;
+        ArrayList<RouteClient> clients = route.getClients();
+        for (int i = 0; i < clients.size(); i++) {
+            RouteClient client = clients.get(i);
+            if (client.getState() == ClientState.EXPECTED) {
+                foundNextClient = i;
+            }
+        }
+        if (foundNextClient != -1) {
+            // client found
+            route.setIndexCurrentClient(foundNextClient);
+        } else {
+            currentPosition.stopLocationUpdates();
+            route.setState(RouteState.STOPPED);
+            routeService.stopRoute(
+                    this,
+                    route,
+                    jwtToken,
+                    responseStop -> {
+                        Log.d(TAG, "stopRoute: " + responseStop);
+                        popup.showAlertDialogOK(getString(R.string.route_stopped), getString(R.string.route_stopped_description), DialogButton.okDismiss(this));
+                        disableRouteActions();
+                    },
+                    error -> {
+                        Log.e(TAG, "stopRoute: ", error);
+                        handleError(this, error);
+                    }
+            );
+        }
+        RouteClient nextClient = route.getNextClient();
+        setNextClientInfo(nextClient);
+
+        mapMarker.removeAllMarkers();
+        setRouteMarkers();
+        mapView.invalidate();
     }
 
     private void clientVisited() {
@@ -470,28 +517,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     popup.dismissProgressDialog();
                     Log.d(TAG, "clientVisited: " + response);
                     route.clientHasBeenVisited();
-                    RouteClient nextClient = route.getNextClient();
-                    setNextClientInfo(nextClient);
-                    if (nextClient == null) {
-                        currentPosition.stopLocationUpdates();
-                        route.setState(RouteState.FINISHED);
-                        routeService.stopRoute(
-                                this,
-                                route,
-                                jwtToken,
-                                responseStop -> {
-                                    Log.d(TAG, "stopRoute: " + responseStop);
-                                    popup.showAlertDialogOK(getString(R.string.route_stopped), getString(R.string.route_stopped_description), DialogButton.okDismiss(this));
-                                },
-                                error -> {
-                                    Log.e(TAG, "stopRoute: ", error);
-                                    handleError(this, error);
-                                }
-                        );
-                        disableRouteActions();
-                    }
-                    mapMarker.removeAllMarkers();
-                    setRouteMarkers();
+
+                    updateRouteWithNextClient();
                     mapView.invalidate();
                 },
                 error -> {
