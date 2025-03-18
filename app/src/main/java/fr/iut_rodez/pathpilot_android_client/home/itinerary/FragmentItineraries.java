@@ -132,8 +132,6 @@ public class FragmentItineraries extends Fragment {
         if (optionSelected == R.id.delete_itinerary) {
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
             itineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
-        } else if (optionSelected == R.id.create_route) {
-            Log.d(TAG, "onContextItemSelected: Create route");
         } else {
             Log.e(TAG, "onContextItemSelected: Unknown option selected");
         }
