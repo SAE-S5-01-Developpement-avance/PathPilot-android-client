@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
@@ -73,6 +75,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private ImageButton stopBtn;
     private ImageButton clientVisitedBtn;
     private ImageButton detailClientBtn;
+    private ImageButton listClientsBtn;
 
     private JWTToken getJwtTokenFromIntent() {
         JWTToken jwtTokenFind = null;
@@ -111,7 +114,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             stopBtn = findViewById(R.id.stop_btn);
             pauseBtn = findViewById(R.id.pause_btn);
             clientVisitedBtn = findViewById(R.id.client_visited_btn);
-            ImageButton listClientsBtn = findViewById(R.id.clients_setting_btn);
+            listClientsBtn = findViewById(R.id.clients_setting_btn);
 
 
             // Set onClickListener
@@ -124,7 +127,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             stopBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.long_click_to_stop_the_route)));
             pauseBtn.setOnClickListener(v -> pauseResume());
             clientVisitedBtn.setOnClickListener(v -> clientVisited());
-            listClientsBtn.setOnClickListener(v -> listClients());
+            listClientsBtn.setOnClickListener(this::listClients);
 
             salesmanTrace = new Polyline();
             salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
@@ -396,9 +399,34 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         return distance;
     }
 
-    private void listClients() {
-        Log.d(TAG, "listClients: ");
+    private void listClients(View view) {
+        Log.d(TAG, "PopupMenu listClients");
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        List<RouteClient> routeClientList = route.getClients();
+        String state;
+        // TODO I18N
+        for (int i = 0; i < routeClientList.size(); i++) {
+            switch (routeClientList.get(i).getState()) {
+                case VISITED -> state = "visited";
+                case EXPECTED -> state = "not visited";
+                case SKIPPED -> state = "skipped";
+                default -> state = "";
+            }
+            popupMenu.getMenu().add(0, i, i, (i+1) + ". "
+                    + routeClientList.get(i).getClient().getCompanyName()
+                    + " " + state);
+        }
+
+        popupMenu.setOnMenuItemClickListener(client -> {
+            int clientId = client.getItemId();
+            String selectedItem = routeClientList.get(clientId).getClient().getCompanyName();
+            Log.d(TAG, "PopupMenu select client : " + selectedItem);
+            return true;
+        });
+
+        popupMenu.show();
     }
+
 
     private void clientVisited() {
         Log.d(TAG, "clientVisited: ");
