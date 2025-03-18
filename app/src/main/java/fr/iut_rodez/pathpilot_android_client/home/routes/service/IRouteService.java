@@ -108,6 +108,7 @@ public interface IRouteService {
      * @param onErrorResponse The error listener
      */
     void clientVisited(Context context, Route route, int clientId, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
+    
     /**
      * Delete the route.
      * @param homeActivity The activity of the application
