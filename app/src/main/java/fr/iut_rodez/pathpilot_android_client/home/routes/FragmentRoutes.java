@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,10 +22,12 @@ import androidx.fragment.app.Fragment;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.service.IRouteService;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
 
 /**
@@ -107,8 +113,29 @@ public class FragmentRoutes extends Fragment {
 
             homeActivity.getInfoRouteLauncher().launch(intent);
         });
+        registerForContextMenu(listRoutesView);
 
         return view;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(getActivity()).inflate(R.menu.route_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Route selectedRoute = (Route) listRoutesView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.delete_route) {
+            Log.d(TAG, "onContextItemSelected: Delete itinerary");
+            routeService.deleteRoute(homeActivity, homeActivity.getJWTToken(), selectedRoute, listRoutesView);
+        } else {
+            Log.e(TAG, "onContextItemSelected: Unknown option selected");
+        }
+        return (super.onContextItemSelected(item));
     }
 
     private void refreshRoutes() {

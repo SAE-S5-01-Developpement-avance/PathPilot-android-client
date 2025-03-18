@@ -200,7 +200,7 @@
     <string name="route_state_not_started">"Not started"</string>
     <string name="delete_route">Delete</string>
     <string name="refresh">Refresh</string>
-
+    <string name="message_deleting_route">Deleting route...</string>
     <string name="home">Home</string>
 
     <!--
