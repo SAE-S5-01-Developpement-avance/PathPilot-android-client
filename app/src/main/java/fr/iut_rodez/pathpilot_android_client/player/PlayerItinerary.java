@@ -423,7 +423,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                                 jwtToken,
                                 responseStop -> {
                                     Log.d(TAG, "stopRoute: " + responseStop);
-                                    popup.showAlertDialogOK("Route terminée", "La route est terminée, vous avez visité tous les clients", DialogButton.okDismiss(this));
+                                    popup.showAlertDialogOK(getString(R.string.route_stopped), getString(R.string.route_stopped_description), DialogButton.okDismiss(this));
                                 },
                                 error -> {
                                     Log.e(TAG, "stopRoute: ", error);

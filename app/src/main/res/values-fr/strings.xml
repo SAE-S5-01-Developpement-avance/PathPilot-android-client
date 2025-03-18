@@ -148,8 +148,11 @@ String for Login activity
     Clients
     -->
     <string name="client_contact">Contact</string>
-    <string name="delete_client">Supprimer le client</string>*
+    <string name="delete_client">Supprimer le client</string>
     <string name="header_clients_list">Clients</string>
+    <string name="warning_delete_client">En supprimant ce client, vous supprimerez également les itinéraires et les routes associés. Êtes-vous sûr de vouloir continuer ?</string>
+    <string name="yes_delete_client">Oui, supprimer le client</string>
+    <string name="dont_delete">Ne pas supprimer</string>
 
     <!--
     Itinerary Player
@@ -169,6 +172,8 @@ String for Login activity
     <string name="client_near_you_description">%s au %s est à %.2f m de vous</string>
     <string name="route_is_stopped_action_unavailable">La route est terminée, action impossible</string>
     <string name="long_click_to_stop_the_route">Appuie long pour arreter la route</string>
+    <string name="route_stopped">Route terminée</string>
+    <string name="route_stopped_description">La route est terminée, vous avez visité tous les clients</string>
 
     <!--
     Loading messages
@@ -227,4 +232,6 @@ String for Login activity
     <string name="stop_route_popup_text">Êtes-vous sûre de vouloir arrêter le parcours?</string>
     <string name="stop_route_confirm_dialog_btn">Confirmer</string>
     <string name="stop_route_cancel_dialog_btn">Annuler</string>
+
+
 </resources>

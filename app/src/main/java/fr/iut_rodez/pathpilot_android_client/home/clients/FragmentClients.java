@@ -27,6 +27,8 @@ import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientPage;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
+import fr.iut_rodez.pathpilot_android_client.util.popup.DialogButton;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Display all the clients
@@ -47,6 +49,7 @@ public class FragmentClients extends Fragment {
     private boolean isLoading = false;
     private Home homeActivity;
     private final IClientService clientService = ServiceFactory.getClientService();
+    private Popup popup;
 
 
 
@@ -66,6 +69,7 @@ public class FragmentClients extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         homeActivity = (Home) getActivity();
+        popup = new Popup(homeActivity);
 
         //Set header text to itineraries
         ((TextView) view.findViewById(R.id.header_text)).setText(R.string.header_clients_list);
@@ -114,7 +118,16 @@ public class FragmentClients extends Fragment {
 
         if (optionSelected == R.id.delete_client) {
             Log.d(TAG, "onContextItemSelected: Delete client");
-            clientService.deleteClient(homeActivity, clientSelected, listClientsView);
+            popup.showAlertDialog(
+                    getString(R.string.warning),
+                    getString(R.string.warning_delete_client),
+                    new DialogButton(getString(R.string.yes_delete_client), (dialog, which) -> {
+                        clientService.deleteClient(homeActivity, clientSelected, listClientsView);
+                        dialog.dismiss();
+                    }),
+                    null,
+                    new DialogButton(getString(R.string.dont_delete), (dialog, which) -> dialog.dismiss())
+            );
         } else {
             Log.e(TAG, "onContextItemSelected: Unknown option selected");
         }

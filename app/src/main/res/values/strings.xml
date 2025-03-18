@@ -86,6 +86,9 @@
     -->
     <string name="client_contact">Contact</string>
     <string name="delete_client">Delete the client</string>
+    <string name="warning_delete_client">By deleting this client, you will also delete the itineraries and associated routes. Are you sure you want to continue?</string>
+    <string name="yes_delete_client">Yes, deleted the client</string>
+    <string name="dont_delete">Do not delete</string>
 
     <!--
     Error messages
@@ -164,6 +167,8 @@
     <string name="client_near_you_description">%s at %s is at %.2f m from you</string>
     <string name="route_is_stopped_action_unavailable">The route is stopped, action unavailable</string>
     <string name="long_click_to_stop_the_route">Long click to stop the route</string>
+    <string name="route_stopped">Route terminée</string>
+    <string name="route_stopped_description">La route est terminée, vous avez visité tous les clients</string>
     
     <!--
     Loading messages
