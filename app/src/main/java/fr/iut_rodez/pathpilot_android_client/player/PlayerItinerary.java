@@ -414,8 +414,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         return distance;
     }
 
-
-
+    /**
+     * Show the menu of the clients list of the route.
+     * @param view current view of the menu.
+     */
     private void listClients(View view) {
         Log.d(TAG, "PopupMenu listClients");
         PopupMenu popupMenu = new PopupMenu(this, view);
@@ -503,6 +505,9 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         mapView.invalidate();
     }
 
+    /**
+     * Change the state of the client to visited.
+     */
     private void clientVisited() {
         Log.d(TAG, "clientVisited: ");
         popup.showProgressDialog();
