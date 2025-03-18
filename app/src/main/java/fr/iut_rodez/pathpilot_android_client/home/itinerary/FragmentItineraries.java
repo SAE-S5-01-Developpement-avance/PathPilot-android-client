@@ -100,6 +100,10 @@ public class FragmentItineraries extends Fragment {
                 }
             }
         });
+        view.findViewById(R.id.refresh_itineraries_btn).setOnClickListener(v -> {
+            ((Itinerary.ItineraryArrayAdapter) listItinerariesView.getAdapter()).clear();
+            loadItineraries();
+        });
 
         // Get all itineraries from the API
         loadItineraries();

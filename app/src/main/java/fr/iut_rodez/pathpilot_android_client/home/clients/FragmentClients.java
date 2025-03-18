@@ -47,7 +47,6 @@ public class FragmentClients extends Fragment {
     public static final String TOKEN_KEY = "token";
 
     private ListView listClientsView;
-    private Button refreshButton;
     private boolean isLoading = false;
     private Home homeActivity;
     private final IClientService clientService = ServiceFactory.getClientService();
