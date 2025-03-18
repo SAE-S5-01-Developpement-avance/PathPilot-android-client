@@ -23,6 +23,7 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
+import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -266,15 +267,21 @@ public class ParserTest {
                          }
                      ],
                      "startDate": "2025-02-11T08:47:03.298+00:00",
-                     "salesman_current_position": {
-                         "x": 0.0,
-                         "y": 0.0,
-                         "type": "Point",
-                         "coordinates": [
-                             0.0,
-                             0.0
-                         ]
+                     "salesmanPositions": {
+                           "type": "LineString",
+                           "coordinates": [
+                               {
+                                   "x": 2.552994367575849,
+                                   "y": 44.3567919190388,
+                                   "type": "Point",
+                                   "coordinates": [
+                                       2.552994367575849,
+                                       44.3567919190388
+                                   ]
+                               }
+                          ]
                      },
+                     "state": "NOT_STARTED",
                      "_links": {
                          "self": {
                              "href": "http://localhost:8080/routes/67ab0e87ec091a7d076a63f0"
@@ -294,8 +301,9 @@ public class ParserTest {
         LocalDateTime expectedStartDate = LocalDateTime.of(2025, 2, 11, 8, 47, 03, 298 * 1_000_000);
         assertEquals(expectedStartDate, route.getStartDate());
         assertEquals(3, route.getClients().size());
-        assertEquals(0.0, route.getCurrentSalesmanPosition().getLatitude());
-        assertEquals(0.0, route.getCurrentSalesmanPosition().getLongitude());
+        assertEquals(44.3567919190388, route.getCurrentSalesmanPosition().getLatitude());
+        assertEquals(2.552994367575849, route.getCurrentSalesmanPosition().getLongitude());
+        assertEquals(RouteState.NOT_STARTED, route.getState());
 
         RouteClient firstClient = route.getClients().get(0);
         assertEquals(1, firstClient.getClient().getId());
