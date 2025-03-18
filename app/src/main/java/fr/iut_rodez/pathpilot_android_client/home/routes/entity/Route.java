@@ -73,6 +73,11 @@ public class Route implements Parcelable {
      */
     private RouteState state;
 
+    /**
+     * The positions of the salesman.
+     * <p>
+     *     The last position is at the end of the list.
+     */
     private List<GeoPoint> salesmanPositions;
 
     public Route(JSONObject routeJson) throws JSONException {
@@ -155,6 +160,9 @@ public class Route implements Parcelable {
         return dateDisplayName == null ? "None" : dateDisplayName;
     }
 
+    /**
+     * @return the positions of the salesman
+     */
     public List<GeoPoint> getSalesmanPositions() {
         return salesmanPositions;
     }

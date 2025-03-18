@@ -316,6 +316,40 @@ public class Parser {
     private Parser() {
     }
 
+    /**
+     * Parse a GeoJSON LineString object and return a list of GeoPoints.
+     * Here an example of the JSON object representing a GeaJSON LineString:
+     * <pre>
+     * {@code
+     * {
+     *       "type": "LineString",
+     *       "coordinates": [
+     *           {
+     *               "x": 2.552994367575849,
+     *               "y": 44.3567919190388,
+     *               "type": "Point",
+     *               "coordinates": [
+     *                   2.552994367575849,
+     *                   44.3567919190388
+     *               ]
+     *           },
+     *           {
+     *               "x": 2.552994367575849,
+     *               "y": 44.3567919190388,
+     *               "type": "Point",
+     *               "coordinates": [
+     *                   2.552994367575849,
+     *                   44.3567919190388
+     *               ]
+     *           }
+     *      ]
+     * }
+     * }
+     * </pre>
+     * If an error occurs, an empty list is returned and a log message is printed.
+     * @param geoLine the JSON object to parse
+     * @return the list of GeoPoints parsed from the JSON object
+     */
     public static List<GeoPoint> getGeoLineFromGeoJSONLine(JSONObject geoLine) {
         ArrayList<GeoPoint> result = new ArrayList<>();
         if (geoLine.has("coordinates")) {
