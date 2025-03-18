@@ -18,6 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
@@ -223,6 +224,44 @@ public class RouteService implements IRouteService {
                 jwtToken.getToken(),
                 onResponse,
                 onErrorResponse
+        );
+        requestQueue.add(request);
+    }
+
+    /**
+     * Delete the route.
+     *
+     * @param homeActivity   the activity of the application
+     * @param selectedRoute          the route at delete
+     * @param listRoutesView list of the routes in the view
+     */
+    @Override
+    public void deleteRoute(Home homeActivity, JWTToken jwtToken, Route selectedRoute, ListView listRoutesView) {
+        String apiURLDelete = ROUTES_API_ENDPOINT + "/" + selectedRoute.getId();
+
+        RequestQueue requestQueue = getRequestQueue(homeActivity);
+        Popup popup = new Popup(homeActivity);
+        popup.showProgressDialog(homeActivity.getString(R.string.message_deleting_route));
+
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE,
+                apiURLDelete, null, jwtToken.getToken(),
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "onResponse: " + response);
+                    listRoutesView.post(() -> {
+                        Route.RouteArrayAdapter routeArrayAdapter
+                                = (Route.RouteArrayAdapter) listRoutesView.getAdapter();
+                        routeArrayAdapter.remove(selectedRoute);
+                        routeArrayAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "deleteRoute: Route " + selectedRoute.getId()
+                                + " removed");
+                    });
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(homeActivity, error);
+                }
         );
         requestQueue.add(request);
     }

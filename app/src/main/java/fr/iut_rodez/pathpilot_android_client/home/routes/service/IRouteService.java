@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
@@ -96,4 +97,11 @@ public interface IRouteService {
      */
     void resumeRoute(Context context, Route route, GeoPoint currentPosition, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
+    /**
+     * Delete the route.
+     * @param homeActivity The activity of the application
+     * @param route the route at delete
+     * @param listRoutesView list of the routes in the view
+     */
+    void deleteRoute(Home homeActivity, JWTToken jwtToken, Route route, ListView listRoutesView);
 }
