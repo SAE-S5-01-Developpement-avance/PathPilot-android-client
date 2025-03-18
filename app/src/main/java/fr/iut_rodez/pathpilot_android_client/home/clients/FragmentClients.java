@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ public class FragmentClients extends Fragment {
     public static final String TOKEN_KEY = "token";
 
     private ListView listClientsView;
+    private Button refreshButton;
     private boolean isLoading = false;
     private Home homeActivity;
     private final IClientService clientService = ServiceFactory.getClientService();
@@ -94,6 +96,11 @@ public class FragmentClients extends Fragment {
                     }
                 }
             }
+        });
+        view.findViewById(R.id.refresh_clients_btn).setOnClickListener(v -> {
+            Log.d(TAG, "onCreateView: Refresh clients");
+            ((ClientArrayAdapter) listClientsView.getAdapter()).clear();
+            loadClients();
         });
 
         // Get the clients from the API
