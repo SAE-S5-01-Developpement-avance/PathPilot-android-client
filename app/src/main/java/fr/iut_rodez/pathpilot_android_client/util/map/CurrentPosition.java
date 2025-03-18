@@ -21,7 +21,7 @@ public class CurrentPosition {
 
     public static final int REQUEST_POSITION_CODE = 1;
     private static final String TAG = CurrentPosition.class.getSimpleName();
-    public static final int LOCATION_UPDATE_MIN_TIME_MS = 1000;
+    public static final int LOCATION_UPDATE_MIN_TIME_MS = 2000;
     public static final int LOCATION_UPDATE_MIN_DISTANCE_METERS = 5;
     
     private final ActivityWithCurrentPosition activity;
