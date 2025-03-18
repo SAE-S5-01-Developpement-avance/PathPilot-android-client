@@ -182,6 +182,10 @@ public class Route implements Parcelable {
         this.indexCurrentClient = indexCurrentClient;
     }
 
+    /**
+     * Skip the client.
+     * @param routeClient the client that we want skipped.
+     */
     public void skippedClient(RouteClient routeClient) {
         clients.stream()
                 .filter(client -> client.equals(routeClient))
