@@ -32,6 +32,7 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
@@ -74,13 +75,16 @@ public class AddItinerary extends AppCompatActivity {
         ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
 
         listClientsToAdd.addAll(clients);
+        listClientsAdded.forEach(client -> client.setAddressDisplayName(this));
 
+        AddItinerary activity = this;
         clientsToAddAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, listClientsToAdd) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = view.findViewById(R.id.spinner_item_text);
-                textView.setText(getItem(position).getCompanyName());
+                Client client = getItem(position);
+                textView.setText(client.getCompanyName() + " (" + LocationNameProvider.getAddresses(activity, client.getGeoPoint()).get(0).getLocality() + ')');
                 return view;
             }
 
