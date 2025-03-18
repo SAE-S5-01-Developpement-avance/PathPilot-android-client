@@ -421,12 +421,11 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         PopupMenu popupMenu = new PopupMenu(this, view);
         routeClientList = route.getClients();
         String state;
-        // TODO I18N
         for (int i = 0; i < routeClientList.size(); i++) {
             switch (routeClientList.get(i).getState()) {
-                case VISITED -> state = "visited";
-                case EXPECTED -> state = "not visited";
-                case SKIPPED -> state = "skipped";
+                case VISITED -> state = getString(R.string.client_state_visited);
+                case EXPECTED -> state = getString(R.string.client_state_not_visited);
+                case SKIPPED -> state = getString(R.string.client_state_skipped);
                 default -> state = "";
             }
             popupMenu.getMenu().add(0, i, i, (i+1) + ". "
@@ -441,7 +440,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 Log.d(TAG, "PopupMenu select client : " + selectedClient.getClient().getCompanyName());
                 openContextMenu(view);
             } else {
-                // TODO I18N
                 popup.showToastShort("You can't open the menu on a visited or skipped client.");
             }
             return true;
