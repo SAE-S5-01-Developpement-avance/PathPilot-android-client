@@ -3,6 +3,7 @@ package fr.iut_rodez.pathpilot_android_client.home.routes.entity;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
@@ -94,6 +96,16 @@ public class Route implements Parcelable {
         }
 
         state = RouteState.fromString(routeJson.getString("state"));
+
+        // find the index of the current client
+        indexCurrentClient = 0;
+        boolean found = false;
+        for (int i = 0; i < clients.size() && found; i++) {
+            if (clients.get(i).getState() != ClientState.VISITED) {
+                indexCurrentClient = i;
+                found = true;
+            }
+        }
     }
 
     protected Route(Parcel in) {
@@ -297,7 +309,12 @@ public class Route implements Parcelable {
      * @return The next client to visit
      */
     public RouteClient getNextClient() {
-        return clients.get(indexCurrentClient);
+        RouteClient routeClient = null;
+        if (indexCurrentClient < clients.size()) {
+            routeClient = clients.get(indexCurrentClient);
+        } else {
+        }
+        return routeClient;
     }
 
     /**

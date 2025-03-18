@@ -1,8 +1,9 @@
 package fr.iut_rodez.pathpilot_android_client.player;
 
+import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.icu.text.MessageFormat;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.json.JSONException;
@@ -29,10 +29,8 @@ import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
-import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.InfoItinerary;
-import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
@@ -74,6 +72,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private Vibrator vibrator;
     private ImageButton stopBtn;
     private ImageButton clientVisitedBtn;
+    private ImageButton detailClientBtn;
 
     private JWTToken getJwtTokenFromIntent() {
         JWTToken jwtTokenFind = null;
@@ -85,8 +84,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         return jwtTokenFind;
     }
-    private int indexOfActivityWhereOpen;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +103,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             mapMarker = new MapMarker(this);
             vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-            ImageButton detailClientBtn = findViewById(R.id.detail_client_btn);
+            detailClientBtn = findViewById(R.id.detail_client_btn);
             clientName = findViewById(R.id.client_name);
             clientAddress = findViewById(R.id.client_address);
             clientDistance = findViewById(R.id.client_distance);
@@ -129,6 +126,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             clientVisitedBtn.setOnClickListener(v -> clientVisited());
             listClientsBtn.setOnClickListener(v -> listClients());
 
+            salesmanTrace = new Polyline();
+            salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
+            salesmanTrace.getOutlinePaint().setStrokeWidth(5);
+            mapView.getOverlays().add(salesmanTrace);
 
             // Show a loading popup.
             popup.showProgressDialog();
@@ -138,11 +139,15 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
             // update buttons with the route state
             if (route.getState() == RouteState.STOPPED || route.getState() == RouteState.FINISHED) {
-                stopBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_available)));
-                pauseBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_available)));
-                clientVisitedBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_available)));
+                disableRouteActions();
             }
         }
+    }
+
+    private void disableRouteActions() {
+        stopBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
+        pauseBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
+        clientVisitedBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
     }
 
     /**
@@ -189,10 +194,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         requestPermissionAndCenter();
 
-        ArrayList<Client> clients = new ArrayList<>();
-        route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));
-        setExpectedClientMarker(clients, route.getNextClient().getClient());
-        mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
+        setRouteMarkers();
         mapView.invalidate(); // Refresh the map
     }
 
@@ -249,11 +251,6 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      *
      */
     private void enableTracer() {
-
-        salesmanTrace = new Polyline();
-        salesmanTrace.getOutlinePaint().setColor(getColor(R.color.blue_0));
-        salesmanTrace.getOutlinePaint().setStrokeWidth(5);
-        mapView.getOverlays().add(salesmanTrace);
         route.getSalesmanPositions().forEach(position -> salesmanTrace.addPoint(position));
         Log.d(TAG, "enableTracer: " + route.getSalesmanPositions());
 
@@ -324,16 +321,29 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         }
     }
 
-    /**
-     * Add a marker for each client in the list of expected clients
-     *
-     * @param expectedClients The list of expected clients
-     */
-    private void setExpectedClientMarker(ArrayList<Client> expectedClients, @NonNull Client nextClient) {
-        for (int i = 0; i < expectedClients.size(); i++) {
-            Client client = expectedClients.get(i);
-            String title = MessageFormat.format("({0}) - {1}", i + 1, client.getCompanyName());
-            mapMarker.addMarker(title, client.getAddressDisplayName(), client.getGeoPoint(), nextClient.equals(client) ? MapMarker.MarkerType.NEXT_CLIENT : MapMarker.MarkerType.EXPECTED_CLIENT);
+    private void setClientMarkers(List<RouteClient> clients, RouteClient nextClient) {
+        for (int i = 0, clientsSize = clients.size(); i < clientsSize; i++) {
+            RouteClient client = clients.get(i);
+            MapMarker.MarkerType markerType;
+            switch (client.getState()) {
+                case VISITED -> markerType = MapMarker.MarkerType.CLIENT_VISITED;
+                case EXPECTED -> markerType = MapMarker.MarkerType.EXPECTED_CLIENT;
+                case SKIPPED -> markerType = MapMarker.MarkerType.CLIENT_IGNORED;
+                default ->
+                        throw new IllegalStateException("Unexpected value: " + client.getState());
+            }
+            if (client.equals(nextClient)) {
+                Log.d(TAG, "NextClient" + client);
+                markerType = MapMarker.MarkerType.NEXT_CLIENT;
+            } else {
+                Log.d(TAG, "Not next client" + client);
+            }
+            mapMarker.addMarker(
+                    MessageFormat.format("({0}) - {1}", i + 1, client.getClient().getCompanyName()),
+                    client.getClient().getAddressDisplayName(),
+                    client.getClient().getGeoPoint(),
+                    markerType
+            );
         }
     }
 
@@ -352,14 +362,21 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * @param routeClient The next client
      */
     private void setNextClientInfo(RouteClient routeClient) {
-        Log.d(TAG, routeClient.toString());
-        Client client = routeClient.getClient();
+        if (routeClient != null) {
+            Log.d(TAG, routeClient.toString());
+            Client client = routeClient.getClient();
 
-        client.setAddressDisplayName(this);
-        clientName.setText(client.getCompanyName());
-        clientAddress.setText(client.getAddressDisplayName());
-        clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client)));
-        counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getNumberOfClientsExpected()));
+            client.setAddressDisplayName(this);
+            clientName.setText(client.getCompanyName());
+            clientAddress.setText(client.getAddressDisplayName());
+            clientDistance.setText(getString(R.string.distance_in_km, distanceToClient(client)));
+            counterVisitedClients.setText(getString(R.string.counter_visited_clients, 0, route.getNumberOfClientsExpected()));
+        } else {
+            clientAddress.setText("-");
+            clientName.setText("-");
+            clientDistance.setText("");
+            detailClientBtn.setOnClickListener(v -> popup.showToastLong(getString(R.string.route_is_stopped_action_unavailable)));
+        }
     }
 
     /**
@@ -385,6 +402,51 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
     private void clientVisited() {
         Log.d(TAG, "clientVisited: ");
+        popup.showProgressDialog();
+        routeService.clientVisited(
+                this,
+                route,
+                route.getNextClient().getClient().getId(),
+                jwtToken,
+                response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "clientVisited: " + response);
+                    route.clientHasBeenVisited();
+                    RouteClient nextClient = route.getNextClient();
+                    setNextClientInfo(nextClient);
+                    if (nextClient == null) {
+                        currentPosition.stopLocationUpdates();
+                        route.setState(RouteState.FINISHED);
+                        routeService.stopRoute(
+                                this,
+                                route,
+                                jwtToken,
+                                responseStop -> {
+                                    Log.d(TAG, "stopRoute: " + responseStop);
+                                    popup.showAlertDialogOK("Route terminée", "La route est terminée, vous avez visité tous les clients", DialogButton.okDismiss(this));
+                                },
+                                error -> {
+                                    Log.e(TAG, "stopRoute: ", error);
+                                    handleError(this, error);
+                                }
+                        );
+                        disableRouteActions();
+                    }
+                    mapMarker.removeAllMarkers();
+                    setRouteMarkers();
+                    mapView.invalidate();
+                },
+                error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "clientVisited: ", error);
+                    VolleyErrorHandler.handleError(this, error);
+                }
+        );
+    }
+
+    private void setRouteMarkers() {
+        setClientMarkers(route.getClients(), route.getNextClient());
+        mapMarker.addMarker(getString(R.string.home), LocationNameProvider.getAddressName(this, route.getSalesmanHome()), route.getSalesmanHome(), MapMarker.MarkerType.SALESMAN_HOME);
     }
 
     private void pauseResume() {
@@ -455,18 +517,19 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     currentPosition.stopLocationUpdates();
                     Log.d(TAG, "State : " + RouteState.STOPPED);
                     route.setState(RouteState.STOPPED);
-                    routeService.stopRoute(this, route, jwtToken);
-                    Intent intent = new Intent();
-                    // Return to the right activity
-                    if (indexOfActivityWhereOpen == Home.INDEX_FRAGMENT_ROUTE) {
-                        intent.setClass(this, InfoRoute.class);
-                        setResult(RESULT_OK, intent);
-                    } else {
-                        intent.setClass(this, InfoItinerary.class);
-                        setResult(RESULT_OK, intent);
-                    }
-                    intent.putExtra(ROUTE_STOPPED_KEY, true);
-                    finish();
+
+                    popup.showProgressDialog();
+                    routeService.stopRoute(this, route, jwtToken,
+                            response -> {
+                                popup.dismissProgressDialog();
+                                Log.d(TAG, "onResponse: " + response);
+                                finish();
+                            },
+                            error -> {
+                                popup.dismissProgressDialog();
+                                Log.e(TAG, "onErrorResponse: ", error);
+                                handleError(this, error);
+                            });
                 }),
                 null,
                 DialogButton.okDismiss(this));

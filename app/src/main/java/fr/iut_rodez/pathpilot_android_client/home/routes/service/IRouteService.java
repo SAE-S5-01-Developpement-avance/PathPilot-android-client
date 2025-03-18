@@ -69,7 +69,7 @@ public interface IRouteService {
      * @param context                  The context of the application
      * @param route                    the route we have to stop
      */
-    void stopRoute(Context context, Route route, JWTToken jwtToken);
+    void stopRoute(Context context, Route route, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
     /**
      * Start the route.
@@ -97,6 +97,17 @@ public interface IRouteService {
      */
     void resumeRoute(Context context, Route route, GeoPoint currentPosition, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
+    /**
+     * Set a client to visited
+     *
+     * @param context         The context of the application
+     * @param route           The route
+     * @param clientId        The client id
+     * @param jwtToken        The JWT token
+     * @param onResponse      The response listener
+     * @param onErrorResponse The error listener
+     */
+    void clientVisited(Context context, Route route, int clientId, JWTToken jwtToken, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
     /**
      * Delete the route.
      * @param homeActivity The activity of the application
