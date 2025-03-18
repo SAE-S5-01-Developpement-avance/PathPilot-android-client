@@ -14,6 +14,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -90,6 +91,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
         return jwtTokenFind;
     }
+    private List<RouteClient> routeClientList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -414,7 +417,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     private void listClients(View view) {
         Log.d(TAG, "PopupMenu listClients");
         PopupMenu popupMenu = new PopupMenu(this, view);
-        List<RouteClient> routeClientList = route.getClients();
+        routeClientList = route.getClients();
         String state;
         // TODO I18N
         for (int i = 0; i < routeClientList.size(); i++) {
@@ -442,6 +445,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.skip_client) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            int position = info.position;
+            routeService.skipAClientFromARoute(this, jwtToken,
+                    routeClientList.get(position).getClient(), route,
+                    response -> {
+                        mapMarker.removeAllMarkers();
+                        
+                    }, error -> {});
             return true;
         }
         return super.onContextItemSelected(item);
