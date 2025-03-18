@@ -230,4 +230,10 @@
     <string name="stop_route_cancel_dialog_btn">Cancel</string>
 
     <string name="create_route_on_itinerary_menu">Create route</string>
+    
+    <!--
+    Modify client
+    -->
+    <string name="modify_client_title">Edit client</string>
+    <string name="edit_client_btn">Edit client</string>
 </resources>

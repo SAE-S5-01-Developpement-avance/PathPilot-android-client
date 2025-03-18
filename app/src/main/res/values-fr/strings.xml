@@ -226,4 +226,6 @@ String for Login activity
     <string name="stop_route_popup_text">Êtes-vous sûre de vouloir arrêter le parcours?</string>
     <string name="stop_route_confirm_dialog_btn">Confirmer</string>
     <string name="stop_route_cancel_dialog_btn">Annuler</string>
+    <string name="modify_client_title">Modifier le client</string>
+    <string name="edit_client_btn">Sauvegarder les chengements</string>
 </resources>
