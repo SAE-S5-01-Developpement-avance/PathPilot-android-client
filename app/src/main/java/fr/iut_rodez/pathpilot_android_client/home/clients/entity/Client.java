@@ -3,6 +3,7 @@ package fr.iut_rodez.pathpilot_android_client.home.clients.entity;
 import static fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client.ClientConstant.COMPANY_NAME_JSON_KEY;
 
 import android.content.Context;
+import android.location.Address;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -35,6 +36,7 @@ public class Client implements Parcelable {
     private String contactFirstName;
     private String phoneNumber;
     private String salesman;
+    private Address address;
 
     public Client(int id, String companyName, double latHomeAddress, double longHomeAddress, ClientCategory clientCategory, String description, String contactLastName, String contactFirstName, String phoneNumber, String salesman) {
         this.id = id;
@@ -197,6 +199,10 @@ public class Client implements Parcelable {
         return addressDisplayName != null ? addressDisplayName : "";
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
     /**
      * Set the address name of the client.
      *
@@ -204,6 +210,10 @@ public class Client implements Parcelable {
      */
     public void setAddressDisplayName(Context context) {
         this.addressDisplayName = LocationNameProvider.getAddressName(context, getGeoPoint());
+        List<Address> addresses = LocationNameProvider.getAddresses(context, getGeoPoint());
+        if (!addresses.isEmpty()) {
+            this.address = addresses.get(0);
+        }
     }
 
     @Override
@@ -325,7 +335,12 @@ public class Client implements Parcelable {
     }
 
     public String layoutClientItemList() {
-        return getCompanyName() + " - " + getAddressDisplayName();
+        Address address = getAddress();
+        String locality = "";
+        if (address != null) {
+            locality = " - " + address.getLocality();
+        }
+        return getCompanyName() + locality;
     }
 
     @Override

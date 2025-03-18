@@ -1,6 +1,7 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -74,8 +75,8 @@ public class AddItinerary extends AppCompatActivity {
 
         ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
 
+        clients.forEach(client -> client.setAddressDisplayName(this));
         listClientsToAdd.addAll(clients);
-        listClientsAdded.forEach(client -> client.setAddressDisplayName(this));
 
         AddItinerary activity = this;
         clientsToAddAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, listClientsToAdd) {
@@ -84,7 +85,7 @@ public class AddItinerary extends AppCompatActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = view.findViewById(R.id.spinner_item_text);
                 Client client = getItem(position);
-                textView.setText(client.getCompanyName() + " (" + LocationNameProvider.getAddresses(activity, client.getGeoPoint()).get(0).getLocality() + ')');
+                textView.setText(client.getCompanyName());
                 return view;
             }
 
@@ -99,7 +100,6 @@ public class AddItinerary extends AppCompatActivity {
                 } else {
                     textView.setText(client.getCompanyName());
                 }
-                textView.setText(spinnerItemText);
                 return view;
             }
         };

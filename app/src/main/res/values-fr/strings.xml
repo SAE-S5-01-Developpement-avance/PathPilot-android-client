@@ -84,8 +84,6 @@ String for Login activity
     <!--
     Error messages
     -->
-    <string name="yes_delete_client">Oui, supprimer le client</string>
-    <string name="dont_delete">Vous ne le supprimez pas</string>
     <string name="error">Erreur</string>
     <string name="warning">Attention</string>
     <string name="ok">OK</string>
@@ -133,7 +131,6 @@ String for Login activity
     -->
     <string name="address_unknown">Adresse inconnue</string>
     <string name="validate">Valider</string>
-    <string name="address_not_found">A</string>
     <string name="create_route_on_itinerary_menu">Créer un parcours</string>
     <string name="validate_selected_position">Valider la position sélectionnée</string>
     <string name="adress_not_found">L\'adresse saisie n\'a pas été trouvée</string>
@@ -173,7 +170,6 @@ String for Login activity
     <string name="client_near_you">%s est près de vous</string>
     <string name="client_near_you_description">%s au %s est à %.2f m de vous</string>
     <string name="route_is_stopped_action_unavailable">La route est terminée, action impossible</string>
-    <string name="route_is_stopped_action_unavailable">La route est arrêtée, action impossible</string>
     <string name="long_click_to_stop_the_route">Appuie long pour arreter la route</string>
     <string name="route_stopped">Route terminée</string>
     <string name="route_stopped_description">La route est terminée, vous avez visité tous les clients</string>
@@ -238,9 +234,6 @@ String for Login activity
     <string name="stop_route_popup_text">Êtes-vous sûre de vouloir arrêter le parcours?</string>
     <string name="stop_route_confirm_dialog_btn">Confirmer</string>
     <string name="stop_route_cancel_dialog_btn">Annuler</string>
-    <string name="warning_delete_client">En supprimant ce client, vous supprimez également les itinéraires et les routes associées. Êtes-vous sûr de vouloir continuer ?</string>
-    <string name="route_stopped">Route terminée</string>
-    <string name="route_stopped_description">La route est terminée, vous avez visité tous les clients</string>
     <string name="client_state_visited">Visité</string>
     <string name="client_state_not_visited">Non visité</string>
 

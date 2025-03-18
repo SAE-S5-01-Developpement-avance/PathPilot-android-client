@@ -143,6 +143,7 @@
     <string name="adress_not_found">The given address has not been found</string>
     <string name="search">Search</string>
     <string name="address_unknown">Unknown address</string>
+    <string name="validate_selected_position">Validate the selected position</string>
 
 
     <!--
