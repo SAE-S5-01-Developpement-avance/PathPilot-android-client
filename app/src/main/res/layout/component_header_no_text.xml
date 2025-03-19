@@ -27,18 +27,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/header_text"
         app:layout_constraintStart_toEndOf="@id/logo"
-        app:layout_constraintEnd_toStartOf="@id/button_leave"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-    <ImageButton
-        android:id="@+id/button_leave"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/icon_leave"
-        android:layout_marginEnd="@dimen/small_gap"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
