@@ -318,7 +318,9 @@ public class Client implements Parcelable {
     public static String getClientsDisplay(List<Client> clients) {
         StringBuilder clientNames = new StringBuilder();
         for (int i = 0; i < clients.size(); i++) {
-            clientNames.append(MessageFormat.format("{0}. {1}", i + 1, clients.get(i).toShortString()));
+            Client client = clients.get(i);
+            String cityName = client.getAddress() != null ? client.getAddress().getLocality() : "";
+            clientNames.append(MessageFormat.format("{0}. {1} ({2})", i + 1, client.toShortString(), cityName));
             if (i < clients.size() - 1) {
                 clientNames.append("\n");
             }
