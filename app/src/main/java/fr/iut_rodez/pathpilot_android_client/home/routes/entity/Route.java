@@ -218,7 +218,7 @@ public class Route implements Parcelable {
 
             // Récupérer les TextView du layout
             TextView routeNumber = rowView.findViewById(R.id.route_number);
-            TextView routeAdress = rowView.findViewById(R.id.route_address);
+            TextView routeAddress = rowView.findViewById(R.id.route_address);
             TextView routeClientNames = rowView.findViewById(R.id.route_client_names);
             TextView routeBeginDate = rowView.findViewById(R.id.route_begin_date);
             TextView routeState = rowView.findViewById(R.id.route_state);
@@ -230,7 +230,7 @@ public class Route implements Parcelable {
             routeNumber.setText(MessageFormat.format("{0}° - {1}", position + 1, route.getId()));
 
             String routeCoordinatesString = context.getString(R.string.route_address) + LocationNameProvider.getAddressName(context, route.getSalesmanHome());
-            routeAdress.setText(routeCoordinatesString);
+            routeAddress.setText(routeCoordinatesString);
 
             ArrayList<Client> clients = new ArrayList<>();
             route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));

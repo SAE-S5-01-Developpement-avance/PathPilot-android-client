@@ -24,6 +24,7 @@ import java.util.List;
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 
 /**
  * Class representing an itinerary.
@@ -164,7 +165,7 @@ public class Itinerary implements Parcelable {
 
             // Récupérer les TextView du layout
             TextView itineraryNumber = rowView.findViewById(R.id.itinerary_number);
-            TextView itineraryCoordinates = rowView.findViewById(R.id.itinerary_coordinates);
+            TextView itineraryAddress= rowView.findViewById(R.id.itinerary_address);
             TextView itineraryClientNames = rowView.findViewById(R.id.itinerary_client_names);
             TextView itineraryTotalStops = rowView.findViewById(R.id.itinerary_total_stops);
 
@@ -173,9 +174,9 @@ public class Itinerary implements Parcelable {
 
             // Définir les valeurs des TextView
             itineraryNumber.setText(MessageFormat.format("{0}° - {1}", position + 1, itinerary.getId()));
-
-            String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + itinerary.getCoordinates();
-            itineraryCoordinates.setText(itineraryCoordinatesString);
+            
+            String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + LocationNameProvider.getAddressName(context, itinerary.getSalesmanHome());
+            itineraryAddress.setText(itineraryCoordinatesString);
 
             itineraryClientNames.setText(Client.getClientsDisplay(itinerary.getClients()));
             itineraryTotalStops.setText(MessageFormat.format("{0}{1}", context.getString(R.string.itinerary_total_stops), itinerary.getClients().size()));
