@@ -236,6 +236,8 @@ String for Login activity
     <string name="stop_route_cancel_dialog_btn">Annuler</string>
     <string name="client_state_visited">Visité</string>
     <string name="client_state_not_visited">Non visité</string>
+    <string name="itinerary_num">Itinéraire n°</string>
+    <string name="route_num">Route n°</string>
 
 
 </resources>

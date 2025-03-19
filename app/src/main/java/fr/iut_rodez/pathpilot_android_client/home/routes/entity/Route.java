@@ -227,7 +227,7 @@ public class Route implements Parcelable {
             Route route = routes.get(position);
 
             // Définir les valeurs des TextView
-            routeNumber.setText(MessageFormat.format("{0}° - {1}", position + 1, route.getId()));
+            routeNumber.setText(MessageFormat.format(context.getString(R.string.route_num) + "{0}", position + 1));
 
             String routeCoordinatesString = context.getString(R.string.route_address) + LocationNameProvider.getAddressName(context, route.getSalesmanHome());
             routeAddress.setText(routeCoordinatesString);

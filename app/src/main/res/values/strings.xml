@@ -242,4 +242,6 @@
     <string name="create_route_on_itinerary_menu">Create route</string>
     <string name="route_is_stopped_action_available">Home</string>
     <string name="route_stopped_description">You had visited all the clients</string>
+    <string name="itinerary_num">Itinerary n°</string>
+    <string name="route_num">Route n°</string>
 </resources>
