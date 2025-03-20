@@ -3,7 +3,10 @@ package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 import android.content.Context;
 import android.widget.ListView;
 
+import com.android.volley.Response;
+
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -12,6 +15,7 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.ItineraryArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 
 /**
  * Interface for ItineraryService class.
@@ -25,10 +29,13 @@ public interface IItineraryService {
      * Request to the API to add an itinerary.
      * If the request is successful, it goes back to the previous activity.
      *
-     * @param context     Context of the application
-     * @param listClients The list of clients to create an itinerary
+     * @param context         Context of the application
+     * @param jwtToken
+     * @param listClients     The list of clients to create an itinerary
+     * @param onResponse
+     * @param onErrorResponse
      */
-    void addItinerary(Context context, List<Client> listClients) throws JSONException;
+    void addItinerary(Context context, JWTToken jwtToken, List<Client> listClients, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) throws JSONException;
 
     /**
      * Request to the API the itineraries.
@@ -36,9 +43,10 @@ public interface IItineraryService {
      * If not it displays the error encounter.
      *
      * @param context             Context of the application
-     * @param listItinerariesView The view where the itineraries will be displayed
+     * @param onResponse
+     * @param onErrorResponse
      */
-    void getItineraries(Context context, ListView listItinerariesView);
+    void getItineraries(Context context, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
     /**
      * Request to the API to fetch the next page of clients.
@@ -63,5 +71,5 @@ public interface IItineraryService {
      */
     void deleteItinerary(Home homeActivity, Itinerary itinerarySelected, ListView listItinerariesView);
 
-    void deleteItineraryToCancelTheCreation(Context context, String idItinerary);
+    void deleteItineraryToCancelTheCreation(Context context, String idItinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse, JWTToken jwtToken1);
 }

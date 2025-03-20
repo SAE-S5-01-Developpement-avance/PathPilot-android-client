@@ -1,7 +1,8 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
+import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -24,21 +25,20 @@ import org.json.JSONException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.util.map.LocationNameProvider;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class AddItinerary extends AppCompatActivity {
     public static final String ITINERARY_ADDED_KEY = "itineraryAdded";
     public static final String KEY_ITINERARY_OBJECT = "itineraryObjectAdded";
+    private static final String TAG = AddItinerary.class.getSimpleName();
     private Spinner selectClientToAdd;
     private ListView listClientsAddedView;
     private ArrayList<Client> listClientsToAdd;
@@ -150,7 +150,27 @@ public class AddItinerary extends AppCompatActivity {
             popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_min_clients_per_itinerary));
         } else {
             try {
-                itineraryService.addItinerary(this, listClientsAdded);
+                popup.showProgressDialog();
+                itineraryService.addItinerary(this, getJWTToken(), listClientsAdded, response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    try {
+                        Itinerary itinerary = new Itinerary(response);
+
+                        Intent intent = new Intent(this, SaveItinerary.class);
+                        intent.putExtra(FragmentItineraries.TOKEN_KEY, getJWTToken());
+                        intent.putExtra(KEY_ITINERARY_OBJECT, itinerary);
+
+                        getSaveItineraryLauncher().launch(intent);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(this, error);
+                });
             } catch (JSONException e) {
                 popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
             }

@@ -25,9 +25,10 @@ public interface IRouteService {
      * If not it displays the error encounter.
      *
      * @param context             Context of the application
-     * @param listRoutesView The view where the routes will be displayed
+     * @param onResponse
+     * @param onErrorResponse
      */
-    void getRoutes(Context context, ListView listRoutesView);
+    void getRoutes(Context context, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse);
 
     /**
      * Request to the API to fetch the next page of clients.

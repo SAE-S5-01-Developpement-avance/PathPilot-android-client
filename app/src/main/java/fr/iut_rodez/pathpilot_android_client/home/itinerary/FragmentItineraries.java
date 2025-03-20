@@ -1,6 +1,6 @@
 package fr.iut_rodez.pathpilot_android_client.home.itinerary;
 
-import static android.app.Activity.RESULT_OK;
+import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -31,6 +31,8 @@ import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.util.Link;
+import fr.iut_rodez.pathpilot_android_client.util.Parser;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 /**
  * Display all itineraries
@@ -52,6 +54,7 @@ public class FragmentItineraries extends Fragment {
     private ListView listItinerariesView;
     private boolean isLoading = false;
     private Home homeActivity;
+    private Popup popup;
 
     private List<Itinerary> itineraries;
     private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
@@ -72,6 +75,7 @@ public class FragmentItineraries extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_itineraries, container, false);
         homeActivity = (Home) getActivity();
+        popup = new Popup(homeActivity);
 
 
         //Set header text to itineraries
@@ -146,7 +150,30 @@ public class FragmentItineraries extends Fragment {
      * Call the service to load all the itineraries from the API.
      */
     public void loadItineraries() {
-        itineraryService.getItineraries(homeActivity, listItinerariesView);
+        popup.showProgressDialog();
+        itineraryService.getItineraries(homeActivity, response -> {
+            popup.dismissProgressDialog();
+            Log.d(TAG, "onResponse: " + response);
+
+            ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
+            Log.d(TAG, "getItineraries: " + itineraryPage.itineraries());
+
+            itineraryPage.itineraries().forEach(
+                    itinerary -> itinerary.getClients().forEach(client -> client.setAddressDisplayName(homeActivity))
+            );
+            Itinerary.ItineraryArrayAdapter adapter = new Itinerary.ItineraryArrayAdapter(homeActivity,
+                    itineraryPage.itineraries());
+            listItinerariesView.post(() -> {
+                listItinerariesView.setAdapter(adapter);
+            });
+
+            // Save the client page to the activity
+            ((Home) homeActivity).setItineraryPage(itineraryPage);
+        }, error -> {
+            popup.dismissProgressDialog();
+            Log.e(TAG, "onErrorResponse: ", error);
+            handleError(homeActivity, error);
+        });
     }
 
     /**
@@ -172,10 +199,17 @@ public class FragmentItineraries extends Fragment {
     public ArrayList<Itinerary> getListItineraries() {
         Log.d(TAG, "getListItineraries: Get list of itineraries");
         ArrayList<Itinerary> listItineraries = new ArrayList<>();
-        for (int i = 0; listItinerariesView.getAdapter().getCount() > i; i++) {
-            listItineraries.add((Itinerary) listItinerariesView.getAdapter().getItem(i));
+        ListAdapter adapter =  listItinerariesView.getAdapter();
+        if (adapter != null) {
+            for (int i = 0; adapter.getCount() > i; i++) {
+                listItineraries.add((Itinerary) adapter.getItem(i));
+            }
+            Log.d(TAG, "getListItineraries: List of itineraries: " + listItineraries);
+        } else {
+            Log.e(TAG, "getListItineraries: Adapter is null");
+
         }
-        Log.d(TAG, "getListItineraries: List of itineraries: " + listItineraries);
+
         return listItineraries;
     }
 

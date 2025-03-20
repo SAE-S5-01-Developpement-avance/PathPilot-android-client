@@ -26,45 +26,26 @@ import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route.RouteArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
-import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
 
 public class RouteService implements IRouteService {
 
-    public void getRoutes(Context context, ListView listRoutesView) {
+    public void getRoutes(Context context, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
         Log.d(TAG, "API URL: " + ROUTES_API_ENDPOINT);
 
         Home homeActivity = (Home) context;
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        Popup popup = new Popup(context);
-        popup.showProgressDialog();
-
-        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, ROUTES_API_ENDPOINT, null, jwtToken,
-                response -> {
-                    popup.dismissProgressDialog();
-                    Log.d(TAG, "onResponse: " + response);
-
-                    RoutePage routePage = Parser.getRoutesPageable(response);
-                    Log.d(TAG, "getRoutes: " + routePage.routes());
-
-                    routePage.routes().forEach(route -> route.setDateDisplayName(context.getResources().getConfiguration().getLocales().get(0)));
-                    RouteArrayAdapter adapter = new RouteArrayAdapter(homeActivity, routePage.routes());
-                    listRoutesView.post(() -> {
-                        listRoutesView.setAdapter(adapter);
-                    });
-
-                    // Save the client page to the activity
-                    ((Home) context).setRoutePage(routePage);
-                },
-                error -> {
-                    popup.dismissProgressDialog();
-                    Log.e(TAG, "onErrorResponse: ", error);
-                    handleError(context, error);
-                }
+        JsonObjectRequest request = createAuthenticatedRequest(
+                Request.Method.GET,
+                ROUTES_API_ENDPOINT,
+                null,
+                jwtToken,
+                onResponse,
+                onErrorResponse
         );
 
         requestQueue.add(request);
