@@ -98,7 +98,77 @@ public class RouteTest {
         assertNull(route.getNextClient());
     }
 
+    @Test
+    public void testCounterWhenAllClientVisited() {
+        var client1 = createRouteClient(1, "Company 1", ClientState.EXPECTED);
+        var client2 = createRouteClient(2, "Company 2", ClientState.EXPECTED);
+        var client3 = createRouteClient(3, "Company 3", ClientState.EXPECTED);
+        Route route = createRoute(List.of(client1, client2, client3));
+        route.setState(RouteState.IN_PROGRESS);
 
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(0, route.countClientsVisited());
+
+        route.clientHasBeenVisited();
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(1, route.countClientsVisited());
+
+        route.clientHasBeenVisited();
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(2, route.countClientsVisited());
+
+        route.clientHasBeenVisited();
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(3, route.countClientsVisited());
+    }
+
+    @Test
+    public void testCounterWhenOneClientIsSkiped() {
+        var client1 = createRouteClient(1, "Company 1", ClientState.EXPECTED);
+        var client2 = createRouteClient(2, "Company 2", ClientState.EXPECTED);
+        var client3 = createRouteClient(3, "Company 3", ClientState.EXPECTED);
+        Route route = createRoute(List.of(client1, client2, client3));
+        route.setState(RouteState.IN_PROGRESS);
+
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(0, route.countClientsVisited());
+
+        route.clientHasBeenVisited();
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(1, route.countClientsVisited());
+
+        route.skippedClient(route.getNextClient());
+        assertEquals(2, route.countClientsExpected());
+        assertEquals(1, route.countClientsVisited());
+
+        route.clientHasBeenVisited();
+        assertEquals(2, route.countClientsExpected());
+        assertEquals(2, route.countClientsVisited());
+    }
+
+    @Test
+    public void testCounterWhenAllClientIsSkiped() {
+        var client1 = createRouteClient(1, "Company 1", ClientState.EXPECTED);
+        var client2 = createRouteClient(2, "Company 2", ClientState.EXPECTED);
+        var client3 = createRouteClient(3, "Company 3", ClientState.EXPECTED);
+        Route route = createRoute(List.of(client1, client2, client3));
+        route.setState(RouteState.IN_PROGRESS);
+
+        assertEquals(3, route.countClientsExpected());
+        assertEquals(0, route.countClientsVisited());
+
+        route.skippedClient(route.getNextClient());
+        assertEquals(2, route.countClientsExpected());
+        assertEquals(0, route.countClientsVisited());
+
+        route.skippedClient(route.getNextClient());
+        assertEquals(1, route.countClientsExpected());
+        assertEquals(0, route.countClientsVisited());
+
+        route.skippedClient(route.getNextClient());
+        assertEquals(0, route.countClientsExpected());
+        assertEquals(0, route.countClientsVisited());
+    }
 
     private Route createRoute(List<RouteClient> clients) {
         Route route = new Route();

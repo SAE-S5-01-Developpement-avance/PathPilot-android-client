@@ -361,8 +361,7 @@ public class Route implements Parcelable {
      * @return The number of clients expected
      */
     public int countClientsExpected() {
-        Log.d("Route", "countClientsExpected() returned: " + clients.stream().filter(client -> client.getState() == ClientState.EXPECTED).count());
-        return (int) clients.stream().filter(client -> client.getState() == ClientState.EXPECTED).count();
+        return (int) clients.stream().filter(client -> client.getState() != ClientState.SKIPPED).count();
     }
 
     /**
