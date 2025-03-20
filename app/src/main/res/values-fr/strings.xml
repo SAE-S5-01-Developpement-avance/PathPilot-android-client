@@ -198,6 +198,7 @@ String for Login activity
     <string name="route_completed">Route terminée, voir la map</string>
     <string name="button_start_route">Commencer la route</string>
     <string name="button_resume_route">Reprendre la route</string>
+    <string name="route_info_header">Informations de la route</string>
 
     <!--
     Route list

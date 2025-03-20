@@ -69,7 +69,7 @@ public class InfoRoute extends AppCompatActivity {
             timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
             findViewById(R.id.backButton).setOnClickListener(v -> finish());
             findViewById(R.id.state_route_update_button).setOnClickListener(v -> redirectToPlayer());
-
+            ((TextView) findViewById(R.id.header_text)).setText(R.string.route_info_header);
 
 
             // Set up RecyclerView
@@ -112,9 +112,6 @@ public class InfoRoute extends AppCompatActivity {
         // Set up adapter
         TimelineAdapter timelineAdapter = new TimelineAdapter(this, timelineItems);
         timelineRecyclerView.setAdapter(timelineAdapter);
-
-        // Set header text to route ID
-        ((TextView) findViewById(R.id.header_text)).setText(route.getId());
     }
 
     /**

@@ -197,6 +197,7 @@
     <string name="route_completed">Route finished, see the map</string>
     <string name="button_start_route">Start route</string>
     <string name="button_resume_route">Resume route</string>
+    <string name="route_info_header">Informations about route</string>
 
     <!--
     Route list
