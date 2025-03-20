@@ -60,9 +60,8 @@ public class AddRoute extends AppCompatActivity {
         ArrayList<Itinerary> itineraries = serializableExtra == null ? new ArrayList<>() : (ArrayList<Itinerary>) serializableExtra;
         for (int position = 0; position < itineraries.size(); position++) {
             Itinerary itinerary = itineraries.get(position);
-            itinerary.setDisplayName(
-                    MessageFormat.format("{0}° - {1} \n {2}", position + 1, itinerary.getId(),
-                            getClientsDisplay(itinerary.getClients())));
+            itinerary.getClients().forEach(client -> client.setAddressDisplayName(this));
+            itinerary.setDisplayName(getString(R.string.itinerary_item_add_route, position + 1, getClientsDisplay(itinerary.getClients())));
         }
 
         listItineraries.addAll(itineraries);

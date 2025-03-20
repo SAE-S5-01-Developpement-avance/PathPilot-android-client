@@ -223,6 +223,7 @@ String for Login activity
     <string name="select_itinerary_to_create_route">Sélectionner un itinéraire</string>
     <string name="error_select_itinerary">Impossible de créer une route sans itinéraire sélectionné</string>
     <string name="header_create_route">Création de routes</string>
+    <string name="itinerary_item_add_route">Itinéraire n°%d%n %s</string>
 
     <!--
     Save Itinerary
