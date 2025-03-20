@@ -133,6 +133,9 @@ public class Route implements Parcelable {
         }
     };
 
+    protected Route() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
