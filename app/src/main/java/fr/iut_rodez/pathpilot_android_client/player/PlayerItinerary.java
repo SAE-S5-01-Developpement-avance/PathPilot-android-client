@@ -478,7 +478,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
         }
         if (foundNextClient != -1) {
             // client found
-            route.setIndexCurrentClient(foundNextClient);
+            route.setNextClientIndex(foundNextClient);
         } else {
             currentPosition.stopLocationUpdates();
             route.setState(RouteState.STOPPED);
