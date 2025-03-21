@@ -198,8 +198,6 @@ public class FragmentRoutes extends Fragment {
             Log.e(TAG, "onErrorResponse: ", error);
             handleError(homeActivity, error);
         });
-        // TODO get Itinerary service
-        // TODO appel getItitnerais, dans le on response, remplir une liste d'itineraires stocké dans cette classe
     }
 
     /**
@@ -212,7 +210,6 @@ public class FragmentRoutes extends Fragment {
 
         Intent intent = new Intent(getActivity(), AddRoute.class);
         intent.putExtra(JWT_TOKEN_KEY, homeActivity.getJWTToken());
-        // TODO utiliser la liste d'itineraires stocké dans cette classe
         intent.putExtra(LIST_ITINERARIES_KEY, itineraries);
         homeActivity.getAddRouteLauncher().launch(intent);
     }
