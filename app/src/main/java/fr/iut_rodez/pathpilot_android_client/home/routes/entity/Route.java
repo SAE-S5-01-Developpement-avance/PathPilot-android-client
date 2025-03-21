@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
@@ -231,34 +232,29 @@ public class Route implements Parcelable {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            // Inflate le layout personnalisé
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.route_list_item, parent, false);
 
-            // Récupérer les TextView du layout
             TextView routeNumber = rowView.findViewById(R.id.route_number);
             TextView routeAddress = rowView.findViewById(R.id.route_address);
             TextView routeClientNames = rowView.findViewById(R.id.route_client_names);
             TextView routeBeginDate = rowView.findViewById(R.id.route_begin_date);
             TextView routeState = rowView.findViewById(R.id.route_state);
 
-            // Récupérer la route à cette position
             Route route = routes.get(position);
-
-            // Définir les valeurs des TextView
-            routeNumber.setText(MessageFormat.format(context.getString(R.string.route_num) + "{0}", position + 1));
 
             String routeCoordinatesString = context.getString(R.string.route_address) + LocationNameProvider.getAddressName(context, route.getSalesmanHome());
             routeAddress.setText(routeCoordinatesString);
 
             ArrayList<Client> clients = new ArrayList<>();
             route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));
-
             routeClientNames.setText(Client.getClientsDisplay(clients));
+
+            String firstLetterOfClients = route.getClients().stream().map(client -> client.getClient().getCompanyName().charAt(0)).map(Object::toString).collect(Collectors.joining());
+            routeNumber.setText(MessageFormat.format("{0} - {1}", context.getString(R.string.route), firstLetterOfClients));
 
             routeBeginDate.setText(MessageFormat.format("{0}{1}", context.getString(R.string.route_begin_date), route.getDateDisplayName()));
 
-            //TODO change this according the real route state in db
             String state = switch (route.getState()) {
                 case NOT_STARTED -> context.getString(R.string.route_state_not_started);
                 case PAUSED -> context.getString(R.string.route_state_paused);

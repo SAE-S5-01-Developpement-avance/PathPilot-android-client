@@ -116,7 +116,6 @@ public class AddRoute extends AppCompatActivity {
                         popup.dismissProgressDialog();
                         Log.d(TAG, "createRoute: " + response);
 
-                        Route route = Parser.getRoute(response);
                         Intent returnIntent = new Intent(this, Home.class);
                         setResult(AddItinerary.RESULT_OK, returnIntent);
                         returnIntent.putExtra(AddRoute.ADDED_ROUTE_KEY, true);

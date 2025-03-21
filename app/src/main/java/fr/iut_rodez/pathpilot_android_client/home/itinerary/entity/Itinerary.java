@@ -20,6 +20,7 @@ import org.osmdroid.util.GeoPoint;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
@@ -159,21 +160,18 @@ public class Itinerary implements Parcelable {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            // Inflate le layout personnalisé
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.itinerary_list_item, parent, false);
 
-            // Récupérer les TextView du layout
             TextView itineraryNumber = rowView.findViewById(R.id.itinerary_number);
             TextView itineraryAddress= rowView.findViewById(R.id.itinerary_address);
             TextView itineraryClientNames = rowView.findViewById(R.id.itinerary_client_names);
             TextView itineraryTotalStops = rowView.findViewById(R.id.itinerary_total_stops);
 
-            // Récupérer la route à cette position
             Itinerary itinerary = itineraries.get(position);
 
-            // Définir les valeurs des TextView
-            itineraryNumber.setText(MessageFormat.format(context.getString(R.string.itinerary_num) + "{0}", position + 1));
+            String firstLetterOfClients = itinerary.getClients().stream().map(client -> client.getCompanyName().charAt(0)).map(Object::toString).collect(Collectors.joining());
+            itineraryNumber.setText(MessageFormat.format("{0} - {1}", context.getString(R.string.itinerary), firstLetterOfClients));
 
             String itineraryCoordinatesString = context.getString(R.string.itinerary_coordinates) + LocationNameProvider.getAddressName(context, itinerary.getSalesmanHome());
             itineraryAddress.setText(itineraryCoordinatesString);

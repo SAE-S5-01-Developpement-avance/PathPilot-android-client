@@ -240,6 +240,7 @@ String for Login activity
     <string name="client_state_not_visited">Non visité</string>
     <string name="itinerary_num">Itinéraire n°</string>
     <string name="route_num">Route n°</string>
+    <string name="route">Route</string>
 
 
 </resources>
