@@ -111,7 +111,6 @@ public class FragmentRoutes extends Fragment {
         // Get all routes from the API
         loadRoutes();
 
-        registerForContextMenu(listRoutesView);
         view.findViewById(R.id.button_add).setOnClickListener(v -> gotoCreateRoute());
 
         listRoutesView.setOnItemClickListener((parent, view1, position, id) -> {
@@ -136,10 +135,11 @@ public class FragmentRoutes extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Route selectedRoute = (Route) listRoutesView.getItemAtPosition(info.position);
         int optionSelected = item.getItemId();
 
         if (optionSelected == R.id.delete_route) {
+            Route selectedRoute = (Route) listRoutesView.getItemAtPosition(info.position);
+
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
             routeService.deleteRoute(homeActivity, homeActivity.getJWTToken(), selectedRoute, listRoutesView);
         } else {

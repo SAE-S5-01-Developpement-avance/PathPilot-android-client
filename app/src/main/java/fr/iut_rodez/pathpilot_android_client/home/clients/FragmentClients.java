@@ -119,10 +119,11 @@ public class FragmentClients extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Client clientSelected = (Client) listClientsView.getItemAtPosition(info.position);
+
         int optionSelected = item.getItemId();
 
         if (optionSelected == R.id.delete_client) {
+            Client clientSelected = (Client) listClientsView.getItemAtPosition(info.position);
             Log.d(TAG, "onContextItemSelected: Delete client");
             popup.showAlertDialog(
                     getString(R.string.warning),

@@ -134,10 +134,11 @@ public class FragmentItineraries extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
+
         int optionSelected = item.getItemId();
 
         if (optionSelected == R.id.delete_itinerary) {
+            Itinerary itinerarySelected = (Itinerary) listItinerariesView.getItemAtPosition(info.position);
             Log.d(TAG, "onContextItemSelected: Delete itinerary");
             itineraryService.deleteItinerary(homeActivity, itinerarySelected, listItinerariesView);
         } else {
