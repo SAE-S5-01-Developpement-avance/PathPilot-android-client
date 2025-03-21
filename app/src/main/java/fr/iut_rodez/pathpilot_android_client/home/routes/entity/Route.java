@@ -59,7 +59,7 @@ public class Route implements Parcelable {
     /**
      * The index that points to the current client in the list of expected clients
      */
-    private int indexCurrentClient;
+    private int nextClientIndex;
 
     /**
      * The display name of the route date
@@ -97,11 +97,11 @@ public class Route implements Parcelable {
         state = RouteState.fromString(routeJson.getString("state"));
 
         // find the index of the current client
-        indexCurrentClient = 0;
+        nextClientIndex = 0;
         boolean found = false;
-        for (int i = 0; i < clients.size() && found; i++) {
+        for (int i = 0; i < clients.size() && !found; i++) {
             if (clients.get(i).getState() != ClientState.VISITED) {
-                indexCurrentClient = i;
+                nextClientIndex = i;
                 found = true;
             }
         }
@@ -113,7 +113,7 @@ public class Route implements Parcelable {
         clients = in.createTypedArrayList(RouteClient.CREATOR);
         long timeInMillis = in.readLong();
         startDate = timeInMillis == Long.MIN_VALUE ? null : LocalDateTime.ofEpochSecond(timeInMillis / RATIO_MILLI_SECOND, 0, ZONE_OFFSET);
-        indexCurrentClient = in.readInt();
+        nextClientIndex = in.readInt();
         salesmanPositions = in.createTypedArrayList(GeoPoint.CREATOR);
         String state = in.readString();
         if (state != null) {
@@ -133,6 +133,9 @@ public class Route implements Parcelable {
         }
     };
 
+    protected Route() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -145,7 +148,7 @@ public class Route implements Parcelable {
         dest.writeParcelable(salesmanHome, flags);
         dest.writeTypedList(clients);
         dest.writeLong(timeInMillis);
-        dest.writeInt(indexCurrentClient);
+        dest.writeInt(nextClientIndex);
         dest.writeTypedList(salesmanPositions);
         dest.writeString(state.getValue());
     }
@@ -178,21 +181,37 @@ public class Route implements Parcelable {
         return salesmanPositions;
     }
 
-    public void setIndexCurrentClient(int indexCurrentClient) {
-        this.indexCurrentClient = indexCurrentClient;
+    public void setNextClientIndex(int nextClientIndex) {
+        this.nextClientIndex = nextClientIndex;
     }
 
     /**
      * Skip the client.
-     * @param routeClient the client that we want skipped.
+     * @param clientToSkip the client that we want skipped.
      */
-    public void skippedClient(RouteClient routeClient) {
+    public void skippedClient(RouteClient clientToSkip) {
+        RouteClient nextClientBeforeSkip = getNextClient();
+        // Update the clients list
         clients.stream()
-                .filter(client -> client.equals(routeClient))
+                .filter(client -> client.equals(clientToSkip))
                 .findFirst()
                 .ifPresent(client -> {
                     client.setState(ClientState.SKIPPED);
                 });
+
+        // If the current client is the client to skip, we go to the next client. Unless the next client is null.
+        if (nextClientBeforeSkip.equals(clientToSkip)) {
+            RouteClient firstNextExpectedClient = clients.stream()
+                    .filter(routeClient -> routeClient.getState().equals(ClientState.EXPECTED) && !routeClient.equals(clientToSkip))
+                    .findFirst()
+                    .orElse(null);
+
+            if (firstNextExpectedClient != null) {
+                nextClientIndex = clients.indexOf(firstNextExpectedClient);
+            } else {
+                nextClientIndex = clients.size() - 1;
+            }
+        }
     }
 
     /**
@@ -218,7 +237,7 @@ public class Route implements Parcelable {
 
             // Récupérer les TextView du layout
             TextView routeNumber = rowView.findViewById(R.id.route_number);
-            TextView routeAdress = rowView.findViewById(R.id.route_address);
+            TextView routeAddress = rowView.findViewById(R.id.route_address);
             TextView routeClientNames = rowView.findViewById(R.id.route_client_names);
             TextView routeBeginDate = rowView.findViewById(R.id.route_begin_date);
             TextView routeState = rowView.findViewById(R.id.route_state);
@@ -227,10 +246,10 @@ public class Route implements Parcelable {
             Route route = routes.get(position);
 
             // Définir les valeurs des TextView
-            routeNumber.setText(MessageFormat.format("{0}° - {1}", position + 1, route.getId()));
+            routeNumber.setText(MessageFormat.format(context.getString(R.string.route_num) + "{0}", position + 1));
 
             String routeCoordinatesString = context.getString(R.string.route_address) + LocationNameProvider.getAddressName(context, route.getSalesmanHome());
-            routeAdress.setText(routeCoordinatesString);
+            routeAddress.setText(routeCoordinatesString);
 
             ArrayList<Client> clients = new ArrayList<>();
             route.getClients().forEach(routeClient -> clients.add(routeClient.getClient()));
@@ -292,8 +311,8 @@ public class Route implements Parcelable {
         return startDate;
     }
 
-    public int getIndexCurrentClient() {
-        return indexCurrentClient;
+    public int getNextClientIndex() {
+        return nextClientIndex;
     }
 
     public GeoPoint getCurrentSalesmanPosition() {
@@ -304,10 +323,6 @@ public class Route implements Parcelable {
         return geoPoint;
     }
 
-    public RouteClient getCurrentClient() {
-        return clients.get(indexCurrentClient);
-    }
-
     /**
      * Update the route to represent that the current client has been visited
      * <p>
@@ -315,8 +330,12 @@ public class Route implements Parcelable {
      * </p>
      */
     public void clientHasBeenVisited() {
-        clients.get(indexCurrentClient).setState(ClientState.VISITED);
-        indexCurrentClient++;
+        clients.get(nextClientIndex).setState(ClientState.VISITED);
+        if (getNextClient() != null) {
+            nextClientIndex = clients.indexOf(getNextClient());
+        } else {
+            nextClientIndex = clients.size() - 1;
+        }
     }
 
     /**
@@ -326,8 +345,12 @@ public class Route implements Parcelable {
      */
     public RouteClient getNextClient() {
         RouteClient routeClient = null;
-        if (indexCurrentClient < clients.size() && !state.equals(RouteState.STOPPED)) {
-            routeClient = clients.get(indexCurrentClient);
+        if (nextClientIndex < clients.size() && !state.equals(RouteState.STOPPED)) {
+            for (int i = nextClientIndex; i < clients.size() && routeClient == null; i++) {
+                if (clients.get(i).getState() == ClientState.EXPECTED) {
+                    routeClient = clients.get(i);
+                }
+            }
         }
         return routeClient;
     }
@@ -338,8 +361,7 @@ public class Route implements Parcelable {
      * @return The number of clients expected
      */
     public int countClientsExpected() {
-        Log.d("Route", "countClientsExpected() returned: " + clients.stream().filter(client -> client.getState() == ClientState.EXPECTED).count());
-        return (int) clients.stream().filter(client -> client.getState() == ClientState.EXPECTED).count();
+        return (int) clients.stream().filter(client -> client.getState() != ClientState.SKIPPED).count();
     }
 
     /**
@@ -360,7 +382,7 @@ public class Route implements Parcelable {
      * @return {@code true} if the route is completed, {@code false} otherwise
      */
     public boolean isCompleted() {
-        return indexCurrentClient == clients.size();
+        return nextClientIndex == clients.size();
     }
 
     public ArrayList<RouteClient> getClients() {
@@ -379,7 +401,7 @@ public class Route implements Parcelable {
                 ", salesmanHome=" + salesmanHome +
                 ", clients=" + clients +
                 ", startDate=" + startDate +
-                ", indexCurrentClient=" + indexCurrentClient +
+                ", indexCurrentClient=" + nextClientIndex +
                 ", state=" + state +
                 ", salesmanPositions=" + salesmanPositions +
                 ", dateDisplayName='" + dateDisplayName + '\'' +

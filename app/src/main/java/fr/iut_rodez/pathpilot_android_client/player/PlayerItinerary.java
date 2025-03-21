@@ -285,8 +285,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     response -> {
                         Log.d(TAG, "updateSalesmanPosition: " + response);
                         // Update the salesman trace
-                        salesmanTrace.addPoint(currentPoint);
-                        mapView.invalidate();
+                        runOnUiThread(() -> {
+                            salesmanTrace.addPoint(currentPoint);
+                            mapView.invalidate();
+                        });
 
                         // Get client near the salesman if any
                         List<Client> clientNearSalesman = Collections.emptyList();
@@ -345,10 +347,8 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
             MapMarker.MarkerType markerType;
             switch (client.getState()) {
                 case VISITED -> markerType = MapMarker.MarkerType.CLIENT_VISITED;
-                case EXPECTED -> markerType = MapMarker.MarkerType.EXPECTED_CLIENT;
                 case SKIPPED -> markerType = MapMarker.MarkerType.CLIENT_IGNORED;
-                default ->
-                        throw new IllegalStateException("Unexpected value: " + client.getState());
+                default -> markerType = MapMarker.MarkerType.EXPECTED_CLIENT;
             }
             if (client.equals(nextClient)) {
                 Log.d(TAG, "NextClient" + client);
@@ -430,9 +430,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                 case SKIPPED -> state = getString(R.string.client_state_skipped);
                 default -> state = "";
             }
-            popupMenu.getMenu().add(0, i, i, (i+1) + ". "
-                    + routeClientList.get(i).getClient().getCompanyName()
-                    + " " + state);
+            popupMenu.getMenu().add(0, i, i, java.text.MessageFormat.format("{0}- {1} ({2})", i + 1, routeClientList.get(i).getClient().getCompanyName(), state));
         }
 
         popupMenu.setOnMenuItemClickListener(client -> {
@@ -452,8 +450,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.skip_client) {
-            routeService.skipAClientFromARoute(this, jwtToken,
-                    selectedClient.getClient(), route,
+            routeService.skipAClientFromARoute(this, jwtToken, selectedClient.getClient(), route,
                     response -> {
                         route.skippedClient(selectedClient);
                         Log.d(TAG, "onContextItemSelected: " + route.getClients().stream().map(routeClient -> routeClient.getState().value).collect(Collectors.joining(", ")));
@@ -468,18 +465,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * Find the next client not skipped. If there is no client left stop the route.
      */
     private void updateRouteWithNextClient() {
-        int foundNextClient = -1;
-        ArrayList<RouteClient> clients = route.getClients();
-        for (int i = 0; i < clients.size(); i++) {
-            RouteClient client = clients.get(i);
-            if (client.getState() == ClientState.EXPECTED) {
-                foundNextClient = i;
-            }
-        }
-        if (foundNextClient != -1) {
-            // client found
-            route.setIndexCurrentClient(foundNextClient);
-        } else {
+        if (route.getNextClient() == null) {
+            // If the next client is null,
+            // that mean that all the clients have been visited or skipped
+            // and so the route need to be stopped
             currentPosition.stopLocationUpdates();
             route.setState(RouteState.STOPPED);
             routeService.stopRoute(
@@ -620,7 +609,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                             });
                 }),
                 null,
-                DialogButton.okDismiss(this));
+                new DialogButton(getString(R.string.stop_route_cancel_dialog_btn), DialogButton.getDismissListener()));
         return true;
     }
 

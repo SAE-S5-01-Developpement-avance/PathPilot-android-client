@@ -154,12 +154,13 @@ public class Parser {
 
             for (int i = 0; i < embeddedListItineraries.length(); i++) {
                 JSONObject itineraryJson = embeddedListItineraries.getJSONObject(i);
+                Log.d(TAG, "Itineraries: " + itineraryJson);
                 listItineraries.add(new Itinerary(itineraryJson));
             }
             listLinks = getPaginationLinks(response);
 
         } catch (JSONException e) {
-            Log.e(TAG, "Error while parsing the JSON response", e);
+            Log.e(TAG, "Error while parsing the Itinerary JSON response", e);
         }
 
         return new ItineraryPage(listItineraries, listLinks);
@@ -184,13 +185,18 @@ public class Parser {
                     .getJSONArray("routeResponseModelList");
 
             for (int i = 0; i < embeddedListRoutes.length(); i++) {
-                JSONObject routeJson = embeddedListRoutes.getJSONObject(i);
-                listRoutes.add(new Route(routeJson));
+                try {
+                    JSONObject routeJson = embeddedListRoutes.getJSONObject(i);
+                    listRoutes.add(new Route(routeJson));
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error while parsing the Route JSON response", e);
+                }
+
             }
             listLinks = getPaginationLinks(response);
 
         } catch (JSONException e) {
-            Log.e(TAG, "Error while parsing the JSON response", e);
+            Log.e(TAG, "Error while parsing the Route JSON response", e);
         }
 
         return new RoutePage(listRoutes, listLinks);

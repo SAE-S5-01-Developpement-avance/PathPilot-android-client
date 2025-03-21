@@ -23,6 +23,7 @@ import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientState;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.AddItinerary;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.Route;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteClient;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RouteState;
@@ -69,7 +70,7 @@ public class InfoRoute extends AppCompatActivity {
             timelineRecyclerView = findViewById(R.id.timeline_recycler_view);
             findViewById(R.id.backButton).setOnClickListener(v -> finish());
             findViewById(R.id.state_route_update_button).setOnClickListener(v -> redirectToPlayer());
-
+            ((TextView) findViewById(R.id.header_text)).setText(R.string.route_info_header);
 
 
             // Set up RecyclerView
@@ -112,9 +113,6 @@ public class InfoRoute extends AppCompatActivity {
         // Set up adapter
         TimelineAdapter timelineAdapter = new TimelineAdapter(this, timelineItems);
         timelineRecyclerView.setAdapter(timelineAdapter);
-
-        // Set header text to route ID
-        ((TextView) findViewById(R.id.header_text)).setText(route.getId());
     }
 
     /**
@@ -157,6 +155,9 @@ public class InfoRoute extends AppCompatActivity {
         intent.putExtra(PlayerItinerary.JWT_TOKEN_KEY, jwtToken);
 
         startActivity(intent);
+        Intent returnIntent = new Intent(this, Home.class);
+        setResult(InfoRoute.RESULT_OK, returnIntent);
+        finish();
     }
 
     /**

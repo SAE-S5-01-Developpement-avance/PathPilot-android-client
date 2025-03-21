@@ -4,30 +4,29 @@ import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.hand
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.createAuthenticatedRequest;
 import static fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils.getRequestQueue;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.BuildConfig;
+import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.Home;
 import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary.ItineraryArrayAdapter;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.util.Parser;
 import fr.iut_rodez.pathpilot_android_client.util.network.NetworkUtils;
 import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
@@ -43,17 +42,19 @@ public class ItineraryService implements IItineraryService {
      * Request to the API to add an itinerary.
      * If the request is successful, it goes back to the previous activity.
      *
-     * @param context     Context of the application
-     * @param listClients The list of clients to create an itinerary
+     * @param context         Context of the application
+     * @param jwtToken
+     * @param listClients     The list of clients to create an itinerary
+     * @param onResponse
+     * @param onErrorResponse
      */
     @Override
-    public void addItinerary(Context context, List<Client> listClients)
+    public void addItinerary(Context context, JWTToken jwtToken, List<Client> listClients, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse)
             throws JSONException {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
-        AddItinerary addItineraryActivity = (AddItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = addItineraryActivity.getJWTToken().getToken();
+        String token = jwtToken.getToken();
         JSONArray listIdClient = new JSONArray();
         JSONObject itinerariesInput = new JSONObject();
 
@@ -61,33 +62,14 @@ public class ItineraryService implements IItineraryService {
             listIdClient.put(client.getId());
         }
         itinerariesInput.put("clients_schedule", listIdClient);
-        Popup popup = new Popup(context);
-        popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
-        ArrayList<Client> listClientsOrdered = new ArrayList<>();
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.POST,
-                API_BASE_URL, itinerariesInput, jwtToken,
-                response -> {
-                    popup.dismissProgressDialog();
-                    Log.d(TAG, "onResponse: " + response);
-
-                    try {
-                        Itinerary itinerary = new Itinerary(response);
-                        Intent intent = new Intent(context,SaveItinerary.class);
-                        intent.putExtra(FragmentItineraries.TOKEN_KEY,
-                                addItineraryActivity.getJWTToken());
-                        intent.putExtra(AddItinerary.KEY_ITINERARY_OBJECT,itinerary);
-                        addItineraryActivity.getSaveItineraryLauncher().launch(intent);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                },
-                error -> {
-                    popup.dismissProgressDialog();
-                    Log.e(TAG, "onErrorResponse: ", error);
-                    handleError(context, error);
-                });
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(
+                Request.Method.POST,
+                API_BASE_URL,
+                itinerariesInput,
+                token,
+                onResponse,
+                onErrorResponse
+        );
         requestQueue.add(request);
     }
 
@@ -97,42 +79,24 @@ public class ItineraryService implements IItineraryService {
      * If not it displays the error encounter.
      *
      * @param context             Context of the application
-     * @param listItinerariesView The view where the itineraries will be displayed
+     * @param onResponse
+     * @param onErrorResponse
      */
     @Override
-    public void getItineraries(Context context, ListView listItinerariesView) {
+    public void getItineraries(Context context, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse) {
         Log.d(TAG, "API URL: " + API_BASE_URL);
 
         Home homeActivity = (Home) context;
         RequestQueue requestQueue = getRequestQueue(context);
         String jwtToken = homeActivity.getJWTToken().getToken();
 
-        Popup popup = new Popup(context);
-        popup.showProgressDialog(context.getString(R.string.progress_fetching_itineraries));
-
-        JsonObjectRequest request = createAuthenticatedRequest(Request.Method.GET, API_BASE_URL,
-                null, jwtToken,
-                response -> {
-                    popup.dismissProgressDialog();
-                    Log.d(TAG, "onResponse: " + response);
-
-                    ItineraryPage itineraryPage = Parser.getItinerariesPageable(response);
-                    Log.d(TAG, "getItineraries: " + itineraryPage.itineraries());
-
-                    ItineraryArrayAdapter adapter = new ItineraryArrayAdapter(homeActivity,
-                            itineraryPage.itineraries());
-                    listItinerariesView.post(() -> {
-                        listItinerariesView.setAdapter(adapter);
-                    });
-
-                    // Save the client page to the activity
-                    ((Home) context).setItineraryPage(itineraryPage);
-                },
-                error -> {
-                    popup.dismissProgressDialog();
-                    Log.e(TAG, "onErrorResponse: ", error);
-                    handleError(context, error);
-                }
+        JsonObjectRequest request = createAuthenticatedRequest(
+                Request.Method.GET,
+                API_BASE_URL,
+                null,
+                jwtToken,
+                onResponse,
+                onErrorResponse
         );
 
         requestQueue.add(request);
@@ -242,31 +206,26 @@ public class ItineraryService implements IItineraryService {
      * created and cancel the creation.
      * @param context context of the application
      * @param idItinerary id of the itinerary to delete
+     * @param onResponse
+     * @param onErrorResponse
+     * @param jwtToken
      */
     @Override
-    public void deleteItineraryToCancelTheCreation(Context context, String idItinerary) {
+    public void deleteItineraryToCancelTheCreation(Context context, String idItinerary, Response.Listener<JSONObject> onResponse, Response.ErrorListener onErrorResponse, JWTToken jwtToken) {
         String apiURLDelete = API_BASE_URL + "/" + idItinerary;
 
-        SaveItinerary saveItinerary = (SaveItinerary) context;
         RequestQueue requestQueue = getRequestQueue(context);
-        String jwtToken = saveItinerary.getJWTToken().getToken();
-
-        ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.show();
+        String token = jwtToken.getToken();
 
         Log.d(TAG, "deleteItinerary: " + idItinerary);
 
-        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(Request.Method.DELETE,
-                apiURLDelete, null, jwtToken,
-                response -> {
-                    progressDialog.dismiss();
-                    Log.d(TAG, "onResponse: " + response);
-                },
-                error -> {
-                    progressDialog.dismiss();
-                    Log.e(TAG, "onErrorResponse: ", error);
-                    handleError(context, error);
-                }
+        JsonObjectRequest request = NetworkUtils.createAuthenticatedRequest(
+                Request.Method.DELETE,
+                apiURLDelete,
+                null,
+                token,
+                onResponse,
+                onErrorResponse
         );
         requestQueue.add(request);
     }

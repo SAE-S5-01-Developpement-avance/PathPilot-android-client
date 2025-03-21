@@ -21,7 +21,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import fr.iut_rodez.pathpilot_android_client.R;
 import fr.iut_rodez.pathpilot_android_client.home.clients.FragmentClients;
@@ -34,11 +33,9 @@ import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
 import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.ItineraryPage;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes;
 import fr.iut_rodez.pathpilot_android_client.home.routes.FragmentRoutes.FragmentRouteActions;
-import fr.iut_rodez.pathpilot_android_client.home.routes.InfoRoute;
 import fr.iut_rodez.pathpilot_android_client.home.routes.entity.RoutePage;
 import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
 import fr.iut_rodez.pathpilot_android_client.login.LoginService;
-import fr.iut_rodez.pathpilot_android_client.player.PlayerItinerary;
 
 /**
  * Handle the different fragments of the application and the JWT token.
@@ -173,14 +170,9 @@ public class Home extends AppCompatActivity implements FragmentClientsActions, F
 
             // Comeback at the right fragment : Route
             viewPager.setCurrentItem(INDEX_FRAGMENT_ROUTE);
-            // Reload data if a route is stopped
-            if (result.getData().hasExtra(PlayerItinerary.ROUTE_STOPPED_KEY)
-                && result.getData().getBooleanExtra(PlayerItinerary.ROUTE_STOPPED_KEY,
-                false)) {
-                FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager()
-                        .getFragments().get(INDEX_FRAGMENT_ROUTE);
-                fragmentRoutes.loadRoutes();
-            }
+            // Reload data
+            FragmentRoutes fragmentRoutes = (FragmentRoutes) getSupportFragmentManager().getFragments().get(INDEX_FRAGMENT_ROUTE);
+            fragmentRoutes.loadRoutes();
         }
     }
 

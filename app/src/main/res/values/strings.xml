@@ -197,6 +197,7 @@
     <string name="route_completed">Route finished, see the map</string>
     <string name="button_start_route">Start route</string>
     <string name="button_resume_route">Resume route</string>
+    <string name="route_info_header">Informations about route</string>
 
     <!--
     Route list
@@ -222,6 +223,8 @@
     <string name="select_itinerary_to_create_route">Select an itinerary</string>
     <string name="error_select_itinerary">Cannot create a route without an itinerary selected</string>
     <string name="header_create_route">Create route</string>
+    <string name="itinerary_item_add_route">Itinerary n°%d%d %s</string>
+
     
     <!--
     Save Itinerary
@@ -242,4 +245,6 @@
     <string name="create_route_on_itinerary_menu">Create route</string>
     <string name="route_is_stopped_action_available">Home</string>
     <string name="route_stopped_description">You had visited all the clients</string>
+    <string name="itinerary_num">Itinerary n°</string>
+    <string name="route_num">Route n°</string>
 </resources>

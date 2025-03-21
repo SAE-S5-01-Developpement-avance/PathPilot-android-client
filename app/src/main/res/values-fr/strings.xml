@@ -198,6 +198,7 @@ String for Login activity
     <string name="route_completed">Route terminée, voir la map</string>
     <string name="button_start_route">Commencer la route</string>
     <string name="button_resume_route">Reprendre la route</string>
+    <string name="route_info_header">Informations de la route</string>
 
     <!--
     Route list
@@ -222,6 +223,7 @@ String for Login activity
     <string name="select_itinerary_to_create_route">Sélectionner un itinéraire</string>
     <string name="error_select_itinerary">Impossible de créer une route sans itinéraire sélectionné</string>
     <string name="header_create_route">Création de routes</string>
+    <string name="itinerary_item_add_route">Itinéraire n°%d%n %s</string>
 
     <!--
     Save Itinerary
@@ -236,6 +238,8 @@ String for Login activity
     <string name="stop_route_cancel_dialog_btn">Annuler</string>
     <string name="client_state_visited">Visité</string>
     <string name="client_state_not_visited">Non visité</string>
+    <string name="itinerary_num">Itinéraire n°</string>
+    <string name="route_num">Route n°</string>
 
 
 </resources>
