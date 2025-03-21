@@ -609,7 +609,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                             });
                 }),
                 null,
-                DialogButton.okDismiss(this));
+                new DialogButton(getString(R.string.stop_route_cancel_dialog_btn), DialogButton.getDismissListener()));
         return true;
     }
 
