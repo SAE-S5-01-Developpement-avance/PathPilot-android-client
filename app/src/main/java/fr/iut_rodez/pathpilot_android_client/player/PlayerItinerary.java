@@ -285,8 +285,10 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                     response -> {
                         Log.d(TAG, "updateSalesmanPosition: " + response);
                         // Update the salesman trace
-                        salesmanTrace.addPoint(currentPoint);
-                        mapView.invalidate();
+                        runOnUiThread(() -> {
+                            salesmanTrace.addPoint(currentPoint);
+                            mapView.invalidate();
+                        });
 
                         // Get client near the salesman if any
                         List<Client> clientNearSalesman = Collections.emptyList();
