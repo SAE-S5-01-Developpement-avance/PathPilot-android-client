@@ -292,13 +292,14 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
 
                         // Get client near the salesman if any
                         List<Client> clientNearSalesman = Collections.emptyList();
-                        if (response.has("._embedded.clientResponseModelList")) {
-                            try {
-                                clientNearSalesman = Parser.getClient(response.getJSONArray("._embedded.clientResponseModelList"));
+                        try {
+                            if (response.has("_embedded") && response.getJSONObject("_embedded").has("clientResponseModelList")) {
+                                clientNearSalesman = Parser.getClient(response.getJSONObject("_embedded").getJSONArray("clientResponseModelList"));
                                 clientNearSalesman.forEach(client -> client.setAddressDisplayName(this));
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
                             }
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Error", e);
+                            throw new RuntimeException(e);
                         }
                         notifyIfClientNearSalesman(clientNearSalesman);
                     },
@@ -317,6 +318,7 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
      * @param clientNearSalesman The list of client near the salesman
      */
     private void notifyIfClientNearSalesman(List<Client> clientNearSalesman) {
+        Log.d(TAG, "notifyIfClientNearSalesman: " + clientNearSalesman);
         if (!clientNearSalesman.isEmpty()) {
             clientNearSalesman.stream()
                     .filter(client -> !clientAlreadyNotified.contains(client))
@@ -330,13 +332,18 @@ public class PlayerItinerary extends ActivityWithCurrentPosition {
                             ));
                         }
 
-                        popup.showAutoDismissAlertDialog(
-                                getString(R.string.client_near_you, client.getCompanyName()),
-                                getString(R.string.client_near_you_description, client.getCompanyName(), client.getAddressDisplayName(), distanceToClient(client) * 1000),
-                                Duration.ofSeconds(5)
-                        );
+                        runOnUiThread(() -> {
+                            String addressDisplayName = client.getAddressDisplayName();
+                            addressDisplayName = addressDisplayName.isBlank() ? getString(R.string.address_unknown) : addressDisplayName;
+                            popup.showAutoDismissAlertDialog(
+                                    getString(R.string.client_near_you, client.getCompanyName()),
+                                    getString(R.string.client_near_you_description, client.getCompanyName(), addressDisplayName, distanceToClient(client) * 1000),
+                                    Duration.ofSeconds(10)
+                            );
 
-                        clientAlreadyNotified.add(client);
+                            clientAlreadyNotified.add(client);
+                        });
+
                     });
         }
     }

@@ -168,7 +168,7 @@ String for Login activity
     <string name="message_deleting_route">Suppression de la route...</string>
     <string name="home">Maison</string>
     <string name="client_near_you">%s est près de vous</string>
-    <string name="client_near_you_description">%s au %s est à %.2f m de vous</string>
+    <string name="client_near_you_description">%s au %s, est à %.2f m de vous</string>
     <string name="route_is_stopped_action_unavailable">La route est terminée, action impossible</string>
     <string name="long_click_to_stop_the_route">Appui long pour arrêter la route</string>
     <string name="route_stopped">Route terminée</string>
