@@ -223,7 +223,7 @@
     <string name="select_itinerary_to_create_route">Select an itinerary</string>
     <string name="error_select_itinerary">Cannot create a route without an itinerary selected</string>
     <string name="header_create_route">Create route</string>
-    <string name="itinerary_item_add_route">Itinerary n°%d%d %s</string>
+    <string name="itinerary_item_add_route">Itinerary n°%d%n %s</string>
 
     
     <!--
