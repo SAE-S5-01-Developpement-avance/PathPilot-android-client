@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "fr.iut_rodez.pathpilot_android_client"
-        minSdk 25
+        minSdk 30
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -23,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     // Nouvelle syntaxe pour les flavors
@@ -36,13 +36,15 @@ android {
     productFlavors {
         dev {
             group = "environment"
-            buildConfigField "String", "API_BASE_URL", "\"http://127.0.0.1/\""
+            def localIp = InetAddress.getLocalHost().getHostAddress()
+            def apiBaseUrl = "http://${localIp}:8080/"
+            buildConfigField "String", "API_BASE_URL", "\"${apiBaseUrl}\""
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
         }
         prod {
             group = "environment"
-            buildConfigField "String", "API_BASE_URL", "\"https://api.example.com/\"" // TODO: Change this
+            buildConfigField "String", "API_BASE_URL", "\"http://13.60.81.173:8080/\""
         }
     }
 }
@@ -60,6 +62,13 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.volley
     testImplementation libs.junit
+    testImplementation libs.junit.jupiter
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    // Dependency for OpenStreetMap
+    implementation libs.osmdroid.android
+    implementation libs.osmbonuspack
+
+    // Use to mock Android framework in tests
+    testImplementation libs.robolectric
 }

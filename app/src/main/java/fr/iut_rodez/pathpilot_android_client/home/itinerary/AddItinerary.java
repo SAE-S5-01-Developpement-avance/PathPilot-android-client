@@ -1,0 +1,231 @@
+package fr.iut_rodez.pathpilot_android_client.home.itinerary;
+
+import static fr.iut_rodez.pathpilot_android_client.util.VolleyErrorHandler.handleError;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONException;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import fr.iut_rodez.pathpilot_android_client.R;
+import fr.iut_rodez.pathpilot_android_client.ServiceFactory;
+import fr.iut_rodez.pathpilot_android_client.home.Home;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.Client;
+import fr.iut_rodez.pathpilot_android_client.home.clients.entity.ClientArrayAdapter;
+import fr.iut_rodez.pathpilot_android_client.home.itinerary.entity.Itinerary;
+import fr.iut_rodez.pathpilot_android_client.login.JWTToken;
+import fr.iut_rodez.pathpilot_android_client.util.popup.Popup;
+
+public class AddItinerary extends AppCompatActivity {
+    public static final String ITINERARY_ADDED_KEY = "itineraryAdded";
+    public static final String KEY_ITINERARY_OBJECT = "itineraryObjectAdded";
+    private static final String TAG = AddItinerary.class.getSimpleName();
+    private Spinner selectClientToAdd;
+    private ListView listClientsAddedView;
+    private ArrayList<Client> listClientsToAdd;
+    private JWTToken jwtToken;
+    private ArrayList<Client> listClientsAdded;
+    private ArrayAdapter<Client> clientsToAddAdapter;
+    private ClientArrayAdapter clientsAddedAdapter;
+    private ActivityResultLauncher<Intent> saveItineraryLauncher;
+    private Popup popup;
+    private final IItineraryService itineraryService = ServiceFactory.getItineraryService();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.view_create_itinerary);
+        ((TextView) findViewById(R.id.header_text)).setText(R.string.header_create_itinerary);
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+
+        selectClientToAdd = findViewById(R.id.list_add_clients);
+        listClientsAddedView = findViewById(R.id.list_items_clients_added);
+        registerForContextMenu(listClientsAddedView);
+
+        popup = new Popup(this);
+        listClientsAdded = new ArrayList<>();
+        listClientsToAdd = new ArrayList<>();
+
+        // Add a default client to the list of clients to add
+        // This client is used to display a hint in the spinner
+        listClientsToAdd.add(new Client(getString(R.string.select_client_to_create_itinerary), 0, 0, "", true, "", "", ""));
+
+        Intent intent = getIntent();
+        Serializable serializableExtra = intent.getSerializableExtra(FragmentItineraries.LIST_CLIENT_KEY);
+
+        ArrayList<Client> clients = serializableExtra == null ? new ArrayList<>() : (ArrayList<Client>) serializableExtra;
+
+        clients.forEach(client -> client.setAddressDisplayName(this));
+        listClientsToAdd.addAll(clients);
+
+        AddItinerary activity = this;
+        clientsToAddAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, listClientsToAdd) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = view.findViewById(R.id.spinner_item_text);
+                Client client = getItem(position);
+                textView.setText(client.getCompanyName());
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textView = view.findViewById(R.id.spinner_item_text);
+                Client client = getItem(position);
+                String spinnerItemText = client.getCompanyName();
+                if (position != 0) {
+                    textView.setText(client.layoutClientItemList());
+                } else {
+                    textView.setText(client.getCompanyName());
+                }
+                return view;
+            }
+        };
+        selectClientToAdd.setAdapter(clientsToAddAdapter);
+
+        clientsAddedAdapter = new ClientArrayAdapter(this, listClientsAdded);
+        listClientsAddedView.setAdapter(clientsAddedAdapter);
+
+
+        selectClientToAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != AdapterView.INVALID_POSITION && position != 0) {
+                    if (listClientsAdded.size() < 8) {
+                        Client selectedClient = listClientsToAdd.get(position);
+                        listClientsAdded.add(selectedClient);
+                        clientsAddedAdapter.notifyDataSetChanged();
+                        listClientsToAdd.remove(position);
+                        clientsToAddAdapter.notifyDataSetChanged();
+                        if (!listClientsToAdd.isEmpty()) {
+                            selectClientToAdd.setSelection(0);
+                        }
+                    } else {
+                        popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_max_clients_per_itinerary));
+                        selectClientToAdd.setSelection(0);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Nothing to do
+            }
+        });
+        findViewById(R.id.button_create_itinerary).setOnClickListener(v -> createItinerary());
+
+        jwtToken = intent.getParcelableExtra(FragmentItineraries.TOKEN_KEY);
+        saveItineraryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::returnFromSaveItinerary);
+    }
+
+
+    /**
+     * Create an itinerary with the clients selected.
+     * The itinerary can be created if it has one or more clients attached.
+     */
+    public void createItinerary() {
+        if (listClientsAdded.isEmpty()) {
+            popup.showAlertDialog(getString(R.string.error_title), getString(R.string.error_min_clients_per_itinerary));
+        } else {
+            try {
+                popup.showProgressDialog();
+                itineraryService.addItinerary(this, getJWTToken(), listClientsAdded, response -> {
+                    popup.dismissProgressDialog();
+                    Log.d(TAG, "onResponse: " + response);
+
+                    try {
+                        Itinerary itinerary = new Itinerary(response);
+
+                        Intent intent = new Intent(this, SaveItinerary.class);
+                        intent.putExtra(FragmentItineraries.TOKEN_KEY, getJWTToken());
+                        intent.putExtra(KEY_ITINERARY_OBJECT, itinerary);
+
+                        getSaveItineraryLauncher().launch(intent);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, error -> {
+                    popup.dismissProgressDialog();
+                    Log.e(TAG, "onErrorResponse: ", error);
+                    handleError(this, error);
+                });
+            } catch (JSONException e) {
+                popup.showAlertDialog(getString(R.string.error_title), getString(R.string.internal_server_error));
+            }
+        }
+    }
+
+    /**
+     * Return from Save Itinerary view.
+     * Check if the salesman had confirm or cancel the creation of the itinerary.
+     *
+     * @param result result of Save Itinerary activity.
+     */
+    private void returnFromSaveItinerary(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            // Load the clients if the creation was successful
+            if (result.getData() != null
+                    && result.getData().hasExtra(ITINERARY_ADDED_KEY)
+                    && result.getData().getBooleanExtra(ITINERARY_ADDED_KEY, false)) {
+
+                Intent intent = new Intent(this, Home.class);
+                setResult(AddItinerary.RESULT_OK, intent);
+                intent.putExtra(AddItinerary.ITINERARY_ADDED_KEY, true);
+                finish();
+            }
+        }
+    }
+
+    public JWTToken getJWTToken() {
+        return jwtToken;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(this).inflate(R.menu.client_of_itinerary_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Client clientSelected = (Client) listClientsAddedView.getItemAtPosition(info.position);
+        int optionSelected = item.getItemId();
+
+        if (optionSelected == R.id.delete_client) {
+            listClientsAdded.remove(clientSelected);
+            clientsAddedAdapter.notifyDataSetChanged();
+
+            listClientsToAdd.add(clientSelected);
+        }
+        return (super.onContextItemSelected(item));
+    }
+
+    /**
+     * @return the save itinerary launcher activity
+     */
+    public ActivityResultLauncher<Intent> getSaveItineraryLauncher() {
+        return saveItineraryLauncher;
+    }
+}

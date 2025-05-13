@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -73,64 +74,49 @@
                 app:layout_constraintTop_toBottomOf="@id/label_last_name" />
 
             <TextView
-                android:id="@+id/label_position_lat"
+                android:id="@+id/label_address"
                 android:layout_height="wrap_content"
                 android:layout_width="@dimen/no_dp"
-                android:layout_marginTop="@dimen/normal_gap"
-                android:text="@string/position_lat"
+                android:layout_marginTop="@dimen/small_gap"
+                android:text="@string/label_address"
                 android:textSize="@dimen/normal_text"
-                app:layout_constraintEnd_toStartOf="@id/label_position_long"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/last_name" />
 
             <TextView
-                android:id="@+id/label_position_long"
-                android:layout_width="@dimen/no_dp"
-                android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:text="@string/position_long"
-                android:textSize="@dimen/normal_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/label_position_lat"
-                app:layout_constraintTop_toTopOf="@id/label_position_lat" />
-
-            <EditText
-                android:id="@+id/latitude"
-                android:layout_width="@dimen/no_dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:hint="@string/placeholder_position_lat"
-                android:textSize="@dimen/normal_text"
-                android:layout_marginStart="@dimen/micro_margin"
-                android:maxLines="1"
-                android:inputType="numberDecimal|numberSigned"
-                app:layout_constraintEnd_toStartOf="@id/longitude"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/label_position_lat" />
-
-            <EditText
-                android:id="@+id/longitude"
+                android:id="@+id/address"
                 android:layout_width="@dimen/no_dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:hint="@string/placeholder_position_long"
                 android:textSize="@dimen/normal_text"
                 android:layout_marginEnd="@dimen/micro_margin"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:maxLines="1"
-                android:inputType="numberDecimal|numberSigned"
-                app:layout_constraintStart_toEndOf="@id/latitude"
-                app:layout_constraintTop_toBottomOf="@id/label_position_long" />
+                app:layout_constraintTop_toBottomOf="@id/label_address"
+                tools:text="Address compute with the coordinate"
+                />
+
+            <Button
+                android:id="@+id/selection_map_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/micro_gap"
+                android:backgroundTint="@color/blue_0"
+                android:minHeight="@dimen/normal_gap"
+                android:text="@string/select_position"
+                android:textSize="@dimen/big_text"
+                android:elevation="5dp"
+                app:layout_constraintTop_toBottomOf="@id/address"/>
 
             <TextView
                 android:id="@+id/label_mail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_gap"
                 android:text="@string/email"
                 android:textSize="@dimen/normal_text"
+                android:layout_marginTop="@dimen/normal_gap"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/latitude" />
+                app:layout_constraintTop_toBottomOf="@id/selection_map_button" />
 
             <EditText
                 android:id="@+id/mail"
@@ -162,6 +148,26 @@
                 android:maxLines="1"
                 android:layout_marginHorizontal="@dimen/micro_margin"
                 app:layout_constraintTop_toBottomOf="@id/label_password" />
+
+            <TextView
+                android:id="@+id/label_confirm_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/micro_gap"
+                android:text="@string/confirm_password"
+                android:textSize="@dimen/normal_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/password" />
+
+            <EditText
+                android:id="@+id/confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/normal_text"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:layout_marginHorizontal="@dimen/micro_margin"
+                app:layout_constraintTop_toBottomOf="@id/label_confirm_password" />
             <Button
                 android:id="@+id/sign_up_button"
                 android:layout_width="match_parent"
@@ -172,7 +178,7 @@
                 android:text="@string/sign_up"
                 android:textSize="@dimen/big_text"
                 android:elevation="5dp"
-                app:layout_constraintTop_toBottomOf="@id/password"/>
+                app:layout_constraintTop_toBottomOf="@id/confirm_password"/>
 
             <LinearLayout
                 android:id="@+id/login_container"

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:elevation="4dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/card_background">
+
+    <!-- Left Column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/route_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Route number"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/route_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Home: salesman home adress"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/route_client_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Client Names: client names"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Right Column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/route_begin_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Begin Date: date"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/route_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="State: state"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
+</LinearLayout>

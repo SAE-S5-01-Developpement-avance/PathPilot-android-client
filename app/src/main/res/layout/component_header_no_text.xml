@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,16 +11,23 @@
         android:id="@+id/logo"
         android:layout_width="@dimen/normal_logo"
         android:layout_height="@dimen/normal_logo"
+        android:contentDescription="@string/content_description_pathpilot_icon"
         android:src="@drawable/icon_logo_pathpilot"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/leave"
-        android:layout_width="@dimen/normal_logo"
-        android:layout_height="@dimen/normal_logo"
-        android:padding="@dimen/micro_gap"
-        android:src="@drawable/icon_leave"
+    <TextView
+        android:id="@+id/header_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/header_text"
+        app:layout_constraintStart_toEndOf="@id/logo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

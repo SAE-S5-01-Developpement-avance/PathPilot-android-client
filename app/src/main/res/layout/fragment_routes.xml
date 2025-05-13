@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Header fixe -->
+    <include layout="@layout/component_header_plus_icon" />
+
+    <Button
+        android:id="@+id/refresh_routes_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/micro_gap"
+        android:layout_marginBottom="@dimen/normal_gap"
+        android:layout_marginHorizontal="@dimen/small_gap"
+        android:backgroundTint="@color/blue_0"
+        android:text="@string/refresh"
+        />
+
+    <!-- List -->
+    <ListView
+        android:id="@+id/routes_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+    </ListView>
+</LinearLayout>

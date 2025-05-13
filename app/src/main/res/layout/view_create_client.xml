@@ -8,7 +8,6 @@
     <!-- Header fixe -->
     <include layout="@layout/component_header_back_icon" />
 
-    <!-- TODO faire le vrai footer -->
     <!-- Fix footer -->
     <include layout="@layout/component_footer" />
 
@@ -64,52 +63,41 @@
                     android:layout_marginHorizontal="@dimen/micro_margin"
                     app:layout_constraintTop_toBottomOf="@id/label_company_name" />
 
-                <!-- lat / lon -->
                 <TextView
-                    android:id="@+id/label_latitude"
+                    android:id="@+id/label_address"
+                    android:text="@string/label_address"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_marginTop="@dimen/micro_gap"
-                    android:text="@string/position_lat"
                     android:textSize="@dimen/normal_text"
-                    app:layout_constraintEnd_toStartOf="@id/label_longitude"
+                    android:layout_marginTop="@dimen/small_gap"
+                    android:layout_marginStart="@dimen/micro_margin"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/company_name" />
 
                 <TextView
-                    android:id="@+id/label_longitude"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    android:text="@string/position_long"
-                    android:textSize="@dimen/normal_text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/label_latitude"
-                    app:layout_constraintTop_toTopOf="@id/label_latitude" />
-
-                <EditText
-                    android:id="@+id/latitude"
-                    android:layout_width="@dimen/no_dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:hint="@string/placeholder_position_lat"
-                    android:textSize="@dimen/normal_text"
-                    android:layout_marginStart="@dimen/micro_margin"
-                    app:layout_constraintEnd_toStartOf="@id/longitude"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/label_latitude" />
-
-                <EditText
-                    android:id="@+id/longitude"
+                    android:id="@+id/address"
                     android:layout_width="@dimen/no_dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:hint="@string/placeholder_position_long"
                     android:textSize="@dimen/normal_text"
                     android:layout_marginEnd="@dimen/micro_margin"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/latitude"
-                    app:layout_constraintTop_toBottomOf="@id/label_longitude" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/label_address" />
+
+                <Button
+                    android:id="@+id/selection_map_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/micro_gap"
+                    android:backgroundTint="@color/blue_0"
+                    android:minHeight="@dimen/normal_gap"
+                    android:text="@string/select_position"
+                    android:textSize="@dimen/big_text"
+                    android:elevation="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/address"/>
 
                 <TextView
                     android:id="@+id/optionnal_fields"
@@ -119,7 +107,7 @@
                     android:text="@string/optional_fields"
                     android:textSize="35sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/latitude"/>
+                    app:layout_constraintTop_toBottomOf="@id/selection_map_button"/>
 
                 <TextView
                     android:id="@+id/label_description"

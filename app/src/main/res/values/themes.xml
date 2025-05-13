@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.PathPilotandroidclient" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:fontFamily">@font/montserrat_medium</item>
@@ -6,5 +6,10 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
     <style name="Theme.PathPilotandroidclient" parent="Base.Theme.PathPilotandroidclient" />
+
+    <!-- Label -->
+    <style name="DefaultLabelStyle">
+        <item name="android:textSize">@dimen/normal_text</item>
+    </style>
 
 </resources>

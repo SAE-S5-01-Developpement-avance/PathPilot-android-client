@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:elevation="4dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/card_background">
+
+    <!-- Left Column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itinerary_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Itinerary number"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/itinerary_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home: salesman home address"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/itinerary_client_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Client Names: client names"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Right Column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stops Information"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/itinerary_total_stops"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Stops: number of stops"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
+</LinearLayout>
